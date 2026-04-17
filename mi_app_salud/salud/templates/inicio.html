@@ -1,0 +1,73 @@
+{% extends 'base.html' %}
+
+{% block content %}
+
+<h2 style="margin-bottom:20px;">🧑‍⚕️ Pacientes</h2>
+
+<div style="display:grid; grid-template-columns:repeat(auto-fit,minmax(300px,1fr)); gap:20px;">
+
+{% for paciente in pacientes %}
+
+<div style="background:white;padding:15px;border-radius:15px;box-shadow:0 5px 15px rgba(0,0,0,0.1);">
+
+    <h3>👤 {{ paciente.nombre }}</h3>
+    <p>📅 {{ paciente.fecha_nacimiento }}</p>
+
+    <hr>
+
+    <h4>📋 Historial</h4>
+
+    {% for registro in paciente.registros.all %}
+        {% if registro.estado == 'OK' %}
+        <div class="estado ok">
+     {% elif registro.estado == 'CANSADO' %}
+        <div class="estado cansado">
+            {% elif registro.estado == 'DOLOR' %}
+                 <div class="estado dolor">
+                    {% else %}
+                         <div class="estado critico">
+                            {% endif %}
+
+    🕒 {{ registro.fecha|date:"d/m/Y H:i" }} <br>
+    <strong>{{ registro.estado }}</strong>
+
+</div>
+            🕒 {{ registro.fecha|date:"d/m/Y H:i" }} <br>
+            <strong>{{ registro.estado }}</strong>
+
+        </div>
+    {% empty %}
+        <p>Sin registros</p>
+    {% endfor %}
+
+    <hr>
+
+    <h4>Registrar estado</h4>
+
+    <div style="display:flex;flex-wrap:wrap;gap:5px;">
+
+        <a href="/estado/{{ paciente.id }}/OK/">
+            <button>🟢 OK</button>
+        </a>
+
+        <a href="/estado/{{ paciente.id }}/CANSADO/">
+            <button>🟡 Cansado</button>
+        </a>
+
+        <a href="/estado/{{ paciente.id }}/DOLOR/">
+            <button>🔴 Dolor</button>
+        </a>
+
+        <a href="/estado/{{ paciente.id }}/CRITICO/">
+            <button>🚨 Crítico</button>
+        </a>
+
+    </div>
+
+</div>
+
+{% endfor %}
+
+</div>
+
+{% endblock %}
