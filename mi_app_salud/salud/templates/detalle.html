@@ -1,0 +1,22 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<h2>{{ paciente.nombre }}</h2>
+
+<h3>Historial de salud</h3>
+
+{% for registro in registros %}
+    <div class="card">
+        <p><strong>Fecha:</strong> {{ registro.fecha }}</p>
+        <p><strong>Medicación:</strong> {{ registro.medicacion_tomada }}</p>
+        <p><strong>Estado:</strong> {{ registro.estado }}</p>
+    </div>
+{% empty %}
+    <p>No hay registros aún.</p>
+{% endfor %}
+
+<a href="/">
+    <button>Volver</button>
+</a>
+
+{% endblock %}
