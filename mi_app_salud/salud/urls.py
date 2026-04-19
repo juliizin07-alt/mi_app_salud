@@ -1,12 +1,20 @@
+from django.contrib import admin
 from django.urls import path
-from . import views
+from salud.views import inicio, registro, registrar_estado, historial_paciente
+from django.contrib.auth import views as auth_views
 
 urlpatterns = [
-    path('', views.inicio, name='inicio'),
+    path('admin/', admin.site.urls),
 
-    path(
-        'estado/<int:paciente_id>/<str:estado>/',
-        views.registrar_medicacion,
-        name='registrar_medicacion'
-    ),
+    path('', inicio, name='inicio'),
+
+    path('login/', auth_views.LoginView.as_view(), name='login'),
+    path('logout/', auth_views.LogoutView.as_view(), name='logout'),
+
+    path('registro/', registro, name='registro'),
+
+    path('estado/<int:paciente_id>/<str:estado>/', registrar_estado, name='estado'),
+
+    # 👇 ESTA ES LA CLAVE
+    path('historial/<int:paciente_id>/', historial_paciente, name='historial'),
 ]

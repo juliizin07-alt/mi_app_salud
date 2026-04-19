@@ -6,6 +6,19 @@
     <title>Jarvice Salud</title>
 
     <style>
+        input {
+    width: 100%;
+    padding: 10px;
+    margin-top: 5px;
+    border-radius: 8px;
+    border: 1px solid #ccc;
+}
+
+input:focus {
+    outline: none;
+    border-color: #10b981;
+    box-shadow: 0 0 5px rgba(16,185,129,0.5);
+}
         body {
             font-family: Arial, sans-serif;
             margin: 0;
@@ -18,6 +31,9 @@
             padding: 15px;
             font-size: 20px;
             font-weight: bold;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
         }
 
         .container {
@@ -47,7 +63,13 @@
             background: #059669;
         }
 
-        /* 🟢 ESTADOS (AQUÍ SÍ VA BIEN) */
+        .logout-btn {
+            background: #ef4444;
+        }
+
+        .logout-btn:hover {
+            background: #dc2626;
+        }
 
         .estado {
             padding: 8px;
@@ -57,28 +79,27 @@
             font-weight: bold;
         }
 
-        .estado.ok {
-            background: #d1fae5;
-        }
-
-        .estado.cansado {
-            background: #fef9c3;
-        }
-
-        .estado.dolor {
-            background: #fee2e2;
-        }
-
-        .estado.critico {
-            background: #fecaca;
-        }
+        .estado.ok { background: #d1fae5; }
+        .estado.cansado { background: #fef9c3; }
+        .estado.dolor { background: #fee2e2; }
+        .estado.critico { background: #fecaca; }
 
     </style>
+    
 </head>
 
 <body>
 
-    <nav>🩺 Jarvice Salud</nav>
+    <nav>
+        🩺 Jarvice Salud
+
+        {% if user.is_authenticated %}
+        <form method="post" action="{% url 'logout' %}">
+            {% csrf_token %}
+            <button class="logout-btn" type="submit">Cerrar sesión</button>
+        </form>
+        {% endif %}
+    </nav>
 
     <div class="container">
         {% block content %}
