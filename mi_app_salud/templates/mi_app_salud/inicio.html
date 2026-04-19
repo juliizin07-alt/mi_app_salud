@@ -1,0 +1,236 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<title>Jarvice Beta</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<style>
+
+body {
+    margin: 0;
+    font-family: system-ui, Arial;
+    background: #0b1220;
+    color: #e5e7eb;
+
+    -webkit-tap-highlight-color: transparent;
+    user-select: none;
+}
+
+/* TOP BAR */
+.topbar {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 14px 16px;
+    background: #111827;
+    border-bottom: 1px solid #1f2937;
+}
+
+.brand {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.icon { font-size: 20px; }
+
+.title {
+    font-size: 16px;
+    font-weight: 600;
+}
+
+/* BOTÓN */
+.add-btn {
+    background: #2563eb;
+    color: white;
+    border: none;
+    padding: 6px 10px;
+    border-radius: 10px;
+    font-size: 12px;
+}
+
+/* CONTAINER */
+.container {
+    padding: 12px;
+}
+
+.section {
+    margin-bottom: 14px;
+}
+
+.section-title {
+    font-size: 11px;
+    color: #9ca3af;
+    margin: 8px 0;
+}
+
+/* ALERTAS */
+.alert {
+    background: #1f2937;
+    padding: 10px;
+    border-radius: 12px;
+    margin-bottom: 8px;
+    font-size: 13px;
+}
+
+/* CARD */
+.card {
+    background: #111827;
+    border: 1px solid #1f2937;
+    border-radius: 14px;
+    padding: 12px;
+    margin-bottom: 10px;
+}
+
+.name {
+    font-weight: 600;
+    font-size: 14px;
+}
+
+.badge {
+    font-size: 11px;
+    background: #1f2937;
+    padding: 3px 8px;
+    border-radius: 999px;
+    margin-left: 6px;
+    color: #9ca3af;
+}
+
+/* ESTADO */
+.estado-chip {
+    margin-top: 6px;
+    font-size: 11px;
+    padding: 4px 10px;
+    border-radius: 999px;
+    display: inline-block;
+}
+
+.red {
+    background: rgba(239,68,68,0.15);
+    color: #ef4444;
+}
+
+.yellow {
+    background: rgba(245,158,11,0.15);
+    color: #f59e0b;
+}
+
+.green {
+    background: rgba(34,197,94,0.15);
+    color: #22c55e;
+}
+
+.gray {
+    background: rgba(156,163,175,0.15);
+    color: #9ca3af;
+}
+
+/* BOTONES */
+.btn-row {
+    display: flex;
+    gap: 6px;
+    margin-top: 8px;
+}
+
+.btn {
+    flex: 1;
+    text-align: center;
+    padding: 6px;
+    border-radius: 10px;
+    font-size: 12px;
+    color: white;
+    text-decoration: none;
+}
+
+.green { background: #22c55e; }
+.yellow { background: #f59e0b; }
+.red { background: #ef4444; }
+
+/* NAV */
+.navbar {
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    background: #111827;
+    border-top: 1px solid #1f2937;
+    display: flex;
+    justify-content: space-around;
+    padding: 10px 0;
+}
+
+.nav-item {
+    font-size: 11px;
+    color: #9ca3af;
+    text-align: center;
+}
+
+</style>
+</head>
+
+<body>
+
+<!-- TOP -->
+<div class="topbar">
+    <div class="brand">
+        <div class="icon">🩺</div>
+        <div class="title">Jarvice</div>
+    </div>
+
+    <button class="add-btn">+ Paciente</button>
+</div>
+
+<div class="container">
+
+    <!-- ALERTAS -->
+    <div class="section">
+        <div class="section-title">ALERTAS</div>
+
+        {% for alerta in alertas %}
+            <div class="alert">⚠️ {{ alerta }}</div>
+        {% empty %}
+            <div class="alert">✔ Todo en orden</div>
+        {% endfor %}
+    </div>
+
+    <!-- PACIENTES -->
+    <div class="section">
+        <div class="section-title">PACIENTES</div>
+
+        {% for p in pacientes %}
+        <div class="card">
+
+            <div class="name">
+                {{ p.nombre }} {{ p.apellido }}
+                <span class="badge">{{ p.edad }} años</span>
+            </div>
+
+            <!-- 🔥 ESTO ES LO IMPORTANTE (PASO 2 YA INCLUIDO) -->
+            <div class="estado-chip {{ p.estado_color }}">
+                {{ p.ultimo_estado }}
+            </div>
+
+            <div class="btn-row">
+                <a class="btn green" href="/estado/{{ p.id }}/OK/">OK</a>
+                <a class="btn yellow" href="/estado/{{ p.id }}/DOLOR/">Dolor</a>
+                <a class="btn red" href="/estado/{{ p.id }}/CRITICO/">Crítico</a>
+            </div>
+
+        </div>
+        {% endfor %}
+
+    </div>
+
+</div>
+
+<!-- NAV -->
+<div class="navbar">
+    <div class="nav-item">🏠<br>Inicio</div>
+    <div class="nav-item">👥<br>Pacientes</div>
+    <div class="nav-item">🚨<br>Alertas</div>
+    <div class="nav-item">⚙️<br>Config</div>
+</div>
+
+</body>
+</html>
