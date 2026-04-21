@@ -1,0 +1,26 @@
+<h1>Pacientes</h1>
+
+{% if pacientes %}
+
+    {% for p in pacientes %}
+    <div>
+        <h3>{{ p.nombre }}</h3>
+
+        <button onclick="setEstado({{ p.id }}, 'OK')">OK</button>
+        <button onclick="setEstado({{ p.id }}, 'DOLOR')">Dolor</button>
+        <button onclick="setEstado({{ p.id }}, 'CRITICO')">Crítico</button>
+
+        <p>Estado actual: {{ p.estado }}</p>
+    </div>
+    <hr>
+    {% endfor %}
+
+{% else %}
+    <p>No hay pacientes cargados</p>
+{% endif %}
+
+<script>
+function setEstado(id, estado) {
+    window.location.href = `/estado/${id}/${estado}/`;
+}
+</script>

@@ -1,43 +1,53 @@
-from django.shortcuts import render, redirect, get_object_or_404
-from django.contrib.auth.decorators import login_required
+from django.shortcuts import render, get_object_or_404, redirect
 from django.http import JsonResponse
+from django.contrib.auth.decorators import login_required
 
 from .models import Paciente, RegistroSalud, Recordatorio
 from .forms import PacienteForm
 
 
-# 🏠 DASHBOARD PRINCIPAL
+# 🏠 LISTA PRINCIPAL (UCI)
 @login_required
-def inicio(request):
-    pacientes = Paciente.objects.all()
-    alertas = []
+def lista_pacientes(request):
+    pacientes = list(Paciente.objects.all())
 
-    for p in pacientes:
+    def prioridad(p):
         ultimo = p.registros.order_by('-fecha').first()
 
-        if ultimo:
-            estado = ultimo.estado_fisico.upper().strip()
-            p.ultimo_estado = estado
+        if not ultimo:
+            return 2
 
-            # 🎨 estado visual tipo app
-            if estado == "CRITICO":
-                p.estado_color = "red"
-                alertas.append(f"🚨 {p.nombre} crítico")
+        estado = ultimo.estado_fisico.upper().strip()
 
-            elif estado == "DOLOR":
-                p.estado_color = "yellow"
-                alertas.append(f"⚠️ {p.nombre} con dolor")
+        if estado == "CRITICO":
+            return 0
+        if estado == "DOLOR":
+            return 1
+        return 2
 
-            else:
-                p.estado_color = "green"
-
-        else:
-            p.ultimo_estado = "SIN REGISTRO"
-            p.estado_color = "gray"
+    pacientes.sort(key=prioridad)
 
     return render(request, 'mi_app_salud/inicio.html', {
-        'pacientes': pacientes,
-        'alertas': alertas
+        'pacientes': pacientes
+    })
+
+
+# ⚡ CAMBIAR ESTADO (UCI CORE)
+@login_required
+def cambiar_estado(request, paciente_id, estado):
+    paciente = get_object_or_404(Paciente, id=paciente_id)
+
+    estado = estado.upper().strip()
+
+    RegistroSalud.objects.create(
+        paciente=paciente,
+        estado_fisico=estado,
+        estado_emocional="NEUTRO"
+    )
+
+    return JsonResponse({
+        "ok": True,
+        "estado": estado
     })
 
 
@@ -55,52 +65,13 @@ def crear_paciente(request):
     })
 
 
-# ⚡ CAMBIAR ESTADO (AJAX REAL)
-@login_required
-def cambiar_estado(request, paciente_id, estado):
-    paciente = get_object_or_404(Paciente, id=paciente_id)
-
-    estado = estado.upper().strip()
-    ESTADOS_VALIDOS = ["OK", "DOLOR", "CRITICO"]
-
-    if estado not in ESTADOS_VALIDOS:
-        return JsonResponse({"ok": False})
-
-    registro = RegistroSalud.objects.create(
-        paciente=paciente,
-        estado_fisico=estado,
-        estado_emocional="NEUTRO"
-    )
-
-    return JsonResponse({
-        "ok": True,
-        "paciente_id": paciente.id,
-        "estado": estado,
-        "id_registro": registro.id
-    })
-
-
-# 📋 HISTORIAL PACIENTE
-@login_required
-def historial_paciente(request, paciente_id):
-    paciente = get_object_or_404(Paciente, id=paciente_id)
-
-    registros = paciente.registros.order_by('-fecha')
-
-    return render(request, 'mi_app_salud/historial.html', {
-        'paciente': paciente,
-        'registros': registros
-    })
-
-
-# ➕ CREAR RECORDATORIO
+# 📝 RECORDATORIOS
 @login_required
 def crear_recordatorio(request, paciente_id):
     paciente = get_object_or_404(Paciente, id=paciente_id)
 
     if request.method == "POST":
         texto = request.POST.get("texto")
-
         if texto:
             Recordatorio.objects.create(
                 paciente=paciente,
@@ -108,12 +79,18 @@ def crear_recordatorio(request, paciente_id):
             )
 
     return redirect('inicio')
+from django.shortcuts import get_object_or_404, redirect
+from .models import Paciente, RegistroSalud
 
+def actualizar_estado(request, paciente_id):
+    paciente = get_object_or_404(Paciente, id=paciente_id)
 
-# ✔ TOGGLE RECORDATORIO
-@login_required
-def toggle_recordatorio(request, id):
-    r = get_object_or_404(Recordatorio, id=id)
-    r.hecho = not r.hecho
-    r.save()
+    if request.method == 'POST':
+        estado = request.POST.get('estado')
+
+        RegistroSalud.objects.create(
+            paciente=paciente,
+            estado=estado
+        )
+
     return redirect('inicio')

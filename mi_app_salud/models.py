@@ -29,6 +29,7 @@ class RegistroSalud(models.Model):
     estado_fisico = models.CharField(max_length=20, choices=ESTADOS)
     estado_emocional = models.CharField(max_length=50, default="NEUTRO")
     fecha = models.DateTimeField(auto_now_add=True)
+    estado = models.CharField(max_length=20, default="OK")
 
     def __str__(self):
         return f"{self.paciente.nombre} - {self.estado_fisico}"
@@ -36,9 +37,9 @@ class RegistroSalud(models.Model):
 from django.utils import timezone
 
 class Recordatorio(models.Model):
-    paciente = models.ForeignKey('Paciente', on_delete=models.CASCADE, related_name='recordatorios')
+    paciente = models.ForeignKey(Paciente, on_delete=models.CASCADE, related_name="recordatorios")
     texto = models.CharField(max_length=255)
-    fecha = models.DateTimeField(default=timezone.now)
+    fecha = models.DateTimeField(auto_now_add=True)
     hecho = models.BooleanField(default=False)
 
     def __str__(self):

@@ -2,6 +2,11 @@ from django.contrib import admin
 from django.urls import path
 from salud.views import inicio, registro, registrar_estado, historial_paciente
 from django.contrib.auth import views as auth_views
+from django.urls import path, include
+
+urlpatterns = [
+    path('', include('tu_app.urls')),
+]
 
 urlpatterns = [
     path('admin/', admin.site.urls),
