@@ -1,236 +1,421 @@
 <!DOCTYPE html>
-<html lang="es">
+<html>
 <head>
-<meta charset="UTF-8">
-<title>Jarvice Beta</title>
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>UCI Monitor</title>
 
-<style>
+    <style>
+        body {
+            font-family: Arial;
+            background: #111;
+            color: white;
+            text-align: center;
+        }
 
-body {
-    margin: 0;
-    font-family: system-ui, Arial;
-    background: #0b1220;
-    color: #e5e7eb;
+        .card {
+            border-radius: 20px;
+            padding: 20px;
+            margin: 20px;
+            font-size: 20px;
+        }
 
-    -webkit-tap-highlight-color: transparent;
-    user-select: none;
-}
+        .verde { background: #2ecc71; }
+        .amarillo { background: #f1c40f; }
+        .rojo { background: #e74c3c; }
 
-/* TOP BAR */
-.topbar {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    padding: 14px 16px;
-    background: #111827;
-    border-bottom: 1px solid #1f2937;
-}
-
-.brand {
-    display: flex;
-    align-items: center;
-    gap: 8px;
-}
-
-.icon { font-size: 20px; }
-
-.title {
-    font-size: 16px;
-    font-weight: 600;
-}
-
-/* BOTÓN */
-.add-btn {
-    background: #2563eb;
-    color: white;
-    border: none;
-    padding: 6px 10px;
-    border-radius: 10px;
-    font-size: 12px;
-}
-
-/* CONTAINER */
-.container {
-    padding: 12px;
-}
-
-.section {
-    margin-bottom: 14px;
-}
-
-.section-title {
-    font-size: 11px;
-    color: #9ca3af;
-    margin: 8px 0;
-}
-
-/* ALERTAS */
-.alert {
-    background: #1f2937;
-    padding: 10px;
-    border-radius: 12px;
-    margin-bottom: 8px;
-    font-size: 13px;
-}
-
-/* CARD */
-.card {
-    background: #111827;
-    border: 1px solid #1f2937;
-    border-radius: 14px;
-    padding: 12px;
-    margin-bottom: 10px;
-}
-
-.name {
-    font-weight: 600;
-    font-size: 14px;
-}
-
-.badge {
-    font-size: 11px;
-    background: #1f2937;
-    padding: 3px 8px;
-    border-radius: 999px;
-    margin-left: 6px;
-    color: #9ca3af;
-}
-
-/* ESTADO */
-.estado-chip {
-    margin-top: 6px;
-    font-size: 11px;
-    padding: 4px 10px;
-    border-radius: 999px;
-    display: inline-block;
-}
-
-.red {
-    background: rgba(239,68,68,0.15);
-    color: #ef4444;
-}
-
-.yellow {
-    background: rgba(245,158,11,0.15);
-    color: #f59e0b;
-}
-
-.green {
-    background: rgba(34,197,94,0.15);
-    color: #22c55e;
-}
-
-.gray {
-    background: rgba(156,163,175,0.15);
-    color: #9ca3af;
-}
-
-/* BOTONES */
-.btn-row {
-    display: flex;
-    gap: 6px;
-    margin-top: 8px;
-}
-
-.btn {
-    flex: 1;
-    text-align: center;
-    padding: 6px;
-    border-radius: 10px;
-    font-size: 12px;
-    color: white;
-    text-decoration: none;
-}
-
-.green { background: #22c55e; }
-.yellow { background: #f59e0b; }
-.red { background: #ef4444; }
-
-/* NAV */
-.navbar {
-    position: fixed;
-    bottom: 0;
-    left: 0;
-    right: 0;
-    background: #111827;
-    border-top: 1px solid #1f2937;
-    display: flex;
-    justify-content: space-around;
-    padding: 10px 0;
-}
-
-.nav-item {
-    font-size: 11px;
-    color: #9ca3af;
-    text-align: center;
-}
-
-</style>
+        button {
+            padding: 15px;
+            margin: 5px;
+            border: none;
+            border-radius: 10px;
+            font-size: 18px;
+            cursor: pointer;
+        }
+    </style>
 </head>
 
 <body>
 
-<!-- TOP -->
-<div class="topbar">
-    <div class="brand">
-        <div class="icon">🩺</div>
-        <div class="title">Jarvice</div>
-    </div>
+<h1>🏥 Monitor UCI</h1>
 
-    <button class="add-btn">+ Paciente</button>
-</div>
+<!-- 🎤 BOTÓN VOZ -->
+<button onclick="iniciarVoz()">🎤 Hablar</button>
+<p id="texto"></p>
 
-<div class="container">
+<!-- TEST -->
+<button onclick="testVoz()">TEST VOZ</button>
 
-    <!-- ALERTAS -->
-    <div class="section">
-        <div class="section-title">ALERTAS</div>
+{% for p in pacientes %}
+    {% with ultimo=p.registros.last %}
+        {% if ultimo.estado_fisico == "CRITICO" %}
+            <div class="card rojo">
+        {% elif ultimo.estado_fisico == "DOLOR" %}
+            <div class="card amarillo">
+        {% else %}
+            <div class="card verde">
+        {% endif %}
 
-        {% for alerta in alertas %}
-            <div class="alert">⚠️ {{ alerta }}</div>
-        {% empty %}
-            <div class="alert">✔ Todo en orden</div>
-        {% endfor %}
-    </div>
+            <h2>{{ p.nombre }}</h2>
+            <p>Estado: {{ ultimo.estado_fisico }}</p>
 
-    <!-- PACIENTES -->
-    <div class="section">
-        <div class="section-title">PACIENTES</div>
+            <a href="/actualizar-estado/{{ p.id }}/?estado=BIEN">
+                <button>🟢 Bien</button>
+            </a>
 
-        {% for p in pacientes %}
-        <div class="card">
+            <a href="/actualizar-estado/{{ p.id }}/?estado=DOLOR">
+                <button>🟡 Dolor</button>
+            </a>
 
-            <div class="name">
-                {{ p.nombre }} {{ p.apellido }}
-                <span class="badge">{{ p.edad }} años</span>
-            </div>
-
-            <!-- 🔥 ESTO ES LO IMPORTANTE (PASO 2 YA INCLUIDO) -->
-            <div class="estado-chip {{ p.estado_color }}">
-                {{ p.ultimo_estado }}
-            </div>
-
-            <div class="btn-row">
-                <a class="btn green" href="/estado/{{ p.id }}/OK/">OK</a>
-                <a class="btn yellow" href="/estado/{{ p.id }}/DOLOR/">Dolor</a>
-                <a class="btn red" href="/estado/{{ p.id }}/CRITICO/">Crítico</a>
-            </div>
+            <a href="/actualizar-estado/{{ p.id }}/?estado=CRITICO">
+                <button>🔴 Crítico</button>
+            </a>
 
         </div>
-        {% endfor %}
+    {% endwith %}
+{% endfor %}
 
-    </div>
+<script>
+console.log("JS CARGADO");
 
-</div>
+function testVoz() {
+    if (!('webkitSpeechRecognition' in window)) {
+        alert("❌ NO soportado");
+    } else {
+        alert("✅ SOPORTADO");
+    }
+}
 
-<!-- NAV -->
-<div class="navbar">
-    <div class="nav-item">🏠<br>Inicio</div>
-    <div class="nav-item">👥<br>Pacientes</div>
-    <div class="nav-item">🚨<br>Alertas</div>
-    <div class="nav-item">⚙️<br>Config</div>
-</div>
+function iniciarVoz() {
+    if (!('webkitSpeechRecognition' in window)) {
+        alert("Tu navegador no soporta reconocimiento de voz");
+        return;
+    }
 
+    const recognition = new webkitSpeechRecognition();
+    recognition.lang = "es-ES";
+
+    recognition.onstart = function() {
+        console.log("🎤 Escuchando...");
+    };
+
+    recognition.onresult = function(event) {
+    let texto = event.results[0][0].transcript.toLowerCase();
+
+    alert("Escuché: " + texto);
+    console.log("Escuché:", texto);
+    console.log("🧠 Texto:", texto);
+    document.getElementById("texto").innerText = texto;
+
+    let estado = "BIEN";
+
+    function hablar(msg) {
+        const voz = new SpeechSynthesisUtterance(msg);
+        voz.lang = "es-ES";
+        speechSynthesis.speak(voz);
+    }
+
+    if (texto.includes("mal")) {
+        estado = "CRITICO";
+        hablar("Alerta crítica enviada");
+    } 
+    else if (texto.includes("dolor")) {
+        estado = "DOLOR";
+        hablar("Estado en observación");
+    } 
+    else {
+        hablar("Estado actualizado");
+    }
+
+    fetch(`/api/cambiar-estado/1/?estado=${estado}`)
+        .then(res => res.json())
+        .then(() => location.reload());
+};
+
+        console.log("🧠 Texto:", texto);
+        document.getElementById("texto").innerText = texto;
+
+        let estado = "BIEN";
+
+        if (texto.includes("mal")) estado = "CRITICO";
+        else if (texto.includes("dolor")) estado = "DOLOR";
+
+        fetch(`/api/cambiar-estado/1/?estado=${estado}`)
+            .then(res => res.json())
+            .then(() => location.reload());
+    };
+
+    recognition.onerror = function(e) {
+        alert("Error: " + e.error);
+    };
+
+    recognition.start();
+}
+</script>
+function obtenerUbicacion(callback) {
+    <script>
+
+// 📍 1. FUNCIÓN DE UBICACIÓN (PRIMERO)
+function obtenerUbicacion(callback) {
+    if (!navigator.geolocation) {
+        alert("Geolocalización no soportada");
+        return;
+    }
+
+    navigator.geolocation.getCurrentPosition(
+        function(position) {
+            const lat = position.coords.latitude;
+            const lon = position.coords.longitude;
+
+            const url = `https://www.google.com/maps?q=${lat},${lon}`;
+
+            console.log("📍 Ubicación:", url);
+
+            callback(url);
+        },
+        function(error) {
+            console.error("Error ubicación:", error);
+            callback("Ubicación no disponible");
+        }
+    );
+}
+
+
+// 🎤 2. FUNCIÓN DE VOZ (DESPUÉS)
+function iniciarVoz() {
+    if (!('webkitSpeechRecognition' in window)) {
+        alert("Tu navegador no soporta voz");
+        return;
+    }
+
+    const recognition = new webkitSpeechRecognition();
+    recognition.lang = "es-ES";
+
+    recognition.onresult = function(event) {
+        let texto = event.results[0][0].transcript.toLowerCase();
+
+
+     
+        if (texto.includes("mal") || texto.includes("ayuda")) {
+            alert("ENTRÓ EN MODO CRÍTICO");
+
+    estado = "CRITICO";
+
+    hablar("He detectado una emergencia. ¿Estás bien? Responde ahora.");
+
+    obtenerUbicacion(function(ubicacion) {
+
+    alert("Ubicación obtenida");
+
+    setTimeout(function() {
+
+        alert("Enviando alerta ahora");
+
+        fetch(`/api/cambiar-estado/1/?estado=CRITICO&ubicacion=${encodeURIComponent(ubicacion)}`)
+            .then(res => res.json())
+            .then(data => {
+                alert("Alerta enviada");
+                location.reload();
+            });
+
+    }, 3000);
+
+});
+    });
+
+    return;
+}
+
+        fetch(`/api/cambiar-estado/1/?estado=${estado}`)
+            .then(res => res.json())
+            .then(() => location.reload());
+    };
+
+    recognition.start();
+}
+
+</script>
+<script>
+function iniciarVoz() {
+    if (!('webkitSpeechRecognition' in window)) {
+        alert("Tu navegador no soporta voz");
+        return;
+    }
+
+    const recognition = new webkitSpeechRecognition();
+    recognition.lang = "es-ES";
+
+    recognition.onstart = function() {
+        console.log("🎤 Escuchando...");
+    };
+
+    recognition.onresult = function(event) {
+    let texto = event.results[0][0].transcript.toLowerCase();
+
+    console.log("🧠 Texto:", texto);
+    document.getElementById("texto").innerText = texto;
+
+    let estado = "BIEN";
+
+    function hablar(msg) {
+        const voz = new SpeechSynthesisUtterance(msg);
+        voz.lang = "es-ES";
+        speechSynthesis.speak(voz);
+    }
+
+    // 🚨 CASO CRÍTICO CON UBICACIÓN
+    if (texto.includes("mal") || texto.includes("ayuda")) {
+
+        estado = "CRITICO";
+        hablar("Enviando alerta con ubicación");
+
+        obtenerUbicacion(function(ubicacion) {
+
+            fetch(`/api/cambiar-estado/1/?estado=${estado}&ubicacion=${encodeURIComponent(ubicacion)}`)
+                .then(res => res.json())
+                .then(() => location.reload());
+
+        });
+
+        return; // 🔥 importante para que no siga ejecutando abajo
+    }
+
+    // ⚠️ DOLOR
+    else if (texto.includes("dolor")) {
+        estado = "DOLOR";
+        hablar("Estado en observación");
+    }
+
+    // 🟢 NORMAL
+    else {
+        hablar("Estado actualizado");
+    }
+
+    fetch(`/api/cambiar-estado/1/?estado=${estado}`)
+        .then(res => res.json())
+        .then(() => location.reload());
+};
+
+        if (texto.includes("mal")) {
+            estado = "CRITICO";
+            hablar("Alerta crítica enviada");
+        } 
+        else if (texto.includes("dolor")) {
+            estado = "DOLOR";
+            hablar("Estado en observación");
+        } 
+        else {
+            hablar("Estado actualizado");
+        }
+
+        fetch(`/api/cambiar-estado/1/?estado=${estado}`)
+            .then(res => res.json())
+            .then(data => {
+                console.log("✅ Backend:", data);
+                location.reload();
+            })
+            .catch(err => console.error("❌ Error:", err));
+    };
+
+    recognition.onerror = function(e) {
+        console.error("Error voz:", e.error);
+        alert("Error: " + e.error);
+    };
+
+    recognition.start();
+}
+
+function testVoz() {
+    alert("TEST OK");
+}
+</script>
+<script>
+function obtenerUbicacion(callback) {
+    navigator.geolocation.getCurrentPosition(
+        function(position) {
+            const lat = position.coords.latitude;
+            const lon = position.coords.longitude;
+            const url = `https://www.google.com/maps?q=${lat},${lon}`;
+            callback(url);
+        },
+        function(error) {
+            callback("No disponible");
+        }
+    );
+    function hablar(mensaje) {
+    const voz = new SpeechSynthesisUtterance(mensaje);
+    voz.lang = "es-ES";
+    voz.volume = 1;
+    voz.rate = 1;
+    voz.pitch = 1;
+
+    speechSynthesis.cancel(); // limpia cola anterior
+    speechSynthesis.speak(voz);
+}
+}
+
+function iniciarVoz() {
+    alert("Botón funcionando");
+
+    if (!('webkitSpeechRecognition' in window)) {
+        alert("No soportado");
+        return;
+    }
+
+    const recognition = new webkitSpeechRecognition();
+    recognition.lang = "es-ES";
+
+    recognition.onstart = function() {
+        console.log("🎤 Micrófono iniciado");
+    };
+
+    recognition.onresult = function(event) {
+        let texto = event.results[0][0].transcript.toLowerCase();
+
+        alert("Escuché: " + texto);
+
+        if (texto.includes("mal") || texto.includes("ayuda")) {
+
+            alert("Entró en crítico");
+
+            obtenerUbicacion(function(ubicacion) {
+
+                setTimeout(function() {
+
+                    hablar("He detectado una emergencia");
+
+                    fetch(`/api/cambiar-estado/1/?estado=CRITICO&ubicacion=${encodeURIComponent(ubicacion)}`)
+                        .then(res => res.json())
+                        .then(data => {
+                            alert("Alerta enviada");
+                            location.reload();
+                        });
+
+                }, 3000);
+
+            });
+
+            return;
+        }
+
+        fetch(`/api/cambiar-estado/1/?estado=BIEN`)
+            .then(res => res.json())
+            .then(() => location.reload());
+    };
+
+    recognition.onerror = function(event) {
+        alert("Error voz: " + event.error);
+    };
+
+    recognition.start();
+}
+        }
+
+        fetch(`/api/cambiar-estado/1/?estado=BIEN`)
+            .then(res => res.json())
+            .then(() => location.reload());
+    };
+
+    recognition.start();
+}
+</script>
 </body>
 </html>

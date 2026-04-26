@@ -2,10 +2,10 @@ from django.urls import path
 from . import views
 
 urlpatterns = [
-    path('', views.inicio, name='inicio'),
+    path('', views.lista_pacientes, name='inicio'),
+    path('actualizar-estado/<int:paciente_id>/', views.actualizar_estado, name='actualizar_estado'),
 
-    path('historial/<int:paciente_id>/', views.historial_paciente, name='historial'),
-
-    # ⭐ ESTE ES EL NUEVO (EL IMPORTANTE)
-    path('estado/<int:paciente_id>/<str:estado>/', views.cambiar_estado, name='cambiar_estado'),
+    # API
+    path('api/pacientes/', views.api_pacientes, name='api_pacientes'),
+    path('api/cambiar-estado/<int:paciente_id>/', views.api_cambiar_estado, name='api_cambiar_estado'),
 ]

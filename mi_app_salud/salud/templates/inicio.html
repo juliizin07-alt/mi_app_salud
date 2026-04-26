@@ -1,0 +1,138 @@
+{% extends 'base.html' %}
+
+{% block content %}
+
+<!-- 🚨 ALERTAS -->
+{% if alertas %}
+<div style="background:#fee2e2;padding:15px;border-radius:10px;margin-bottom:20px;">
+    <h3>🚨 Alertas</h3>
+    {% for alerta in alertas %}
+        <p>{{ alerta }}</p>
+    {% endfor %}
+</div>
+{% endif %}
+
+<h2 style="margin-bottom:20px;">📊 Dashboard de Salud</h2>
+
+<div style="display:grid; grid-template-columns:repeat(auto-fit,minmax(300px,1fr)); gap:20px;">
+
+{% for paciente in pacientes %}
+
+<div class="card">
+
+    <h3>👤 {{ paciente.nombre }}</h3>
+
+    <hr>
+
+    <!-- 🧠 ESTADO EMOCIONAL -->
+    <h4>🧠 Estado emocional</h4>
+
+    {% with ultimo=paciente.registros.last %}
+        {% if ultimo %}
+            <div class="estado 
+                {% if ultimo.estado_emocional == 'FELIZ' %}ok
+                {% elif ultimo.estado_emocional == 'NEUTRO' %}cansado
+                {% elif ultimo.estado_emocional == 'TRISTE' %}dolor
+                {% else %}critico
+                {% endif %}">
+                {{ ultimo.estado_emocional }}
+            </div>
+        {% else %}
+            <p>Sin datos</p>
+        {% endif %}
+    {% endwith %}
+
+    <!-- ❤️ ESTADO FÍSICO -->
+    <h4>❤️ Estado físico</h4>
+
+    {% with ultimo=paciente.registros.last %}
+        {% if ultimo %}
+            <div class="estado 
+                {% if ultimo.estado_fisico == 'OK' %}ok
+                {% elif ultimo.estado_fisico == 'CANSADO' %}cansado
+                {% elif ultimo.estado_fisico == 'DOLOR' %}dolor
+                {% else %}critico
+                {% endif %}">
+                {{ ultimo.estado_fisico }}
+            </div>
+        {% else %}
+            <p>Sin datos</p>
+        {% endif %}
+    {% endwith %}
+
+    <hr>
+
+    <!-- BOTONES -->
+    <h4>Actualizar estado</h4>
+
+    <div style="display:flex;gap:5px;flex-wrap:wrap;">
+        <a href="/estado/{{ paciente.id }}/OK/"><button>🟢 OK</button></a>
+        <a href="/estado/{{ paciente.id }}/CANSADO/"><button>🟡 Cansado</button></a>
+        <a href="/estado/{{ paciente.id }}/DOLOR/"><button>🔴 Dolor</button></a>
+        <a href="/estado/{{ paciente.id }}/CRITICO/"><button>🚨 Crítico</button></a>
+    </div>
+
+</div>
+
+{% endfor %}
+
+</div>
+
+<!-- 📊 GRÁFICO -->
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+<canvas id="grafico" style="margin-top:40px;"></canvas>
+
+<script>
+const data = {
+    labels: [{% for paciente in pacientes %}'{{ paciente.nombre }}',{% endfor %}],
+    datasets: [{
+        label: 'Estado general',
+        data: [
+            {% for paciente in pacientes %}
+                {% with ultimo=paciente.registros.last %}
+                    {% if ultimo %}
+                        {% if ultimo.estado_fisico == "OK" %}4
+                        {% elif ultimo.estado_fisico == "CANSADO" %}3
+                        {% elif ultimo.estado_fisico == "DOLOR" %}2
+                        {% else %}1
+                        {% endif %}
+                    {% else %}0
+                    {% endif %}
+                {% endwith %}
+            {% endfor %}
+        ]
+    }]
+};
+
+new Chart(document.getElementById('grafico'), {
+    type: 'bar',
+    data: data
+});
+</script>
+
+<!-- 🧘 MODO BIENESTAR -->
+<div style="margin-top:30px;padding:20px;background:#e0f2fe;border-radius:10px;">
+    <h3>🧘 Modo Bienestar</h3>
+    <p id="mensaje"></p>
+    <button onclick="activarModo()">Activar ayuda</button>
+</div>
+
+<script>
+function activarModo() {
+    const mensajes = [
+        "Respirá profundo 4 segundos, retené 4, exhalá 4",
+        "Tomate un momento, estás a salvo",
+        "Hidratate y sentate unos minutos",
+        "Tu cuerpo está en alerta, pero va a pasar"
+    ];
+
+    document.getElementById("mensaje").innerText =
+        mensajes[Math.floor(Math.random() * mensajes.length)];
+
+    let audio = new Audio("https://www.soundhelix.com/examples/mp3/SoundHelix-Song-1.mp3");
+    audio.play();
+}
+</script>
+
+{% endblock %}
