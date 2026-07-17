@@ -1,9 +1,15 @@
+<<<<<<< HEAD
 # views.py
 
 from django.shortcuts import render, get_object_or_404, redirect
 from django.http import JsonResponse
 from django.contrib.auth.decorators import login_required
 from datetime import datetime
+=======
+from django.shortcuts import render, get_object_or_404, redirect
+from django.http import JsonResponse
+from django.contrib.auth.decorators import login_required
+>>>>>>> ec7ba975c91bc3df226f791dbc70ec198871315b
 
 from .models import Paciente, RegistroSalud, Recordatorio
 from .forms import PacienteForm
@@ -12,6 +18,7 @@ from .alerts import enviar_whatsapp
 from .clinical_engine import evaluar_paciente, evaluar_riesgo
 
 
+<<<<<<< HEAD
 # ======================================
 # 🏠 INICIO
 # ======================================
@@ -20,6 +27,50 @@ def lista_pacientes(request):
     pacientes = Paciente.objects.all()
     return render(request, "mi_app_salud/inicio.html", {
         "pacientes": pacientes
+=======
+# 🏠 LISTA PRINCIPAL (UCI)
+@login_required
+def lista_pacientes(request):
+    pacientes = list(Paciente.objects.all())
+
+    def prioridad(p):
+        ultimo = p.registros.order_by('-fecha').first()
+
+        if not ultimo:
+            return 2
+
+        estado = ultimo.estado_fisico.upper().strip()
+
+        if estado == "CRITICO":
+            return 0
+        if estado == "DOLOR":
+            return 1
+        return 2
+
+    pacientes.sort(key=prioridad)
+
+    return render(request, 'mi_app_salud/inicio.html', {
+        'pacientes': pacientes
+    })
+
+
+# ⚡ CAMBIAR ESTADO (UCI CORE)
+@login_required
+def cambiar_estado(request, paciente_id, estado):
+    paciente = get_object_or_404(Paciente, id=paciente_id)
+
+    estado = estado.upper().strip()
+
+    RegistroSalud.objects.create(
+        paciente=paciente,
+        estado_fisico=estado,
+        estado_emocional="NEUTRO"
+    )
+
+    return JsonResponse({
+        "ok": True,
+        "estado": estado
+>>>>>>> ec7ba975c91bc3df226f791dbc70ec198871315b
     })
 
 
@@ -187,22 +238,26 @@ def crear_paciente(request):
     })
 
 
+<<<<<<< HEAD
 # ======================================
 # 📝 RECORDATORIO
 # ======================================
+=======
+# 📝 RECORDATORIOS
+>>>>>>> ec7ba975c91bc3df226f791dbc70ec198871315b
 @login_required
 def crear_recordatorio(request, paciente_id):
     paciente = get_object_or_404(Paciente, id=paciente_id)
 
     if request.method == "POST":
         texto = request.POST.get("texto")
-
         if texto:
             Recordatorio.objects.create(
                 paciente=paciente,
                 texto=texto
             )
 
+<<<<<<< HEAD
     return redirect("inicio")
 @login_required
 def historial_paciente(request, paciente_id):
@@ -221,3 +276,21 @@ def historial_paciente(request, paciente_id):
         "registros": registros,
         "recordatorios": recordatorios,
     })
+=======
+    return redirect('inicio')
+from django.shortcuts import get_object_or_404, redirect
+from .models import Paciente, RegistroSalud
+
+def actualizar_estado(request, paciente_id):
+    paciente = get_object_or_404(Paciente, id=paciente_id)
+
+    if request.method == 'POST':
+        estado = request.POST.get('estado')
+
+        RegistroSalud.objects.create(
+            paciente=paciente,
+            estado=estado
+        )
+
+    return redirect('inicio')
+>>>>>>> ec7ba975c91bc3df226f791dbc70ec198871315b

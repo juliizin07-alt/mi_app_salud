@@ -35,11 +35,15 @@ class RegistroSalud(models.Model):
 
 
 class Recordatorio(models.Model):
+<<<<<<< HEAD
     paciente = models.ForeignKey(
         Paciente,
         on_delete=models.CASCADE,
         related_name="recordatorios"
     )
+=======
+    paciente = models.ForeignKey(Paciente, on_delete=models.CASCADE, related_name="recordatorios")
+>>>>>>> ec7ba975c91bc3df226f791dbc70ec198871315b
     texto = models.CharField(max_length=255)
     fecha = models.DateTimeField(auto_now_add=True)
     hecho = models.BooleanField(default=False)

@@ -141,5 +141,9 @@ CHANNEL_LAYERS = {
     "default": {
         "BACKEND": "channels.layers.InMemoryChannelLayer"
     }
+<<<<<<< HEAD
 }
 LOGIN_URL = '/admin/login/'
+=======
+}
+>>>>>>> ec7ba975c91bc3df226f791dbc70ec198871315b
