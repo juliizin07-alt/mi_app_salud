@@ -1,7 +1,7 @@
 from django.db import models
+from django.utils import timezone
 
 
-# 🧑‍⚕️ PACIENTE
 class Paciente(models.Model):
     nombre = models.CharField(max_length=100)
     apellido = models.CharField(max_length=100, blank=True, null=True)
@@ -11,7 +11,6 @@ class Paciente(models.Model):
         return f"{self.nombre} {self.apellido or ''}".strip()
 
 
-# 📋 REGISTRO DE SALUD
 class RegistroSalud(models.Model):
     ESTADOS = [
         ("OK", "OK"),
@@ -33,15 +32,17 @@ class RegistroSalud(models.Model):
 
     def __str__(self):
         return f"{self.paciente.nombre} - {self.estado_fisico}"
-    from django.db import models
-from django.utils import timezone
+
 
 class Recordatorio(models.Model):
-    paciente = models.ForeignKey(Paciente, on_delete=models.CASCADE, related_name="recordatorios")
+    paciente = models.ForeignKey(
+        Paciente,
+        on_delete=models.CASCADE,
+        related_name="recordatorios"
+    )
     texto = models.CharField(max_length=255)
     fecha = models.DateTimeField(auto_now_add=True)
     hecho = models.BooleanField(default=False)
 
     def __str__(self):
         return f"{self.paciente.nombre} - {self.texto}"
-    
