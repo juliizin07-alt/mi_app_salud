@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Historial</title>
+
+<style>
+body{
+font-family:Arial;
+background:#081a35;
+color:white;
+padding:20px;
+}
+
+.card{
+background:rgba(255,255,255,.08);
+padding:18px;
+border-radius:18px;
+margin-bottom:15px;
+}
+
+h1{
+color:#8be9ff;
+margin-bottom:20px;
+}
+
+a{
+color:#8be9ff;
+text-decoration:none;
+}
+</style>
+</head>
+<body>
+
+<h1>📋 {{ paciente.nombre }}</h1>
+
+<h2>🩺 Registros</h2>
+
+{% for r in registros %}
+<div class="card">
+<b>Estado:</b> {{ r.estado_fisico }}<br>
+<b>Emocional:</b> {{ r.estado_emocional }}<br>
+<b>Fecha:</b> {{ r.fecha }}
+</div>
+{% empty %}
+<p>Sin registros.</p>
+{% endfor %}
+
+<h2>⏰ Recordatorios</h2>
+
+{% for rec in recordatorios %}
+<div class="card">
+{{ rec.texto }}<br>
+{{ rec.fecha }}
+</div>
+{% empty %}
+<p>Sin recordatorios.</p>
+{% endfor %}
+
+<br>
+<a href="/">⬅ Volver</a>
+
+</body>
+</html>

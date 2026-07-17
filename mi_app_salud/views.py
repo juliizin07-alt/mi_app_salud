@@ -1,191 +1,195 @@
+# views.py
+
 from django.shortcuts import render, get_object_or_404, redirect
 from django.http import JsonResponse
 from django.contrib.auth.decorators import login_required
+from datetime import datetime
 
 from .models import Paciente, RegistroSalud, Recordatorio
 from .forms import PacienteForm
 from .clinical_engine import evaluar_paciente
 from .alerts import enviar_whatsapp
+from .clinical_engine import evaluar_paciente, evaluar_riesgo
 
 
-# =========================
-# 📡 API - LISTA PACIENTES
-# =========================
+# ======================================
+# 🏠 INICIO
+# ======================================
+@login_required
+def lista_pacientes(request):
+    pacientes = Paciente.objects.all()
+    return render(request, "mi_app_salud/inicio.html", {
+        "pacientes": pacientes
+    })
+
+
+# ======================================
+# 📡 API PACIENTES
+# ======================================
 def api_pacientes(request):
     pacientes = Paciente.objects.all()
+
     data = []
-
     for p in pacientes:
-        ultimo = p.registros.order_by('-fecha').first()
-        estado = ultimo.estado_fisico if ultimo else "SIN DATOS"
-
         data.append({
             "id": p.id,
-            "nombre": p.nombre,
-            "estado": estado
+            "nombre": p.nombre
         })
 
     return JsonResponse({"pacientes": data})
 
-
-# =========================
-# 🏠 LISTA PRINCIPAL (UCI)
-# =========================
-@login_required
-def lista_pacientes(request):
-    pacientes = Paciente.objects.all()
-
-    def prioridad(p):
-        ultimo = p.registros.order_by('-fecha').first()
-
-        if not ultimo:
-            return 2
-
-        estado = ultimo.estado_fisico.upper().strip()
-
-        if estado == "CRITICO":
-            return 0
-        elif estado == "DOLOR":
-            return 1
-        return 2
-
-    pacientes = sorted(pacientes, key=prioridad)
-
-    return render(request, 'mi_app_salud/inicio.html', {
-        'pacientes': pacientes
-    })
-
-
-# =========================
-# ⚡ API CAMBIAR ESTADO
-# =========================
-from django.shortcuts import get_object_or_404
-from django.http import JsonResponse
-
-from .models import Paciente, RegistroSalud
-from .clinical_engine import evaluar_paciente
-from .alerts import enviar_whatsapp
-
+# ======================================
+# ⚡ CAMBIAR ESTADO
+# ======================================
+from datetime import datetime
 
 def api_cambiar_estado(request, paciente_id):
-    # 🧍‍♂️ Obtener paciente
     paciente = get_object_or_404(Paciente, id=paciente_id)
 
-    # 📥 Datos desde frontend
-    estado = request.GET.get("estado")
+    estado = request.GET.get("estado", "BIEN").upper().strip()
     ubicacion = request.GET.get("ubicacion", "No disponible")
 
-    # 🚨 Validación
-    if not estado:
-        return JsonResponse({"error": "Falta estado"}, status=400)
+    # SIGNOS VITALES DESDE HTML
+    pulso = int(request.GET.get("pulso", 80))
+    temp = float(request.GET.get("temp", 36.5))
+    oxi = int(request.GET.get("oxi", 98))
 
-    estado = estado.upper().strip()
-
-    # 📝 Guardar registro
+    # GUARDAR REGISTRO
     RegistroSalud.objects.create(
         paciente=paciente,
         estado_fisico=estado,
         estado_emocional="NEUTRO"
     )
 
-    # 🧠 Evaluación clínica
     historial = RegistroSalud.objects.filter(paciente=paciente)
-    decision = evaluar_paciente(paciente, estado, historial)
+
+    # IA EXISTENTE
+    decision = evaluar_paciente(
+        paciente,
+        estado,
+        historial
+    )
 
     print("🧠 DECISIÓN:", decision)
 
-    # 🚨 ALERTA REAL (con ubicación)
-    if decision["nivel"] >= 3:
-        mensaje = f"""
-🚨 ALERTA MÉDICA
+    # IA CLÍNICA NUEVA
+    riesgo = evaluar_riesgo(pulso, temp, oxi)
 
-Paciente: {paciente.nombre}
-Estado: {estado}
+    print("🏥 RIESGO:", riesgo)
+
+    # ALERTA
+    if decision["nivel"] >= 3 or riesgo == "CRITICO":
+
+        hora = datetime.now().strftime("%H:%M")
+
+        mensaje = f"""
+🚨 ALERTA MÉDICA URGENTE
+
+👤 Paciente: {paciente.nombre}
+📌 Estado: {estado}
+
+❤️ Pulso: {pulso} BPM
+🌡️ Temp: {temp} °C
+🩸 Oxígeno: {oxi}%
 
 📍 Ubicación:
 {ubicacion}
 
-⚠️ Requiere atención inmediata
+🕒 Hora: {hora}
+
+⚠️ Atención inmediata requerida.
+
+Jarvice Health AI
 """
+
         enviar_whatsapp(mensaje)
-        print("📲 WhatsApp enviado")
+        print("📲 WhatsApp principal enviado")
 
     return JsonResponse({
         "ok": True,
         "paciente": paciente.nombre,
         "estado": estado,
         "ubicacion": ubicacion,
-        "decision": decision
+        "decision": decision,
+        "pulso": pulso,
+        "temp": temp,
+        "oxi": oxi,
+        "riesgo": riesgo
     })
-    if not estado:
-        return JsonResponse({"error": "Falta estado"})
+# ======================================
+# 📲 SEGUNDO CONTACTO
+# ======================================
+def segundo_contacto(request):
 
-    estado = estado.upper().strip()
+    mensaje = """
+🚨 ESCALAMIENTO NIVEL 2
 
-    # guardar registro
-    RegistroSalud.objects.create(
-        paciente=paciente,
-        estado_fisico=estado,
-        estado_emocional="NEUTRO"
-    )
+El contacto principal no respondió.
 
-    # historial
-    historial = RegistroSalud.objects.filter(paciente=paciente)
-
-    # IA / lógica clínica
-    decision = evaluar_paciente(paciente, estado, historial)
-
-    print("🧠 DECISIÓN:", decision)
-
-    # 🚨 ESCALAMIENTO PROFESIONAL
-    if decision["nivel"] == 4:
-        mensaje = f"""
-🚨 EMERGENCIA
-Paciente: {paciente.nombre}
-Estado: {estado}
-
-⚠️ Requiere atención inmediata
-📍 Ubicación: pendiente integración GPS
+Se requiere revisar al paciente.
 """
-        enviar_whatsapp(mensaje)
 
-    elif decision["nivel"] == 3:
-        mensaje = f"""
-🔴 CRÍTICO
-Paciente: {paciente.nombre}
-Estado: {estado}
+    enviar_whatsapp(mensaje)
 
-⚠️ Revisar urgente
-"""
-        enviar_whatsapp(mensaje)
+    print("📲 Segundo contacto notificado")
 
     return JsonResponse({
         "ok": True,
-        "paciente": paciente.nombre,
-        "estado": estado,
-        "decision": decision
+        "mensaje": "Segundo contacto notificado"
     })
 
 
-# =========================
-# 🧑‍⚕️ CREAR PACIENTE
-# =========================
+# ======================================
+# 🚑 TERCER CONTACTO
+# ======================================
+def tercer_contacto(request):
+
+    mensaje = """
+🚨 ESCALAMIENTO NIVEL 3
+
+Ningún contacto respondió.
+
+Se recomienda llamar emergencias médicas ahora.
+"""
+
+    enviar_whatsapp(mensaje)
+
+    print("🚑 Tercer contacto notificado")
+
+    return JsonResponse({
+        "ok": True,
+        "mensaje": "Tercer contacto notificado"
+    })
+mensaje = """
+🚨 ESCALAMIENTO NIVEL 3
+
+Ningún contacto respondió.
+
+🚑 Se recomienda llamar emergencias médicas ahora.
+📍 Última ubicación disponible.
+🧠 Riesgo crítico detectado.
+"""
+
+
+# ======================================
+# ➕ CREAR PACIENTE
+# ======================================
 @login_required
 def crear_paciente(request):
     form = PacienteForm(request.POST or None)
 
     if form.is_valid():
         form.save()
-        return redirect('inicio')
+        return redirect("inicio")
 
-    return render(request, 'mi_app_salud/crear_paciente.html', {
-        'form': form
+    return render(request, "mi_app_salud/crear_paciente.html", {
+        "form": form
     })
 
 
-# =========================
-# 📝 RECORDATORIOS
-# =========================
+# ======================================
+# 📝 RECORDATORIO
+# ======================================
 @login_required
 def crear_recordatorio(request, paciente_id):
     paciente = get_object_or_404(Paciente, id=paciente_id)
@@ -199,37 +203,21 @@ def crear_recordatorio(request, paciente_id):
                 texto=texto
             )
 
-    return redirect('inicio')
-
-
-# =========================
-# ⚡ ACTUALIZAR ESTADO WEB
-# =========================
+    return redirect("inicio")
 @login_required
-def actualizar_estado(request, paciente_id):
+def historial_paciente(request, paciente_id):
     paciente = get_object_or_404(Paciente, id=paciente_id)
-    estado = request.GET.get('estado')
 
-    if not estado:
-        return redirect('inicio')
+    registros = RegistroSalud.objects.filter(
+        paciente=paciente
+    ).order_by('-fecha')
 
-    estado = estado.upper().strip()
+    recordatorios = Recordatorio.objects.filter(
+        paciente=paciente
+    ).order_by('-fecha')
 
-    RegistroSalud.objects.create(
-        paciente=paciente,
-        estado_fisico=estado,
-        estado_emocional="NEUTRO"
-    )
-
-    historial = RegistroSalud.objects.filter(paciente=paciente)
-
-    decision = evaluar_paciente(paciente, estado, historial)
-
-    print("🧠 DECISIÓN:", decision)
-
-    if decision["nivel"] >= 3:
-        enviar_whatsapp(
-            f"🚨 ALERTA UCI\nPaciente: {paciente.nombre}\nEstado: {estado}"
-        )
-
-    return redirect('inicio')
+    return render(request, "mi_app_salud/historial.html", {
+        "paciente": paciente,
+        "registros": registros,
+        "recordatorios": recordatorios,
+    })
