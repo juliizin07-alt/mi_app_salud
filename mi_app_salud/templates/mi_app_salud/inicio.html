@@ -1,6 +1,7 @@
 <!DOCTYPE html>
 <html lang="es">
 <head>
+<<<<<<< HEAD
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Jarvice Health AI</title>
@@ -262,9 +263,82 @@ background:rgba(0,255,150,.08);
 
 </style>
 </style>
+=======
+    <meta charset="UTF-8">
+    <title>UCI - Panel de Pacientes</title>
+
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #0a1f44, #163d7a);
+            margin: 0;
+            color: white;
+        }
+
+        h1 {
+            text-align: center;
+            padding: 20px;
+        }
+
+        .container {
+            width: 90%;
+            margin: auto;
+            padding: 20px;
+        }
+
+        .card {% with ultimo=p.registrosalud_set.last %}
+    {% if ultimo %}
+        <p>
+            Estado actual:
+            {% if ultimo.estado == "OK" %}
+                🟢 OK
+            {% elif ultimo.estado == "DOLOR" %}
+                🟡 Dolor
+            {% elif ultimo.estado == "CRITICO" %}
+                🔴 CRÍTICO
+            {% endif %}
+        </p>
+    {% endif %}
+{% endwith %} {
+            background: rgba(255, 255, 255, 0.08);
+            backdrop-filter: blur(10px);
+            border-radius: 15px;
+            padding: 20px;
+            margin-bottom: 20px;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.3);
+        }
+
+        button {
+            border: none;
+            padding: 8px 14px;
+            border-radius: 8px;
+            margin-right: 5px;
+            cursor: pointer;
+            font-weight: bold;
+            transition: 0.3s;
+        }
+
+        .green { background: #2ecc71; color: white; }
+        .yellow { background: #f1c40f; color: black; }
+        .red { background: #e74c3c; color: white; }
+
+        button:hover {
+            transform: scale(1.05);
+        }
+
+        .registros {
+            max-height: 150px;
+            overflow-y: auto;
+            margin-top: 10px;
+            font-size: 14px;
+            opacity: 0.9;
+        }
+    </style>
+>>>>>>> ec7ba975c91bc3df226f791dbc70ec198871315b
 </head>
 <body id="bodyApp">
 
+<<<<<<< HEAD
 <header class="topbar">
 <div class="logo">
     <span class="logo-icon">🧬</span>
@@ -299,7 +373,45 @@ background:rgba(0,255,150,.08);
         <div class="icono">🌡️</div>
         <div class="dato" id="temp">36.5 °C</div>
         <div class="label">Temperatura</div>
+=======
+<body>
+
+<h1>🫀 PANEL UCI - MONITOREO DE PACIENTES</h1>
+
+<div class="container">
+
+    {% for p in pacientes %}
+    <div class="card">
+        <h3>{{ p.nombre }}</h3>
+
+        <button class="green" onclick="setEstado({{ p.id }}, 'OK')">OK</button>
+        <button class="yellow" onclick="setEstado({{ p.id }}, 'DOLOR')">Dolor</button>
+        <button class="red" onclick="setEstado({{ p.id }}, 'CRITICO')">Crítico</button>
+
+        <!-- REGISTROS -->
+        <div class="registros">
+            {% for r in p.registrosalud_set.all %}
+                <p>• {{ r.estado }} - {{ r.fecha }}</p>
+            {% empty %}
+                <p>No hay registros</p>
+            {% endfor %}
+            
+        </div>
+
+        <!-- RECORDATORIOS -->
+        <div style="margin-top:10px;">
+            <strong>📝 Recordatorios:</strong>
+
+            {% for r in p.recordatorios.all %}
+                <div>📝 {{ r.texto }}</div>
+            {% empty %}
+                <small>No hay recordatorios</small>
+            {% endfor %}
+        </div>
+
+>>>>>>> ec7ba975c91bc3df226f791dbc70ec198871315b
     </div>
+    {% endfor %}
 
     <div class="minicard">
         <div class="icono">🩸</div>
@@ -334,6 +446,7 @@ background:rgba(0,255,150,.08);
 
 </div>
 
+<<<<<<< HEAD
     <div class="minicard">
         <div class="icono">📍</div>
         <div class="dato" id="gps">Activo</div>
@@ -356,6 +469,19 @@ background:rgba(0,255,150,.08);
     <div class="dato" id="resp">16 rpm</div>
     <div class="label">Respiración</div>
 </div>
+=======
+<script>
+function setEstado(id, estado) {
+    window.location.href = `/actualizar-estado/${id}/?estado=${estado}`;
+}
+</script>
+
+// Auto refresh
+setInterval(function() {
+    location.reload();
+}, 5000);
+</script>
+>>>>>>> ec7ba975c91bc3df226f791dbc70ec198871315b
 
 <div class="minicard">
     <div class="icono">🩺</div>
