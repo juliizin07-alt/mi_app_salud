@@ -1,0 +1,568 @@
+
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<title>Jarvice Health AI - Login</title>
+
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700;800&display=swap" rel="stylesheet">
+
+
+<style>
+
+
+*{
+
+margin:0;
+padding:0;
+box-sizing:border-box;
+
+}
+
+
+body{
+
+
+height:100vh;
+
+display:flex;
+
+justify-content:center;
+
+align-items:center;
+
+
+font-family:'Inter',sans-serif;
+
+
+background:
+
+radial-gradient(circle at top,#123f72 0%,#08182d 45%,#040b16 100%);
+
+
+color:white;
+
+
+}
+
+
+
+/* CONTENEDOR */
+
+
+.login-container{
+
+
+width:95%;
+
+max-width:420px;
+
+
+}
+
+
+
+/* LOGO */
+
+
+.logo{
+
+
+text-align:center;
+
+margin-bottom:30px;
+
+
+}
+
+
+
+.logo-icon{
+
+
+font-size:70px;
+
+animation:flotar 3s infinite ease-in-out;
+
+
+}
+
+
+
+.logo h1{
+
+
+font-size:32px;
+
+font-weight:800;
+
+color:#8be9ff;
+
+
+}
+
+
+
+.logo p{
+
+
+margin-top:10px;
+
+color:#bfe9ff;
+
+font-size:14px;
+
+
+}
+
+
+
+
+
+@keyframes flotar{
+
+
+0%,100%{
+
+transform:translateY(0);
+
+}
+
+
+50%{
+
+transform:translateY(-10px);
+
+}
+
+
+}
+
+
+
+
+
+
+/* TARJETA */
+
+
+.login-card{
+
+
+background:
+
+rgba(255,255,255,.08);
+
+
+backdrop-filter:blur(20px);
+
+
+border-radius:25px;
+
+
+padding:35px;
+
+
+border:
+
+1px solid rgba(139,233,255,.25);
+
+
+
+box-shadow:
+
+0 0 40px rgba(0,212,255,.15);
+
+
+
+}
+
+
+
+
+
+.input-group{
+
+
+margin-bottom:20px;
+
+
+}
+
+
+
+.input-group label{
+
+
+display:block;
+
+margin-bottom:8px;
+
+font-size:14px;
+
+color:#bfe9ff;
+
+
+}
+
+
+
+.input-group input{
+
+
+width:100%;
+
+
+padding:15px;
+
+
+border-radius:15px;
+
+
+border:none;
+
+
+outline:none;
+
+
+background:
+
+rgba(0,0,0,.35);
+
+
+color:white;
+
+
+font-size:15px;
+
+
+}
+
+
+
+.input-group input:focus{
+
+
+box-shadow:
+
+0 0 15px #00d4ff;
+
+
+}
+
+
+
+
+
+/* BOTON */
+
+
+.btn-login{
+
+
+width:100%;
+
+
+padding:16px;
+
+
+border:none;
+
+
+border-radius:18px;
+
+
+cursor:pointer;
+
+
+font-size:16px;
+
+
+font-weight:800;
+
+
+color:white;
+
+
+background:
+
+
+linear-gradient(
+135deg,
+#00d4ff,
+#0077ff
+);
+
+
+
+transition:.3s;
+
+
+}
+
+
+
+.btn-login:hover{
+
+
+transform:translateY(-3px);
+
+
+box-shadow:
+
+0 10px 30px rgba(0,212,255,.4);
+
+
+}
+
+
+
+
+
+.footer{
+
+
+margin-top:25px;
+
+
+text-align:center;
+
+
+font-size:12px;
+
+
+color:#8be9ff;
+
+
+opacity:.8;
+
+
+}
+
+
+
+/* ESTADO */
+
+
+.status{
+
+
+margin-top:20px;
+
+text-align:center;
+
+
+color:#7dffb5;
+
+
+font-weight:700;
+
+
+}
+.links-login{
+
+    margin-top:25px;
+
+    display:flex;
+
+    flex-direction:column;
+
+    gap:15px;
+
+    text-align:center;
+
+}
+
+
+.links-login a{
+
+    color:#8be9ff;
+
+    text-decoration:none;
+
+    font-size:14px;
+
+    transition:.3s;
+
+}
+
+
+.links-login a:hover{
+
+    color:#00ff99;
+
+    transform:scale(1.05);
+
+}
+
+
+
+</style>
+
+
+</head>
+
+
+
+<body>
+
+
+
+
+<div class="login-container">
+
+
+
+
+
+<div class="logo">
+
+
+<div class="logo-icon">
+🧬
+</div>
+
+
+<h1>
+JARVICE HEALTH AI
+</h1>
+
+
+<p>
+Sistema inteligente de monitoreo humano
+</p>
+
+
+</div>
+
+
+
+
+
+
+<div class="login-card">
+
+
+<form method="POST">
+
+
+{% csrf_token %}
+
+
+
+<div class="input-group">
+
+
+<label>
+👤 Usuario
+</label>
+
+
+<input 
+type="text"
+name="username"
+placeholder="Ingrese usuario"
+required>
+
+
+</div>
+
+
+
+
+
+<div class="input-group">
+
+
+<label>
+🔒 Contraseña
+</label>
+
+
+<input 
+type="password"
+name="password"
+placeholder="Ingrese contraseña"
+required>
+
+
+</div>
+
+
+
+
+
+
+<button class="btn-login" type="submit">
+
+
+🚀 INGRESAR A JARVICE
+
+
+</button>
+
+<div class="links-login">
+
+<a href="/password-reset/">
+🔑 ¿Olvidaste tu contraseña?
+</a>
+
+
+<a href="/registro/">
+👤 Crear usuario nuevo
+</a>
+
+</div>
+
+
+
+</form>
+
+
+
+<div class="status">
+
+🟢 Sistema protegido
+
+</div>
+
+
+
+
+</div>
+
+
+
+
+
+
+<div class="footer">
+
+
+© Jarvice Health AI<br>
+
+Inteligencia Artificial aplicada a salud
+
+
+</div>
+
+
+
+
+
+</div>
+
+
+
+</body>
+
+</html>
+

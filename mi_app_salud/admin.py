@@ -1,5 +1,10 @@
 from django.contrib import admin
-from .models import Paciente, RegistroSalud, Recordatorio
+from .models import (
+    Paciente,
+    RegistroSalud,
+    Recordatorio,
+    PerfilUsuario
+)
 
 
 # 🧑‍⚕️ PACIENTE
@@ -24,3 +29,26 @@ class RecordatorioAdmin(admin.ModelAdmin):
     list_display = ("paciente", "texto", "hecho", "fecha")
     list_filter = ("hecho",)
     search_fields = ("texto",)
+    # 👥 PERFILES DE USUARIOS JARVICE
+
+@admin.register(PerfilUsuario)
+class PerfilUsuarioAdmin(admin.ModelAdmin):
+
+    list_display = (
+        "usuario",
+        "rol",
+        "matricula",
+        "especialidad",
+        "telefono"
+    )
+
+    list_filter = (
+        "rol",
+    )
+
+    search_fields = (
+        "usuario__username",
+        "nombre",
+        "apellido",
+        "matricula"
+    )

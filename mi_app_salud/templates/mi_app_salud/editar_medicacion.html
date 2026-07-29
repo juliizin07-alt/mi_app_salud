@@ -1,0 +1,145 @@
+{% extends "mi_app_salud/base.html" %}
+
+{% block contenido %}
+
+<div class="contenedor">
+
+    <h1>✏ Editar medicación</h1>
+
+    <form method="POST">
+
+        {% csrf_token %}
+
+        <div class="campo">
+            <label>Paciente</label>
+
+            <select name="paciente" required>
+
+                {% for paciente in pacientes %}
+
+                    <option value="{{ paciente.id }}"
+                    {% if paciente.id == medicamento.paciente.id %}
+                        selected
+                    {% endif %}
+                    >
+                        {{ paciente.nombre }} {{ paciente.apellido }}
+                    </option>
+
+                {% endfor %}
+
+            </select>
+        </div>
+
+        <div class="campo">
+            <label>Medicamento</label>
+
+            <input
+                type="text"
+                name="nombre"
+                value="{{ medicamento.nombre }}"
+                required
+            >
+        </div>
+
+        <div class="campo">
+            <label>Dosis</label>
+
+            <input
+                type="text"
+                name="dosis"
+                value="{{ medicamento.dosis }}"
+                required
+            >
+        </div>
+
+        <div class="campo">
+            <label>Horario</label>
+
+            <input
+                type="time"
+                name="horario"
+                value="{{ medicamento.horario|time:'H:i' }}"
+                required
+            >
+        </div>
+
+        <div class="botones">
+
+            <button type="submit" class="guardar">
+                💾 Guardar cambios
+            </button>
+
+            <a href="{% url 'medicacion' %}" class="volver">
+                ↩ Cancelar
+            </a>
+
+        </div>
+
+    </form>
+
+</div>
+
+<style>
+
+.contenedor{
+    max-width:700px;
+    margin:40px auto;
+    background:rgba(255,255,255,.05);
+    padding:30px;
+    border-radius:20px;
+    color:white;
+    border:1px solid rgba(0,200,255,.2);
+}
+
+h1{
+    color:#69d8ff;
+    margin-bottom:25px;
+}
+
+.campo{
+    margin-bottom:20px;
+}
+
+label{
+    display:block;
+    margin-bottom:8px;
+    font-weight:bold;
+}
+
+input,
+select{
+    width:100%;
+    padding:12px;
+    border-radius:10px;
+    border:none;
+    font-size:15px;
+}
+
+.botones{
+    margin-top:30px;
+    display:flex;
+    gap:15px;
+}
+
+.guardar{
+    background:#00a86b;
+    color:white;
+    border:none;
+    padding:12px 20px;
+    border-radius:10px;
+    cursor:pointer;
+    font-weight:bold;
+}
+
+.volver{
+    background:#555;
+    color:white;
+    padding:12px 20px;
+    border-radius:10px;
+    text-decoration:none;
+    font-weight:bold;
+}
+
+</style>
+
+{% endblock %}

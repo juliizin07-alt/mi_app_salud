@@ -1,0 +1,117 @@
+{% extends "mi_app_salud/base.html" %}
+
+{% block contenido %}
+
+<div class="container mt-5">
+
+    <h1>💊 Nuevo Medicamento</h1>
+
+    <div class="card p-4 mt-4">
+
+
+        <form method="POST">
+
+            {% csrf_token %}
+
+
+            <label>
+                Paciente
+            </label>
+
+
+            <select 
+                name="paciente" 
+                class="form-control"
+                required
+            >
+
+                {% for paciente in pacientes %}
+
+                <option value="{{ paciente.id }}">
+                    {{ paciente.nombre }} {{ paciente.apellido }}
+                </option>
+
+                {% endfor %}
+
+            </select>
+
+
+
+
+            <label class="mt-3">
+                Medicamento
+            </label>
+
+
+            <input 
+                type="text"
+                name="nombre"
+                class="form-control"
+                placeholder="Ej: Losartan"
+                required
+            >
+
+
+
+
+            <label class="mt-3">
+                Dosis
+            </label>
+
+
+            <input 
+                type="text"
+                name="dosis"
+                class="form-control"
+                placeholder="Ej: 50 mg"
+                required
+            >
+
+
+
+
+            <label class="mt-3">
+                Horario
+            </label>
+
+
+            <input 
+                type="time"
+                name="horario"
+                class="form-control"
+                required
+            >
+
+
+
+
+            <br>
+
+
+            <button class="btn btn-success">
+
+                💾 Guardar medicamento
+
+            </button>
+
+
+
+            <a 
+                href="{% url 'medicacion' %}" 
+                class="btn btn-secondary"
+            >
+
+                Cancelar
+
+            </a>
+
+
+        </form>
+
+
+    </div>
+
+</div>
+
+
+{% endblock %}
