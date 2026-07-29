@@ -1,0 +1,1208 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<<<<<<< HEAD
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Jarvice Health AI</title>
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800&display=swap" rel="stylesheet">
+
+<style>
+/* =========================
+RESET
+========================= */
+*{
+margin:0;
+padding:0;
+box-sizing:border-box;
+scroll-behavior:smooth;
+}
+
+body{
+font-family:'Inter', sans-serif;
+background:radial-gradient(circle at top,#123f72 0%,#08182d 35%,#040b16 100%);
+color:white;
+min-height:100vh;
+text-align:center;
+padding:20px 0 80px;
+overflow-x:hidden;
+}
+
+/* =========================
+HEADER
+========================= */
+.topbar{
+display:flex;
+justify-content:space-between;
+align-items:center;
+padding:18px 22px;
+max-width:540px;
+margin:auto;
+}
+
+.logo{
+display:flex;
+flex-direction:column;
+align-items:center;
+}
+
+.logo-icon{
+font-size:32px;
+animation:pulseLogo 2s infinite;
+}
+
+.logo-text{
+font-size:22px;
+font-weight:800;
+color:#a9efff;
+}
+
+.status{
+font-size:12px;
+padding:6px 10px;
+border-radius:20px;
+background:rgba(0,255,120,.15);
+color:#8dffbe;
+}
+
+/* =========================
+CARD
+========================= */
+.container{
+width:92%;
+max-width:540px;
+margin:auto;
+}
+
+.card{
+background:rgba(255,255,255,.08);
+border:1px solid rgba(255,255,255,.12);
+border-radius:28px;
+padding:24px;
+backdrop-filter:blur(18px);
+box-shadow:0 20px 45px rgba(0,0,0,.45);
+animation:fadeUp .6s ease;
+}
+
+@keyframes fadeUp{
+from{opacity:0;transform:translateY(20px);}
+to{opacity:1;transform:translateY(0);}
+}
+
+/* =========================
+ECG
+========================= */
+.ecg-container{
+margin:18px 0;
+height:90px;
+background:#050b12;
+border-radius:16px;
+border:1px solid rgba(0,255,150,.12);
+box-shadow:0 0 18px rgba(0,255,150,.08);
+}
+
+#ecg{
+width:100%;
+height:100%;
+}
+
+/* =========================
+DASHBOARD
+========================= */
+.dashboard{
+display:grid;
+grid-template-columns:1fr 1fr;
+gap:12px;
+margin-bottom:18px;
+}
+
+.minicard{
+background:rgba(255,255,255,.06);
+border-radius:16px;
+padding:14px;
+}
+
+.dato{
+font-size:18px;
+font-weight:800;
+}
+
+.label{
+font-size:12px;
+opacity:.8;
+}
+
+/* =========================
+BOTONES
+========================= */
+.grid{
+display:grid;
+gap:12px;
+}
+
+button{
+width:100%;
+border:none;
+border-radius:18px;
+padding:16px;
+font-size:16px;
+font-weight:800;
+cursor:pointer;
+transition:.2s;
+}
+
+button:hover{
+transform:translateY(-2px);
+box-shadow:0 14px 26px rgba(0,0,0,.3);
+}
+
+/* colores */
+.verde{background:#13ce66;color:white;}
+.amarillo{background:#ffd54a;color:#111;}
+.rojo{background:#ff4d4d;color:white;}
+.azul{background:#25b7ff;color:white;}
+.violeta{background:#8b5cf6;color:white;}
+.cancelar{background:#ff3f5e;color:white;}
+
+/* =========================
+NAV BAR PRO
+========================= */
+.bottomnav{
+position:fixed;
+bottom:15px;
+left:50%;
+transform:translateX(-50%);
+width:92%;
+max-width:540px;
+background:rgba(255,255,255,.06);
+border-radius:22px;
+padding:10px;
+display:flex;
+justify-content:space-around;
+backdrop-filter:blur(20px);
+}
+
+.navitem{
+display:flex;
+flex-direction:column;
+align-items:center;
+font-size:11px;
+color:#bfe9ff;
+text-decoration:none;
+gap:3px;
+}
+
+.icon{
+width:20px;
+height:20px;
+fill:currentColor;
+}
+.ok{
+border:1px solid rgba(0,255,150,.4);
+}
+
+.warning{
+border:1px solid rgba(255,210,0,.6);
+box-shadow:0 0 18px rgba(255,210,0,.18);
+}
+
+.alerta{
+border:1px solid rgba(255,0,0,.7);
+box-shadow:0 0 25px rgba(255,0,0,.28);
+animation:pulseDanger 1s infinite;
+}
+
+@keyframes pulseDanger{
+0%{transform:scale(1);}
+50%{transform:scale(1.03);}
+100%{transform:scale(1);}
+}
+
+/* =========================
+ANIMACIONES
+========================= */
+@keyframes pulseLogo{
+0%{transform:scale(1);}
+50%{transform:scale(1.1);}
+100%{transform:scale(1);}
+}
+
+.corazon{
+display:inline-block;
+animation:latido 1s infinite;
+}
+
+@keyframes latido{
+0%{transform:scale(1);}
+25%{transform:scale(1.2);}
+50%{transform:scale(1);}
+}
+<style>
+.minicard{
+transition:all .3s ease;
+}
+
+.minicard.alerta{
+background:rgba(255,0,0,.15);
+border:1px solid rgba(255,0,0,.4);
+box-shadow:0 0 20px rgba(255,0,0,.25);
+transform:scale(1.03);
+}
+
+.minicard.warning{
+background:rgba(255,200,0,.12);
+border:1px solid rgba(255,200,0,.35);
+}
+
+.minicard.ok{
+background:rgba(0,255,150,.08);
+}
+
+</style>
+</style>
+=======
+    <meta charset="UTF-8">
+    <title>UCI - Panel de Pacientes</title>
+
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #0a1f44, #163d7a);
+            margin: 0;
+            color: white;
+        }
+
+        h1 {
+            text-align: center;
+            padding: 20px;
+        }
+
+        .container {
+            width: 90%;
+            margin: auto;
+            padding: 20px;
+        }
+
+        .card {% with ultimo=p.registrosalud_set.last %}
+    {% if ultimo %}
+        <p>
+            Estado actual:
+            {% if ultimo.estado == "OK" %}
+                🟢 OK
+            {% elif ultimo.estado == "DOLOR" %}
+                🟡 Dolor
+            {% elif ultimo.estado == "CRITICO" %}
+                🔴 CRÍTICO
+            {% endif %}
+        </p>
+    {% endif %}
+{% endwith %} {
+            background: rgba(255, 255, 255, 0.08);
+            backdrop-filter: blur(10px);
+            border-radius: 15px;
+            padding: 20px;
+            margin-bottom: 20px;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.3);
+        }
+
+        button {
+            border: none;
+            padding: 8px 14px;
+            border-radius: 8px;
+            margin-right: 5px;
+            cursor: pointer;
+            font-weight: bold;
+            transition: 0.3s;
+        }
+
+        .green { background: #2ecc71; color: white; }
+        .yellow { background: #f1c40f; color: black; }
+        .red { background: #e74c3c; color: white; }
+
+        button:hover {
+            transform: scale(1.05);
+        }
+
+        .registros {
+            max-height: 150px;
+            overflow-y: auto;
+            margin-top: 10px;
+            font-size: 14px;
+            opacity: 0.9;
+        }
+    </style>
+>>>>>>> ec7ba975c91bc3df226f791dbc70ec198871315b
+</head>
+<body id="bodyApp">
+
+<<<<<<< HEAD
+<header class="topbar">
+<div class="logo">
+    <span class="logo-icon">🧬</span>
+    <span class="logo-text">JARVICE</span>
+</div>
+<div class="status">● Online</div>
+</header>
+
+<div class="container">
+
+<!-- ECG ÚNICO -->
+<div class="ecg-container">
+<canvas id="ecg"></canvas>
+</div>
+
+<!-- CARD -->
+<div class="dashboard">
+
+    <div class="minicard">
+    <div class="icono">🧠</div>
+    <div class="dato" id="scoreIA">0</div>
+    <div class="label">NEWS2 IA</div>
+</div>
+
+    <div class="minicard">
+        <div class="icono corazon">❤️</div>
+        <div class="dato" id="pulso">78 BPM</div>
+        <div class="label">Pulso</div>
+    </div>
+
+    <div class="minicard">
+        <div class="icono">🌡️</div>
+        <div class="dato" id="temp">36.5 °C</div>
+        <div class="label">Temperatura</div>
+=======
+<body>
+
+<h1>🫀 PANEL UCI - MONITOREO DE PACIENTES</h1>
+
+<div class="container">
+
+    {% for p in pacientes %}
+    <div class="card">
+        <h3>{{ p.nombre }}</h3>
+
+        <button class="green" onclick="setEstado({{ p.id }}, 'OK')">OK</button>
+        <button class="yellow" onclick="setEstado({{ p.id }}, 'DOLOR')">Dolor</button>
+        <button class="red" onclick="setEstado({{ p.id }}, 'CRITICO')">Crítico</button>
+
+        <!-- REGISTROS -->
+        <div class="registros">
+            {% for r in p.registrosalud_set.all %}
+                <p>• {{ r.estado }} - {{ r.fecha }}</p>
+            {% empty %}
+                <p>No hay registros</p>
+            {% endfor %}
+            
+        </div>
+
+        <!-- RECORDATORIOS -->
+        <div style="margin-top:10px;">
+            <strong>📝 Recordatorios:</strong>
+
+            {% for r in p.recordatorios.all %}
+                <div>📝 {{ r.texto }}</div>
+            {% empty %}
+                <small>No hay recordatorios</small>
+            {% endfor %}
+        </div>
+
+>>>>>>> ec7ba975c91bc3df226f791dbc70ec198871315b
+    </div>
+    {% endfor %}
+
+    <div class="minicard">
+        <div class="icono">🩸</div>
+        <div class="dato" id="oxi">98%</div>
+        <div class="label">Oxígeno</div>
+    </div>
+    <div class="dashboard" id="organosPanel">
+
+<div class="minicard">
+    <div class="icono">❤️</div>
+    <div class="dato" id="orgCorazon">🟢</div>
+    <div class="label">Cardíaco</div>
+</div>
+
+<div class="minicard">
+    <div class="icono">🫁</div>
+    <div class="dato" id="orgResp">🟢</div>
+    <div class="label">Resp.</div>
+</div>
+
+<div class="minicard">
+    <div class="icono">🩸</div>
+    <div class="dato" id="orgPerf">🟢</div>
+    <div class="label">Perfusión</div>
+</div>
+
+<div class="minicard">
+    <div class="icono">🌡️</div>
+    <div class="dato" id="orgInf">🟢</div>
+    <div class="label">Infección</div>
+</div>
+
+</div>
+
+<<<<<<< HEAD
+    <div class="minicard">
+        <div class="icono">📍</div>
+        <div class="dato" id="gps">Activo</div>
+        <div class="label">GPS</div>
+    </div>
+    <div class="minicard">
+    <div class="icono">🧠</div>
+    <div class="dato" id="iaEstado">ESTABLE</div>
+    <div class="label">IA Clínica</div>
+    </div>
+    </div>
+    <div class="grid">
+
+<button class="verde">🟢 Bien</button>
+<button class="amarillo">🟡 Dolor</button>
+<button class="rojo">🔴 Emergencia</button>
+<button class="azul">🎤 Voz</button>
+<div class="minicard">
+    <div class="icono">🫁</div>
+    <div class="dato" id="resp">16 rpm</div>
+    <div class="label">Respiración</div>
+</div>
+=======
+<script>
+function setEstado(id, estado) {
+    window.location.href = `/actualizar-estado/${id}/?estado=${estado}`;
+}
+</script>
+
+// Auto refresh
+setInterval(function() {
+    location.reload();
+}, 5000);
+</script>
+>>>>>>> ec7ba975c91bc3df226f791dbc70ec198871315b
+
+<div class="minicard">
+    <div class="icono">🩺</div>
+    <div class="dato" id="presion">120/80</div>
+    <div class="label">Presión</div>
+</div>
+
+</div>
+
+<div id="texto"></div>
+
+</div>
+</div>
+<script>
+<script>
+const canvas = document.getElementById("ecg");
+const ctx = canvas.getContext("2d");
+
+canvas.width = canvas.offsetWidth;
+canvas.height = canvas.offsetHeight;
+
+let offset = 0;
+let pulsoECG = 78;
+let colorECG = "#00ff9d";
+
+function grid() {
+    ctx.strokeStyle = "rgba(0,255,150,0.08)";
+    ctx.lineWidth = 1;
+
+    for(let x=0; x<canvas.width; x+=20){
+        ctx.beginPath();
+        ctx.moveTo(x,0);
+        ctx.lineTo(x,canvas.height);
+        ctx.stroke();
+    }
+
+    for(let y=0; y<canvas.height; y+=20){
+        ctx.beginPath();
+        ctx.moveTo(0,y);
+        ctx.lineTo(canvas.width,y);
+        ctx.stroke();
+    }
+}
+
+function onda(x, base){
+
+    let ciclo = (x + offset) % 140;
+
+    if(ciclo < 15) return base;
+    if(ciclo < 25) return base - 8;
+    if(ciclo < 35) return base;
+    if(ciclo < 42) return base + 12;
+    if(ciclo < 46) return base - 42;
+    if(ciclo < 50) return base + 18;
+    if(ciclo < 65) return base;
+    if(ciclo < 90) return base - Math.sin(ciclo*0.2)*10;
+
+    return base;
+}
+
+function drawECG(){
+
+    ctx.fillStyle = "#071019";
+    ctx.fillRect(0,0,canvas.width,canvas.height);
+
+    grid();
+
+    let base = canvas.height / 2;
+
+    ctx.beginPath();
+    ctx.lineWidth = 2.5;
+    ctx.strokeStyle = colorECG;
+    ctx.shadowBlur = 14;
+    ctx.shadowColor = colorECG;
+
+    for(let x=0; x<canvas.width; x++){
+        let y = onda(x, base);
+        if(x===0){
+            ctx.moveTo(x,y);
+        }else{
+            ctx.lineTo(x,y);
+        }
+    }
+
+    ctx.stroke();
+
+    offset += pulsoECG / 18;
+
+    requestAnimationFrame(drawECG);
+}
+
+drawECG();
+</script>
+
+<script>
+const canvas = document.getElementById("ecg");
+const ctx = canvas.getContext("2d");
+
+canvas.width = canvas.offsetWidth;
+canvas.height = canvas.offsetHeight;
+
+let x = 0;
+
+function ecgWave(xPos, baseY){
+
+    if (xPos % 120 < 10) return baseY - 8;
+    if (xPos % 120 === 20) return baseY - 35;
+    if (xPos % 120 === 22) return baseY + 25;
+
+    if (xPos % 120 > 60 && xPos % 120 < 80)
+        return baseY + Math.sin(xPos * 0.1) * 10;
+
+    return baseY;
+}
+
+function drawECG(){
+
+    ctx.fillStyle = "#050b12";
+    ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+    ctx.strokeStyle = "#00ff9d";
+    ctx.lineWidth = 2;
+    ctx.beginPath();
+
+    let baseY = canvas.height / 2;
+
+    for(let i=0;i<canvas.width;i++){
+        let y = ecgWave(x + i, baseY);
+        ctx.lineTo(i, y);
+    }
+
+    ctx.stroke();
+
+    x++;
+    requestAnimationFrame(drawECG);
+}
+
+drawECG();
+</script>
+<script>
+
+let ultimaAlerta = 0;
+let historialIA = [];
+let datosGrafico = {
+    labels: [],
+    pulso: [],
+    oxi: [],
+    temp: []
+};
+let tendenciaCritica = 0;
+let lecturaAnterior = null;
+let perfilPaciente = {
+    pulso: 0,
+    temp: 0,
+    oxi: 0,
+    resp: 0
+};
+
+setInterval(()=>{
+    let pulso = Math.floor(Math.random() * 70) + 55;
+let temp = (36 + Math.random()).toFixed(1);
+let oxi = Math.floor(Math.random() * 4) + 96;
+
+let resp = Math.floor(Math.random() * 8) + 12;
+
+let sistolica = Math.floor(Math.random() * 20) + 110;
+let diastolica = Math.floor(Math.random() * 15) + 70;
+let score = 0;
+
+/* RESPIRACIÓN */
+if(resp <= 8 || resp >= 25) score += 3;
+else if(resp >= 21) score += 2;
+
+/* OXÍGENO */
+if(oxi <= 91) score += 3;
+else if(oxi <= 93) score += 2;
+else if(oxi <= 95) score += 1;
+
+/* TEMPERATURA */
+if(temp >= 39 || temp <= 35) score += 3;
+else if(temp >= 38) score += 1;
+
+/* PULSO */
+if(pulso >= 131 || pulso <= 40) score += 3;
+else if(pulso >= 111) score += 2;
+else if(pulso >= 91) score += 1;
+
+/* PRESIÓN */
+if(sistolica <= 90) score += 3;
+else if(sistolica <= 100) score += 2;
+else if(sistolica <= 110) score += 1;
+fetch("/api/cambiar-estado/" + pacienteId +
+"/?estado=BIEN&pulso=" + pulso +
+"&temp=" + temp +
+"&oxi=" + oxi)
+.then(res => res.json())
+.then(data => {
+    console.log("IA:", data);
+});
+let scoreUI = document.getElementById("scoreIA");
+
+if(scoreUI){
+    let riesgoProximo = false;
+
+    /* ÓRGANOS */
+
+/* Cardíaco */
+document.getElementById("orgCorazon").innerHTML =
+(pulso > 120 || pulso < 50) ? "🔴" :
+(pulso > 100 || pulso < 60) ? "🟡" : "🟢";
+
+/* Respiratorio */
+document.getElementById("orgResp").innerHTML =
+(resp > 26 || resp < 10 || oxi < 92) ? "🔴" :
+(resp > 22 || oxi < 95) ? "🟡" : "🟢";
+
+/* Perfusión */
+document.getElementById("orgPerf").innerHTML =
+(sistolica < 90) ? "🔴" :
+(sistolica < 100) ? "🟡" : "🟢";
+
+/* Infección */
+document.getElementById("orgInf").innerHTML =
+(temp > 39) ? "🔴" :
+(temp > 37.8) ? "🟡" : "🟢";
+
+<div class="card" style="margin-top:14px;padding:18px;">
+    <div class="label" style="font-size:14px;">🧠 Diagnóstico IA</div>
+    <div id="dxIA"
+         style="font-size:22px;font-weight:800;margin-top:8px;color:#00ff9d;">
+         Analizando...
+    </div>
+    /* DIAGNÓSTICO IA */
+
+let dx = "ESTABLE";
+let colorDx = "#00ff9d";
+
+if(temp > 38.5 && pulso > 110 && oxi < 95){
+    dx = "POSIBLE SEPSIS";
+    colorDx = "#ff4d4d";
+}
+else if(pulso > 125 && temp < 37.5){
+    dx = "POSIBLE ARRITMIA";
+    colorDx = "#ff884d";
+}
+else if(oxi < 92 && resp > 24){
+    dx = "POSIBLE FALLA RESPIRATORIA";
+    colorDx = "#ff4d4d";
+}
+else if(sistolica < 90 && pulso > 120){
+    dx = "POSIBLE SHOCK";
+    colorDx = "#ff0044";
+}
+else if(pulso > 105 && resp > 24 && temp < 37.5){
+    dx = "POSIBLE ANSIEDAD";
+    colorDx = "#ffd54a";
+}
+else if(temp > 37.8 && resp > 22){
+    dx = "POSIBLE INFECCIÓN";
+    colorDx = "#ffaa00";
+}
+
+document.getElementById("dxIA").innerHTML = dx;
+document.getElementById("dxIA").style.color = colorDx;
+<div class="card" style="margin-top:14px;padding:18px;">
+    <div class="label">📊 NEWS2 Score</div>
+    <div id="newsScore"
+         style="font-size:34px;font-weight:900;margin-top:8px;color:#00ff9d;">
+         0
+    </div>
+
+    <div id="newsTexto"
+         style="font-size:16px;margin-top:8px;color:#bfe9ff;">
+         Riesgo Bajo
+    </div>
+</div>
+/* NEWS2 */
+
+let news = 0;
+
+/* Respiración */
+if(resp >= 25) news += 3;
+else if(resp >= 21) news += 2;
+else if(resp <= 8) news += 3;
+
+/* Saturación */
+if(oxi <= 91) news += 3;
+else if(oxi <= 93) news += 2;
+else if(oxi <= 95) news += 1;
+
+/* Temperatura */
+if(temp >= 39.1) news += 2;
+else if(temp >= 38.1) news += 1;
+else if(temp <= 35) news += 3;
+
+/* Pulso */
+if(pulso >= 131) news += 3;
+else if(pulso >= 111) news += 2;
+else if(pulso >= 91) news += 1;
+else if(pulso <= 40) news += 3;
+
+/* Presión sistólica */
+if(sistolica <= 90) news += 3;
+else if(sistolica <= 100) news += 2;
+else if(sistolica >= 220) news += 3;
+
+/* RESULTADO */
+
+let txt = "Riesgo Bajo";
+let col = "#00ff9d";
+
+if(news >= 7){
+    txt = "🚨 RESPUESTA INMEDIATA";
+    col = "#ff2d2d";
+}
+else if(news >= 5){
+    txt = "🔴 Alto Riesgo";
+    col = "#ff6b6b";
+}
+else if(news >= 3){
+    txt = "🟡 Riesgo Medio";
+    col = "#ffd54a";
+}
+/* PREDICCIÓN IA */
+
+let pred = "ESTABLE";
+let predTxt = "Sin cambios relevantes";
+let predColor = "#00ff9d";
+
+/* usa historialIA de tus ciclos previos */
+if(historialIA.length >= 5){
+
+    let primero = historialIA[0];
+    let ultimo = historialIA[historialIA.length - 1];
+
+    let subePulso = ultimo.pulso - primero.pulso;
+    let bajaOxi = primero.oxi - ultimo.oxi;
+    let subeTemp = ultimo.temp - primero.temp;
+
+    if(news >= 7 || (bajaOxi >= 4 && subePulso >= 15)){
+        pred = "🚨 CRÍTICO";
+        predTxt = "Deterioro acelerado";
+        predColor = "#ff2d2d";
+    }
+    else if(bajaOxi >= 3 || subePulso >= 12 || subeTemp >= 0.8){
+        pred = "🔴 ALTO RIESGO";
+        predTxt = "Probable empeoramiento";
+        predColor = "#ff6b6b";
+    }
+    else if(bajaOxi >= 2 || subePulso >= 8){
+        pred = "🟡 VIGILANCIA";
+        predTxt = "Cambios progresivos";
+        predColor = "#ffd54a";
+    }
+}
+
+document.getElementById("prediccionIA").innerHTML = pred;
+document.getElementById("prediccionIA").style.color = predColor;
+
+document.getElementById("predTexto").innerHTML = predTxt;
+/* PROTOCOLO AUTOMÁTICO */
+
+if(
+    news >= 7 ||
+    pred === "🚨 CRÍTICO"
+){
+
+    let ahora = Date.now();
+
+    if(ahora - ultimaAlerta > 25000){
+
+        hablar("Emergencia detectada. Activando protocolo.");
+
+        document.getElementById("estadoTexto").innerHTML =
+        "🚑 PROTOCOLO ACTIVO";
+
+        document.getElementById("estadoTexto").style.color =
+        "#ff2d2d";
+
+        /* sirena */
+        let sirena = document.getElementById("sirena");
+        if(sirena){
+            sirena.play();
+        }
+
+        /* backend */
+      obtenerUbicacion(function(ubicacion){
+
+                fetch(
+        "/api/cambiar-estado/" + pacienteId +
+        "/?estado=CRITICO" +
+        "&ubicacion=" + encodeURIComponent(ubicacion) +
+        "&pulso=" + pulso +
+        "&temp=" + temp +
+        "&oxi=" + oxi +
+        "&news=" + news +
+        "&pred=" + encodeURIComponent(pred)
+        );
+
+});
+
+        ultimaAlerta = ahora;
+    }
+}
+document.getElementById("predTexto").style.color = predColor;
+
+document.getElementById("newsScore").innerHTML = news;
+document.getElementById("newsScore").style.color = col;
+
+document.getElementById("newsTexto").innerHTML = txt;
+document.getElementById("newsTexto").style.color = col;
+</div>
+
+/* detectar tendencia */
+if(historialIA.length >= 5){
+
+    let ultimo = historialIA[historialIA.length - 1];
+    let primero = historialIA[0];
+
+    if(
+        ultimo.pulso > primero.pulso + 15 ||
+        ultimo.temp > primero.temp + 0.7 ||
+        ultimo.oxi < primero.oxi - 3
+    ){
+        riesgoProximo = true;
+    }
+}
+if(riesgoProximo){
+
+    tendenciaCritica++;
+
+    scoreUI.innerHTML = "⚠️";
+    scoreUI.style.color = "#ff66cc";
+
+    if(tendenciaCritica >= 2){
+
+        ia.innerHTML = "RIESGO PRÓXIMO";
+        ia.style.color = "#ff66cc";
+
+        let ahora = Date.now();
+
+        if(ahora - ultimaAlerta > 20000){
+
+            hablar("Atención. Riesgo clínico en aumento");
+
+            fetch("/api/cambiar-estado/" + pacienteId + "/?estado=ALERTA");
+
+            ultimaAlerta = ahora;
+        }
+    }
+
+}
+else{
+    tendenciaCritica = 0;
+
+    if(score >= 7){
+}
+else if(score >= 7){
+    }
+    else if(score >= 5){
+        scoreUI.innerHTML = "🟠 " + score;
+        scoreUI.style.color = "#ff914d";
+    }
+    else if(score >= 3){
+        scoreUI.innerHTML = "🟡 " + score;
+        scoreUI.style.color = "#ffd54a";
+    }
+    else{
+        scoreUI.innerHTML = "🟢 " + score;
+        scoreUI.style.color = "#00ff9d";
+    }
+}
+document.getElementById("pulso").innerHTML = pulso + " BPM";
+document.getElementById("temp").innerHTML = temp + " °C";
+document.getElementById("oxi").innerHTML = oxi + "%";
+document.getElementById("resp").innerHTML = resp + " rpm";
+document.getElementById("presion").innerHTML =
+sistolica + "/" + diastolica;
+let tendencia = "Estable";
+
+if(lecturaAnterior){
+
+    if(pulso > lecturaAnterior.pulso + 10 || oxi < lecturaAnterior.oxi - 2){
+        tendencia = "Deterioro progresivo";
+    }
+    else if(
+        pulso < lecturaAnterior.pulso - 8 &&
+        oxi >= lecturaAnterior.oxi
+    ){
+        tendencia = "Mejorando";
+    }
+}
+
+document.getElementById("texto").innerHTML =
+"🧠 IA: " + tendencia;
+
+lecturaAnterior = {
+    pulso:pulso,
+    oxi:oxi,
+    temp:parseFloat(temp),
+    resp:resp
+};
+let ia = document.getElementById("iaEstado");
+let cards = document.querySelectorAll(".minicard");
+let estado = document.getElementById("estadoTexto");
+let body = document.getElementById("bodyApp");
+
+let riesgo = 0;
+historialIA.push({
+    pulso:pulso,
+    oxi:oxi,
+    temp:parseFloat(temp),
+    resp:resp
+});
+
+if(historialIA.length > 5){
+    historialIA.shift();
+}
+if(historialIA.length >= 5){
+
+    perfilPaciente.pulso =
+        historialIA.reduce((a,b)=>a+b.pulso,0) / historialIA.length;
+
+    perfilPaciente.temp =
+        historialIA.reduce((a,b)=>a+b.temp,0) / historialIA.length;
+
+    perfilPaciente.oxi =
+        historialIA.reduce((a,b)=>a+b.oxi,0) / historialIA.length;
+
+    perfilPaciente.resp =
+        historialIA.reduce((a,b)=>a+b.resp,0) / historialIA.length;
+}
+/* IA ACTUAL */
+if (
+    pulso > 125 ||
+    oxi < 91 ||
+    resp < 10 ||
+    sistolica < 90
+){
+    riesgo = 3;
+}
+else if(
+    pulso > 105 ||
+    pulso < 58 ||
+    temp > 37.8 ||
+    oxi < 95 ||
+    resp > 24 ||
+    sistolica > 145
+){
+    riesgo = 2;
+}
+else{
+    riesgo = 1;
+}
+
+/* IA PREDICTIVA */
+if(historialIA.length >= 5){
+
+    let primero = historialIA[0];
+    let ultimo = historialIA[4];
+
+    let subePulso = ultimo.pulso - primero.pulso;
+    let bajaOxi = primero.oxi - ultimo.oxi;
+
+    if(subePulso > 18 || bajaOxi > 3){
+        riesgo = 2;
+        ia.innerHTML = "RIESGO PRÓXIMO";
+        ia.style.color = "#ff914d";
+    }
+}
+<div class="card" id="ambulanciaPanel"
+style="margin-top:14px;display:none;padding:18px;">
+
+<div class="label">🚑 Respuesta de Emergencia</div>
+
+<div id="ambulanciaEstado"
+style="font-size:24px;font-weight:900;margin-top:8px;color:#ff4d4d;">
+Ambulancia en camino
+</div>
+
+<div id="ambulanciaETA"
+style="margin-top:8px;font-size:18px;color:#ffffff;">
+ETA: 08:00
+</div>
+
+<div id="ambulanciaInfo"
+style="margin-top:8px;color:#bfe9ff;">
+Contactos notificados
+</div>
+<div class="card" style="margin-top:14px;padding:18px;">
+
+    <div class="label">📊 Evolución del paciente</div>
+
+    <canvas id="graficoSignos" style="margin-top:12px;"></canvas>
+
+</div>
+</div>
+
+/* RESET */
+cards.forEach(c=>{
+    c.classList.remove("alerta","warning","ok");
+});
+
+/* VISUAL */
+if(riesgo === 3){
+
+    ia.innerHTML = "CRÍTICO";
+    ia.style.color = "#ff4d4d";
+
+    estado.innerHTML = "🚨 ESTADO CRÍTICO";
+    estado.style.color = "#ff4d4d";
+
+    cards.forEach(c=>c.classList.add("alerta"));
+    body.style.background = "#3a0000";
+
+}
+else if(riesgo === 2){
+
+    if(ia.innerHTML !== "RIESGO PRÓXIMO"){
+        ia.innerHTML = "ALERTA";
+        ia.style.color = "#ffd54a";
+    }
+
+    estado.innerHTML = "⚠️ RIESGO DETECTADO";
+    estado.style.color = "#ffd54a";
+
+    cards.forEach(c=>c.classList.add("warning"));
+}
+else{
+
+    ia.innerHTML = "ESTABLE";
+    ia.style.color = "#00ff9d";
+
+    estado.innerHTML = "🟢 MONITOREANDO";
+    estado.style.color = "#8be9ff";
+
+    cards.forEach(c=>c.classList.add("ok"));
+
+    body.style.background =
+    "radial-gradient(circle at top,#123f72 0%,#08182d 35%,#040b16 100%)";
+<script>
+
+setInterval(function(){
+
+    /* =========================
+       🧠 ACÁ VA TODO TU CÁLCULO
+       pulso, temp, oxi, resp...
+       riesgo ya calculado
+    ========================== */
+
+    /* RESET */
+    cards.forEach(c=>{
+        c.classList.remove("alerta","warning","ok");
+    });
+
+    /* 🔴 CRÍTICO */
+    if(riesgo === 3){
+
+        estado.innerHTML = "🚨 INESTABILIDAD HEMODINÁMICA";
+        estado.style.color = "#ff4d4d";
+
+        cards.forEach(c=>c.classList.add("alerta"));
+
+        body.style.background = "#3a0000";
+
+        let ahora = Date.now();
+
+        if(ahora - ultimaAlerta > 15000){
+            hablar("Alerta crítica detectada");
+            activarModoAmbulanciaVisual();
+            ultimaAlerta = ahora;
+        }
+    }
+
+    /* 🟡 ALERTA */
+    else if(riesgo === 2){
+
+        estado.innerHTML = "⚠️ PARÁMETROS ALTERADOS";
+        estado.style.color = "#ffd54a";
+
+        cards.forEach(c=>c.classList.add("warning"));
+
+        body.style.background =
+        "radial-gradient(circle at top,#123f72 0%,#08182d 35%,#040b16 100%)";
+    }
+
+    /* 🟢 NORMAL */
+    else{
+
+        estado.innerHTML = "🟢 MONITOREANDO";
+        estado.style.color = "#8be9ff";
+
+        cards.forEach(c=>c.classList.add("ok"));
+
+        body.style.background =
+        "radial-gradient(circle at top,#123f72 0%,#08182d 35%,#040b16 100%)";
+    }
+
+    /* =========================
+       📊 GRÁFICO (SIEMPRE)
+    ========================== */
+
+    let tiempo = new Date().toLocaleTimeString();
+
+    datosGrafico.labels.push(tiempo);
+    datosGrafico.pulso.push(pulso);
+    datosGrafico.oxi.push(oxi);
+    datosGrafico.temp.push(parseFloat(temp));
+
+    if(datosGrafico.labels.length > 20){
+        datosGrafico.labels.shift();
+        datosGrafico.pulso.shift();
+        datosGrafico.oxi.shift();
+        datosGrafico.temp.shift();
+    }
+
+    grafico.update();
+
+},3000);
+
+</script>
+
+<!-- ✅ Chart.js SIEMPRE afuera -->
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>

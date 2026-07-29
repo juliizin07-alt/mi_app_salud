@@ -1,0 +1,207 @@
+{% extends "mi_app_salud/base.html" %}
+
+{% block contenido %}
+
+<style>
+
+body{
+background:
+radial-gradient(circle at top,#123f72,#040b16);
+color:white;
+}
+
+.titulo{
+font-size:32px;
+font-weight:800;
+color:#8be9ff;
+margin-bottom:30px;
+}
+
+
+.grid{
+
+display:grid;
+grid-template-columns:
+repeat(auto-fit,minmax(280px,1fr));
+
+gap:20px;
+
+}
+
+
+.card-paciente{
+
+background:
+rgba(255,255,255,.08);
+
+border-radius:25px;
+
+padding:25px;
+
+border:
+1px solid rgba(139,233,255,.2);
+
+backdrop-filter:blur(15px);
+
+}
+
+
+.nombre{
+
+font-size:24px;
+font-weight:800;
+
+}
+
+
+.estado{
+
+margin-top:20px;
+
+padding:12px;
+
+border-radius:20px;
+
+text-align:center;
+
+font-weight:bold;
+
+}
+
+
+
+.ok{
+background:#00c853;
+}
+
+
+.alerta{
+background:#ffd600;
+color:black;
+}
+
+
+.critico{
+background:#ff1744;
+}
+
+
+.btn{
+
+display:block;
+
+margin-top:20px;
+
+padding:12px;
+
+border-radius:20px;
+
+background:#00bfff;
+
+color:white;
+
+text-decoration:none;
+
+text-align:center;
+
+font-weight:bold;
+
+}
+
+
+</style>
+
+
+<h1 class="titulo">
+👥 Pacientes Jarvice
+</h1>
+
+
+<div class="grid">
+
+
+{% for item in datos %}
+
+<div class="card-paciente">
+
+
+<div class="nombre">
+
+{{item.paciente.nombre}}
+{{item.paciente.apellido}}
+
+</div>
+
+
+<p>
+Edad:
+{{item.paciente.edad}}
+años
+</p>
+
+
+
+{% if item.ultimo %}
+
+
+{% if item.ultimo.estado == "CRITICO" %}
+
+<div class="estado critico">
+🔴 CRÍTICO
+</div>
+
+
+{% elif item.ultimo.estado == "DOLOR" %}
+
+<div class="estado alerta">
+🟡 ATENCIÓN
+</div>
+
+
+{% else %}
+
+<div class="estado ok">
+🟢 ESTABLE
+</div>
+
+
+{% endif %}
+
+
+
+{% else %}
+
+
+<div class="estado ok">
+🟢 SIN REGISTROS
+</div>
+
+
+{% endif %}
+
+
+
+<a class="btn"
+href="{% url 'historial_paciente' item.paciente.id %}">
+Ver historial
+</a>
+
+
+</div>
+
+
+{% empty %}
+
+
+<h2>
+No hay pacientes registrados
+</h2>
+
+
+{% endfor %}
+
+
+</div>
+
+
+{% endblock %}

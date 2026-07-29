@@ -1,0 +1,488 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<title>Jarvice Health AI</title>
+
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700;800&display=swap" rel="stylesheet">
+
+<style>
+
+*{
+    margin:0;
+    padding:0;
+    box-sizing:border-box;
+}
+
+body{
+
+    font-family:'Inter',sans-serif;
+
+    background:
+    radial-gradient(circle at top,#153d73 0%,#081629 45%,#040b15 100%);
+
+    color:white;
+
+    display:flex;
+
+    min-height:100vh;
+
+}
+
+/*=========================
+SIDEBAR
+=========================*/
+
+.sidebar{
+
+    width:270px;
+
+    background:rgba(5,15,25,.96);
+
+    border-right:1px solid rgba(0,255,255,.12);
+
+    display:flex;
+
+    flex-direction:column;
+
+    padding:25px;
+
+}
+
+.logo{
+
+    text-align:center;
+
+    margin-bottom:35px;
+
+}
+
+.logo h1{
+
+    color:#69d8ff;
+
+    font-size:30px;
+
+    font-weight:800;
+
+}
+
+.logo p{
+
+    color:#9ccfff;
+
+    font-size:14px;
+
+    margin-top:5px;
+
+}
+
+/*=========================
+MENU
+=========================*/
+
+.menu{
+
+    display:flex;
+
+    flex-direction:column;
+
+    gap:12px;
+
+}
+
+.menu a{
+
+    text-decoration:none;
+
+    color:white;
+
+    padding:15px;
+
+    border-radius:14px;
+
+    transition:.3s;
+
+    font-weight:600;
+
+}
+
+.menu a:hover{
+
+    background:#0d8eff;
+
+    transform:translateX(5px);
+
+}
+
+.menu a.active{
+
+    background:#00b3ff;
+
+}
+
+/*=========================
+MAIN
+=========================*/
+
+.main{
+
+    flex:1;
+
+    display:flex;
+
+    flex-direction:column;
+
+}
+
+/*=========================
+TOPBAR
+=========================*/
+
+.topbar{
+
+    height:70px;
+
+    background:rgba(255,255,255,.05);
+
+    display:flex;
+
+    align-items:center;
+
+    justify-content:space-between;
+
+    padding:0 30px;
+
+    border-bottom:1px solid rgba(255,255,255,.08);
+
+}
+.server{
+
+    background:#16c78433;
+
+    color:#7dffb5;
+
+    padding:8px 14px;
+
+    border-radius:30px;
+
+    font-weight:bold;
+
+}
+
+.pulso{
+
+    background:#ff4d4d22;
+
+    color:#ff9090;
+
+    padding:8px 14px;
+
+    border-radius:30px;
+
+    font-weight:bold;
+
+}
+
+.alerta{
+
+    background:#ffd54a22;
+
+    color:#ffd54a;
+
+    padding:8px 14px;
+
+    border-radius:30px;
+
+    font-weight:bold;
+
+}
+.usuario{
+
+    display:flex;
+
+    align-items:center;
+
+    gap:12px;
+
+}
+
+.avatar{
+
+    width:42px;
+
+    height:42px;
+
+    border-radius:50%;
+
+    background:#00c6ff;
+
+    display:flex;
+
+    align-items:center;
+
+    justify-content:center;
+
+    font-weight:bold;
+
+}
+
+.reloj{
+
+    font-size:18px;
+
+    color:#8be9ff;
+
+}
+
+/*=========================
+CONTENIDO
+=========================*/
+
+.contenido{
+
+    padding:30px;
+
+}
+.menu-item{
+
+    display:flex;
+
+    align-items:center;
+
+    gap:15px;
+
+    color:white;
+
+    padding:15px;
+
+    border-radius:16px;
+
+    text-decoration:none;
+
+    transition:.3s;
+
+    background:rgba(255,255,255,.03);
+
+}
+
+
+.menu-item span{
+
+    font-size:25px;
+
+}
+
+
+.menu-item div{
+
+    display:flex;
+
+    flex-direction:column;
+
+}
+
+
+.menu-item small{
+
+    font-size:11px;
+
+    color:#8be9ff;
+
+    margin-top:3px;
+
+}
+
+
+.menu-item:hover{
+
+    background:#008cff55;
+
+    transform:translateX(6px);
+
+}
+</style>
+
+</head>
+
+<body>
+
+<div class="sidebar">
+
+<div class="logo">
+
+<h1>🧬 JARVICE</h1>
+
+<p>Health AI</p>
+
+</div>
+
+<div class="menu">
+
+<a href="/" class="menu-item">
+    <span>🏠</span>
+    <div>
+        Dashboard
+        <small>🟢 Activo</small>
+    </div>
+</a>
+
+
+<a href="/pacientes/" class="menu-item">
+    <span>👤</span>
+    <div>
+        Pacientes
+        <small>Base clínica</small>
+    </div>
+</a>
+
+
+<a href="/medicacion/" class="menu-item">
+    <span>💊</span>
+    <div>
+        Medicación
+        <small id="med-alerta">Sin alertas</small>
+    </div>
+</a>
+
+
+<a href="/seguridad/" class="menu-item">
+    <span>🛡️</span>
+    <div>
+        Seguridad
+        <small>Protección activa</small>
+    </div>
+</a>
+
+
+<a href="/sueno/" class="menu-item">
+    <span>😴</span>
+    <div>
+        Sueño
+        <small>Monitoreo</small>
+    </div>
+</a>
+
+
+<a href="/reportes/" class="menu-item">
+    <span>📊</span>
+    <div>
+        Reportes
+        <small>Historial IA</small>
+    </div>
+</a>
+
+
+<a href="/configuracion/" class="menu-item">
+    <span>⚙️</span>
+    <div>
+        Configuración
+        <small>Sistema</small>
+    </div>
+</a>
+
+
+</div>
+</div>
+
+<div class="main">
+
+<div class="topbar">
+
+    <div>
+
+        <h2>🧬 Jarvice Health AI</h2>
+
+        <small id="fecha"></small>
+
+    </div>
+
+    <div class="usuario">
+
+        <div class="server">
+
+            🟢 Online
+
+        </div>
+
+        <div class="pulso">
+
+            ❤️ <span id="pulsoTop">78</span>
+
+        </div>
+
+        <div class="alerta">
+
+            🔔 <span id="contadorAlertas">0</span>
+
+        </div>
+
+        <div class="reloj" id="reloj"></div>
+
+        <div class="avatar">
+
+            {{ request.user.username|first|upper }}
+
+        </div>
+
+        <strong>
+
+            {{ request.user.username }}
+
+        </strong>
+
+    </div>
+
+</div>
+
+<div class="contenido">
+
+{% block contenido %}
+
+{% endblock %}
+
+</div>
+
+</div>
+
+<script>
+
+function reloj(){
+
+    let ahora=new Date();
+
+    document.getElementById("reloj").innerHTML=
+    ahora.toLocaleTimeString();
+
+}
+
+reloj();
+setInterval(reloj,1000);
+
+
+function actualizarBarra(){
+
+    document.getElementById("fecha").innerHTML =
+        new Date().toLocaleDateString();
+
+    document.getElementById("pulsoTop").innerHTML =
+        Math.floor(Math.random()*30)+65;
+
+    document.getElementById("contadorAlertas").innerHTML =
+        Math.floor(Math.random()*3);
+
+}
+
+setInterval(actualizarBarra,3000);
+
+actualizarBarra();
+
+</script>
+   
+</body>
+</html>

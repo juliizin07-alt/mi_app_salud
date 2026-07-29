@@ -1,296 +1,904 @@
-<<<<<<< HEAD
-# views.py
+# ==================================================
+# IMPORTACIONES
+# ==================================================
 
-from django.shortcuts import render, get_object_or_404, redirect
+from django.shortcuts import render, redirect, get_object_or_404
 from django.http import JsonResponse
+from django.contrib import messages
+from django.contrib.auth.models import User
 from django.contrib.auth.decorators import login_required
-from datetime import datetime
-=======
-from django.shortcuts import render, get_object_or_404, redirect
-from django.http import JsonResponse
-from django.contrib.auth.decorators import login_required
->>>>>>> ec7ba975c91bc3df226f791dbc70ec198871315b
-
-from .models import Paciente, RegistroSalud, Recordatorio
-from .forms import PacienteForm
-from .clinical_engine import evaluar_paciente
-from .alerts import enviar_whatsapp
-from .clinical_engine import evaluar_paciente, evaluar_riesgo
+from django.contrib.auth import logout
 
 
-<<<<<<< HEAD
-# ======================================
-# 🏠 INICIO
-# ======================================
-@login_required
-def lista_pacientes(request):
-    pacientes = Paciente.objects.all()
-    return render(request, "mi_app_salud/inicio.html", {
-        "pacientes": pacientes
-=======
-# 🏠 LISTA PRINCIPAL (UCI)
-@login_required
-def lista_pacientes(request):
-    pacientes = list(Paciente.objects.all())
-
-    def prioridad(p):
-        ultimo = p.registros.order_by('-fecha').first()
-
-        if not ultimo:
-            return 2
-
-        estado = ultimo.estado_fisico.upper().strip()
-
-        if estado == "CRITICO":
-            return 0
-        if estado == "DOLOR":
-            return 1
-        return 2
-
-    pacientes.sort(key=prioridad)
-
-    return render(request, 'mi_app_salud/inicio.html', {
-        'pacientes': pacientes
-    })
+from .models import (
+    Paciente,
+    RegistroSalud,
+    Recordatorio,
+    PerfilUsuario,
+    Medicacion
+)
 
 
-# ⚡ CAMBIAR ESTADO (UCI CORE)
-@login_required
-def cambiar_estado(request, paciente_id, estado):
-    paciente = get_object_or_404(Paciente, id=paciente_id)
+# ==================================================
+# REGISTRO USUARIOS
+# ==================================================
 
-    estado = estado.upper().strip()
-
-    RegistroSalud.objects.create(
-        paciente=paciente,
-        estado_fisico=estado,
-        estado_emocional="NEUTRO"
-    )
-
-    return JsonResponse({
-        "ok": True,
-        "estado": estado
->>>>>>> ec7ba975c91bc3df226f791dbc70ec198871315b
-    })
-
-
-# ======================================
-# 📡 API PACIENTES
-# ======================================
-def api_pacientes(request):
-    pacientes = Paciente.objects.all()
-
-    data = []
-    for p in pacientes:
-        data.append({
-            "id": p.id,
-            "nombre": p.nombre
-        })
-
-    return JsonResponse({"pacientes": data})
-
-# ======================================
-# ⚡ CAMBIAR ESTADO
-# ======================================
-from datetime import datetime
-
-def api_cambiar_estado(request, paciente_id):
-    paciente = get_object_or_404(Paciente, id=paciente_id)
-
-    estado = request.GET.get("estado", "BIEN").upper().strip()
-    ubicacion = request.GET.get("ubicacion", "No disponible")
-
-    # SIGNOS VITALES DESDE HTML
-    pulso = int(request.GET.get("pulso", 80))
-    temp = float(request.GET.get("temp", 36.5))
-    oxi = int(request.GET.get("oxi", 98))
-
-    # GUARDAR REGISTRO
-    RegistroSalud.objects.create(
-        paciente=paciente,
-        estado_fisico=estado,
-        estado_emocional="NEUTRO"
-    )
-
-    historial = RegistroSalud.objects.filter(paciente=paciente)
-
-    # IA EXISTENTE
-    decision = evaluar_paciente(
-        paciente,
-        estado,
-        historial
-    )
-
-    print("🧠 DECISIÓN:", decision)
-
-    # IA CLÍNICA NUEVA
-    riesgo = evaluar_riesgo(pulso, temp, oxi)
-
-    print("🏥 RIESGO:", riesgo)
-
-    # ALERTA
-    if decision["nivel"] >= 3 or riesgo == "CRITICO":
-
-        hora = datetime.now().strftime("%H:%M")
-
-        mensaje = f"""
-🚨 ALERTA MÉDICA URGENTE
-
-👤 Paciente: {paciente.nombre}
-📌 Estado: {estado}
-
-❤️ Pulso: {pulso} BPM
-🌡️ Temp: {temp} °C
-🩸 Oxígeno: {oxi}%
-
-📍 Ubicación:
-{ubicacion}
-
-🕒 Hora: {hora}
-
-⚠️ Atención inmediata requerida.
-
-Jarvice Health AI
-"""
-
-        enviar_whatsapp(mensaje)
-        print("📲 WhatsApp principal enviado")
-
-    return JsonResponse({
-        "ok": True,
-        "paciente": paciente.nombre,
-        "estado": estado,
-        "ubicacion": ubicacion,
-        "decision": decision,
-        "pulso": pulso,
-        "temp": temp,
-        "oxi": oxi,
-        "riesgo": riesgo
-    })
-# ======================================
-# 📲 SEGUNDO CONTACTO
-# ======================================
-def segundo_contacto(request):
-
-    mensaje = """
-🚨 ESCALAMIENTO NIVEL 2
-
-El contacto principal no respondió.
-
-Se requiere revisar al paciente.
-"""
-
-    enviar_whatsapp(mensaje)
-
-    print("📲 Segundo contacto notificado")
-
-    return JsonResponse({
-        "ok": True,
-        "mensaje": "Segundo contacto notificado"
-    })
-
-
-# ======================================
-# 🚑 TERCER CONTACTO
-# ======================================
-def tercer_contacto(request):
-
-    mensaje = """
-🚨 ESCALAMIENTO NIVEL 3
-
-Ningún contacto respondió.
-
-Se recomienda llamar emergencias médicas ahora.
-"""
-
-    enviar_whatsapp(mensaje)
-
-    print("🚑 Tercer contacto notificado")
-
-    return JsonResponse({
-        "ok": True,
-        "mensaje": "Tercer contacto notificado"
-    })
-mensaje = """
-🚨 ESCALAMIENTO NIVEL 3
-
-Ningún contacto respondió.
-
-🚑 Se recomienda llamar emergencias médicas ahora.
-📍 Última ubicación disponible.
-🧠 Riesgo crítico detectado.
-"""
-
-
-# ======================================
-# ➕ CREAR PACIENTE
-# ======================================
-@login_required
-def crear_paciente(request):
-    form = PacienteForm(request.POST or None)
-
-    if form.is_valid():
-        form.save()
-        return redirect("inicio")
-
-    return render(request, "mi_app_salud/crear_paciente.html", {
-        "form": form
-    })
-
-
-<<<<<<< HEAD
-# ======================================
-# 📝 RECORDATORIO
-# ======================================
-=======
-# 📝 RECORDATORIOS
->>>>>>> ec7ba975c91bc3df226f791dbc70ec198871315b
-@login_required
-def crear_recordatorio(request, paciente_id):
-    paciente = get_object_or_404(Paciente, id=paciente_id)
+def registro(request):
 
     if request.method == "POST":
+
+        username = request.POST.get("username")
+        email = request.POST.get("email")
+        password = request.POST.get("password")
+        rol = request.POST.get("rol")
+
+
+        if User.objects.filter(username=username).exists():
+
+            messages.error(
+                request,
+                "El usuario ya existe"
+            )
+
+            return redirect("registro")
+
+
+        usuario = User.objects.create_user(
+            username=username,
+            email=email,
+            password=password
+        )
+
+
+        PerfilUsuario.objects.create(
+            usuario=usuario,
+            rol=rol
+        )
+
+
+        messages.success(
+            request,
+            "Usuario creado correctamente"
+        )
+
+
+        return redirect("login")
+
+
+    return render(
+    request,
+    "mi_app_salud/registro.html"
+)
+
+
+# ==================================================
+# DASHBOARD PRINCIPAL JARVICE
+# ==================================================
+
+@login_required
+def lista_pacientes(request):
+
+    perfil = PerfilUsuario.objects.get(usuario=request.user)
+
+    pacientes = Paciente.objects.all()
+
+    return render(
+        request,
+        "mi_app_salud/inicio.html",
+        {
+            "pacientes": pacientes,
+            "rol": perfil.rol,
+        }
+    )
+
+
+
+@login_required
+def dashboard_redirect(request):
+
+    perfil = get_object_or_404(
+        PerfilUsuario,
+        usuario=request.user
+    )
+
+
+    if perfil.rol == "MEDICO":
+
+        return redirect("panel_medico")
+
+
+    elif perfil.rol == "ENFERMERIA":
+
+        return redirect("panel_enfermeria")
+
+
+    elif perfil.rol == "PACIENTE":
+
+        return redirect("panel_paciente")
+
+
+    elif perfil.rol == "EMERGENCIA":
+
+        return redirect("panel_emergencia")
+
+
+    elif perfil.rol == "ADMIN":
+
+        return redirect("inicio")
+
+
+    else:
+
+        return redirect("inicio")
+
+# ==================================================
+# REDIRECCION SEGUN ROL
+# ==================================================
+
+@login_required
+def redireccion_rol(request):
+
+    perfil = get_object_or_404(
+        PerfilUsuario,
+        usuario=request.user
+    )
+
+
+    if perfil.rol == "MEDICO":
+
+        return redirect("panel_medico")
+
+
+    elif perfil.rol == "ENFERMERIA":
+
+        return redirect("panel_enfermeria")
+
+
+    elif perfil.rol == "PACIENTE":
+
+        return redirect("panel_paciente")
+
+
+    elif perfil.rol == "EMERGENCIA":
+
+        return redirect("panel_emergencia")
+
+
+    elif perfil.rol == "ADMIN":
+
+        return redirect("inicio")
+
+
+    else:
+
+        return redirect("inicio")
+    
+    # ==================================================
+# PANELES POR ROL
+# ==================================================
+
+@login_required
+def panel_medico(request):
+
+    pacientes = Paciente.objects.all()
+
+    return render(
+        request,
+        "medico/panel.html",
+        {
+            "pacientes": pacientes
+        }
+    )
+
+
+@login_required
+def panel_enfermeria(request):
+
+    return render(
+        request,
+        "enfermeria/panel.html"
+    )
+
+
+
+@login_required
+def panel_paciente(request):
+
+    return render(
+        request,
+        "paciente/panel.html"
+    )
+
+
+
+@login_required
+def panel_emergencia(request):
+
+    return render(
+        request,
+        "emergencia/panel.html"
+    )
+
+# ==================================================
+# CREAR PACIENTE
+# ==================================================
+
+@login_required
+def crear_paciente(request):
+
+    if request.method == "POST":
+
+        nombre = request.POST.get("nombre")
+        apellido = request.POST.get("apellido")
+        edad = request.POST.get("edad")
+
+
+        if not nombre or not apellido or not edad:
+
+            messages.error(
+                request,
+                "Complete todos los campos"
+            )
+
+            return redirect("crear_paciente")
+
+
+        Paciente.objects.create(
+
+            nombre=nombre,
+
+            apellido=apellido,
+
+            edad=edad
+
+        )
+
+
+        messages.success(
+            request,
+            "Paciente creado correctamente"
+        )
+
+
+        return redirect("inicio")
+
+
+    return render(
+        request,
+        "mi_app_salud/crear_paciente.html"
+    )
+
+
+
+# ==================================================
+# LISTADO PACIENTES
+# ==================================================
+
+@login_required
+def pacientes(request):
+
+    pacientes = Paciente.objects.all()
+
+    datos = []
+
+
+    for paciente in pacientes:
+
+
+        ultimo = RegistroSalud.objects.filter(
+            paciente=paciente
+        ).order_by("-fecha").first()
+
+
+        datos.append(
+            {
+                "paciente": paciente,
+                "ultimo": ultimo
+            }
+        )
+
+
+    return render(
+        request,
+        "mi_app_salud/pacientes.html",
+        {
+            "datos": datos
+        }
+    )
+
+
+
+# ==================================================
+# HISTORIAL PACIENTE
+# ==================================================
+
+@login_required
+def historial_paciente(request, paciente_id):
+
+    paciente = get_object_or_404(
+        Paciente,
+        id=paciente_id
+    )
+
+
+    registros = RegistroSalud.objects.filter(
+        paciente=paciente
+    ).order_by("-fecha")
+
+
+    recordatorios = Recordatorio.objects.filter(
+        paciente=paciente
+    ).order_by("-fecha")
+
+
+    return render(
+        request,
+        "mi_app_salud/historial.html",
+        {
+            "paciente": paciente,
+            "registros": registros,
+            "recordatorios": recordatorios
+        }
+    )
+
+
+
+# ==================================================
+# RECORDATORIOS
+# ==================================================
+
+@login_required
+def crear_recordatorio(request, paciente_id):
+
+    paciente = get_object_or_404(
+        Paciente,
+        id=paciente_id
+    )
+
+
+    if request.method == "POST":
+
         texto = request.POST.get("texto")
+
+
         if texto:
+
             Recordatorio.objects.create(
                 paciente=paciente,
                 texto=texto
             )
 
-<<<<<<< HEAD
-    return redirect("inicio")
-@login_required
-def historial_paciente(request, paciente_id):
-    paciente = get_object_or_404(Paciente, id=paciente_id)
 
-    registros = RegistroSalud.objects.filter(
-        paciente=paciente
-    ).order_by('-fecha')
+            messages.success(
+                request,
+                "Recordatorio creado correctamente"
+            )
 
-    recordatorios = Recordatorio.objects.filter(
-        paciente=paciente
-    ).order_by('-fecha')
 
-    return render(request, "mi_app_salud/historial.html", {
-        "paciente": paciente,
-        "registros": registros,
-        "recordatorios": recordatorios,
-    })
-=======
-    return redirect('inicio')
-from django.shortcuts import get_object_or_404, redirect
-from .models import Paciente, RegistroSalud
+        else:
 
-def actualizar_estado(request, paciente_id):
-    paciente = get_object_or_404(Paciente, id=paciente_id)
+            messages.error(
+                request,
+                "Ingrese un texto"
+            )
 
-    if request.method == 'POST':
-        estado = request.POST.get('estado')
 
-        RegistroSalud.objects.create(
-            paciente=paciente,
-            estado=estado
+        return redirect(
+            "historial_paciente",
+            paciente_id=paciente.id
         )
 
-    return redirect('inicio')
->>>>>>> ec7ba975c91bc3df226f791dbc70ec198871315b
+
+    return render(
+        request,
+        "mi_app_salud/crear_recordatorio.html",
+        {
+            "paciente": paciente
+        }
+    )
+
+
+
+# ==================================================
+# SEGURIDAD
+# ==================================================
+
+@login_required
+def seguridad(request):
+
+    return render(
+        request,
+        "mi_app_salud/seguridad.html"
+    )
+    # ==================================================
+# API PACIENTES
+# ==================================================
+
+@login_required
+def api_pacientes(request):
+
+    pacientes = Paciente.objects.all()
+
+    data = []
+
+
+    for paciente in pacientes:
+
+        data.append(
+            {
+                "id": paciente.id,
+                "nombre": paciente.nombre,
+                "apellido": paciente.apellido,
+                "edad": paciente.edad
+            }
+        )
+
+
+    return JsonResponse(
+        {
+            "pacientes": data
+        }
+    )
+
+
+
+# ==================================================
+# API CAMBIAR ESTADO SALUD
+# ==================================================
+
+@login_required
+def api_cambiar_estado(request, paciente_id):
+
+    paciente = get_object_or_404(
+        Paciente,
+        id=paciente_id
+    )
+
+
+    estado = request.GET.get(
+        "estado",
+        "OK"
+    )
+
+
+    estados_validos = [
+        "OK",
+        "CANSADO",
+        "DOLOR",
+        "CRITICO"
+    ]
+
+
+    if estado not in estados_validos:
+
+        estado = "OK"
+
+
+
+    RegistroSalud.objects.create(
+
+        paciente=paciente,
+
+        estado_fisico=estado,
+
+        estado_emocional="NEUTRO",
+
+        estado=estado
+
+    )
+
+
+    return JsonResponse(
+        {
+            "ok": True,
+            "paciente": paciente.nombre,
+            "estado": estado
+        }
+    )
+
+
+
+# ==================================================
+# CONTACTOS EMERGENCIA
+# ==================================================
+
+@login_required
+def segundo_contacto(request):
+
+    return JsonResponse(
+        {
+            "ok": True,
+            "mensaje": "Segundo contacto notificado"
+        }
+    )
+
+
+
+@login_required
+def tercer_contacto(request):
+
+    return JsonResponse(
+        {
+            "ok": True,
+            "mensaje": "Emergencias notificadas"
+        }
+    )
+
+
+
+# ==================================================
+# CAMBIO ESTADO MANUAL
+# ==================================================
+
+@login_required
+def cambiar_estado(request, paciente_id, estado):
+
+    paciente = get_object_or_404(
+        Paciente,
+        id=paciente_id
+    )
+
+
+    estados_validos = [
+        "OK",
+        "CANSADO",
+        "DOLOR",
+        "CRITICO"
+    ]
+
+
+    if estado not in estados_validos:
+
+        estado = "OK"
+
+
+
+    RegistroSalud.objects.create(
+
+        paciente=paciente,
+
+        estado_fisico=estado,
+
+        estado_emocional="NEUTRO",
+
+        estado=estado
+
+    )
+
+
+    return JsonResponse(
+        {
+            "ok": True,
+            "estado": estado
+        }
+    )
+
+
+
+# ==================================================
+# MEDICACION
+# ==================================================
+
+@login_required
+def medicacion(request):
+
+    medicamentos = (
+        Medicacion.objects
+        .select_related("paciente", "confirmado_por")
+        .order_by("horario")
+    )
+
+    return render(
+        request,
+        "mi_app_salud/medicacion.html",
+        {
+            "medicamentos": medicamentos
+        }
+    )
+
+
+# ==================================================
+# CREAR MEDICACION
+# ==================================================
+
+@login_required
+def crear_medicacion(request):
+
+    pacientes = Paciente.objects.all()
+
+
+    if request.method == "POST":
+
+        paciente_id = request.POST.get("paciente")
+
+        nombre = request.POST.get("nombre")
+
+        dosis = request.POST.get("dosis")
+
+        horario = request.POST.get("horario")
+
+
+
+        if not nombre or not dosis or not horario:
+
+            messages.error(
+                request,
+                "Complete todos los campos"
+            )
+
+            return redirect(
+                "crear_medicacion"
+            )
+
+
+
+        paciente = get_object_or_404(
+            Paciente,
+            id=paciente_id
+        )
+
+
+
+        Medicacion.objects.create(
+
+            paciente=paciente,
+
+            nombre=nombre,
+
+            dosis=dosis,
+
+            horario=horario,
+
+            activo=True
+
+        )
+
+
+
+        messages.success(
+            request,
+            "Medicamento agregado correctamente"
+        )
+
+
+        return redirect(
+            "medicacion"
+        )
+
+
+
+    return render(
+        request,
+        "mi_app_salud/crear_medicacion.html",
+        {
+            "pacientes": pacientes
+        }
+    )
+
+
+
+
+
+# ==========================================
+# TOMAR MEDICACION
+# ==========================================
+
+from django.utils import timezone
+
+@login_required
+def tomar_medicacion(request, medicamento_id):
+
+    medicamento = get_object_or_404(
+        Medicacion,
+        id=medicamento_id
+    )
+
+    medicamento.tomado = True
+    medicamento.fecha_ultima_toma = timezone.now()
+
+    # Guarda el usuario que confirmó
+    medicamento.confirmado_por = request.user
+
+    medicamento.save()
+
+    messages.success(
+        request,
+        f"{medicamento.nombre} marcado como tomado."
+    )
+
+    return redirect("medicacion")
+
+# ==================================================
+# EDITAR MEDICACION
+# ==================================================
+
+@login_required
+def editar_medicacion(request, medicamento_id):
+
+    medicamento = get_object_or_404(
+        Medicacion,
+        id=medicamento_id
+    )
+
+
+    pacientes = Paciente.objects.all()
+
+
+
+    if request.method == "POST":
+
+
+        medicamento.paciente = get_object_or_404(
+            Paciente,
+            id=request.POST.get("paciente")
+        )
+
+
+        medicamento.nombre = request.POST.get(
+            "nombre"
+        )
+
+
+        medicamento.dosis = request.POST.get(
+            "dosis"
+        )
+
+
+        medicamento.horario = request.POST.get(
+            "horario"
+        )
+
+
+        medicamento.save()
+
+
+
+        messages.success(
+            request,
+            "Medicación actualizada correctamente."
+        )
+
+
+        return redirect(
+            "medicacion"
+        )
+
+
+
+    return render(
+        request,
+        "mi_app_salud/editar_medicacion.html",
+        {
+            "medicamento": medicamento,
+            "pacientes": pacientes
+        }
+    )
+
+
+
+# ==================================================
+# SUSPENDER / REACTIVAR MEDICACION
+# ==================================================
+
+@login_required
+def cambiar_estado_medicacion(request, medicamento_id):
+
+    medicamento = get_object_or_404(
+        Medicacion,
+        id=medicamento_id
+    )
+
+
+    medicamento.activo = not medicamento.activo
+
+    medicamento.save()
+
+
+
+    if medicamento.activo:
+
+        messages.success(
+            request,
+            "Medicación reactivada."
+        )
+
+    else:
+
+        messages.warning(
+            request,
+            "Medicación suspendida."
+        )
+
+
+    return redirect(
+        "medicacion"
+    )
+
+
+
+# ==================================================
+# ELIMINAR MEDICACION
+# ==================================================
+
+@login_required
+def eliminar_medicacion(request, medicamento_id):
+
+    medicamento = get_object_or_404(
+        Medicacion,
+        id=medicamento_id
+    )
+
+
+    medicamento.delete()
+
+
+    messages.success(
+        request,
+        "Medicación eliminada correctamente."
+    )
+
+
+    return redirect(
+        "medicacion"
+    )
+
+
+
+# ==================================================
+# MÓDULOS JARVICE
+# ==================================================
+
+@login_required
+def sueno(request):
+
+    return render(
+        request,
+        "mi_app_salud/sueno.html"
+    )
+
+
+
+@login_required
+def reportes(request):
+
+    return render(
+        request,
+        "mi_app_salud/reportes.html"
+    )
+
+
+
+@login_required
+def configuracion(request):
+
+    return render(
+        request,
+        "mi_app_salud/configuracion.html"
+    )
+
+
+
+# ==================================================
+# LOGOUT
+# ==================================================
+
+@login_required
+def salir(request):
+
+    logout(request)
+
+    return redirect(
+        "login"
+    )
+    
+# ==================================================
+# EMERGENCIA
+# ==================================================
+
+@login_required
+def emergencia(request):
+
+    return render(
+        request,
+        "mi_app_salud/emergencia.html"
+    )

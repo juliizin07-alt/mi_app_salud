@@ -1,0 +1,264 @@
+{% extends "mi_app_salud/base.html" %}
+
+{% block contenido %}
+
+<div class="medicacion-panel">
+
+    <div class="titulo">
+        <h1>💊 Control de Medicación Jarvice</h1>
+        <p>Administración inteligente de medicamentos y horarios del paciente.</p>
+    </div>
+
+    <div class="acciones">
+        <a href="{% url 'crear_medicacion' %}" class="btn-agregar">
+            ➕ Nuevo medicamento
+        </a>
+    </div>
+
+    <h2>Medicamentos registrados</h2>
+
+    <div class="medicamentos-grid">
+
+        {% for medicamento in medicamentos %}
+
+        <div class="med-card">
+
+            <div class="med-header">
+
+                <h3>💊 {{ medicamento.nombre }}</h3>
+
+                <div class="estados">
+
+                    {% if medicamento.activo %}
+                        <span class="activo">🟢 Activo</span>
+                    {% else %}
+                        <span class="suspendido">🔴 Suspendido</span>
+                    {% endif %}
+
+                    {% if medicamento.tomado %}
+                        <span class="tomado">✅ Tomado</span>
+                    {% else %}
+                        <span class="pendiente">⏰ Pendiente</span>
+                    {% endif %}
+
+                </div>
+
+            </div>
+
+            <div class="dato">
+                👤 Paciente:
+                <strong>{{ medicamento.paciente.nombre }}</strong>
+            </div>
+
+            <div class="dato">
+                💉 Dosis:
+                <strong>{{ medicamento.dosis }}</strong>
+            </div>
+
+            <div class="dato">
+                ⏰ Horario:
+                <strong>{{ medicamento.horario }}</strong>
+            </div>
+
+            <div class="dato">
+                🕒 Última toma:
+                <strong>
+                    {% if medicamento.fecha_ultima_toma %}
+                        {{ medicamento.fecha_ultima_toma|date:"d/m/Y H:i" }}
+                    {% else %}
+                        Nunca
+                    {% endif %}
+                </strong>
+            </div>
+
+            <div class="dato">
+                👨‍⚕️ Confirmado por:
+                <strong>
+                    {% if medicamento.confirmado_por %}
+                        {{ medicamento.confirmado_por.username }}
+                    {% else %}
+                        Sin confirmar
+                    {% endif %}
+                </strong>
+            </div>
+
+            <div class="botones">
+
+                {% if medicamento.tomado %}
+
+                    <button class="tomado" disabled>
+                        ✅ Medicamento tomado
+                    </button>
+
+                {% else %}
+
+                    <a href="{% url 'tomar_medicacion' medicamento.id %}" class="tomar">
+                        ✔ Tomar
+                    </a>
+
+                {% endif %}
+
+                <a href="{% url 'editar_medicacion' medicamento.id %}" class="editar">
+                    ✏ Editar
+                </a>
+
+                <a href="{% url 'cambiar_estado_medicacion' medicamento.id %}" class="eliminar">
+
+                    {% if medicamento.activo %}
+                        ⏸ Suspender
+                    {% else %}
+                        ▶ Reactivar
+                    {% endif %}
+
+                </a>
+
+            </div>
+
+        </div>
+
+        {% empty %}
+
+        <div class="sin-datos">
+            No hay medicamentos registrados.
+        </div>
+
+        {% endfor %}
+
+    </div>
+
+</div>
+
+<style>
+
+.medicacion-panel{
+    color:white;
+}
+
+.titulo h1{
+    color:#69d8ff;
+}
+
+.acciones{
+    margin:20px 0;
+}
+
+.btn-agregar{
+    display:inline-block;
+    background:#00b3ff;
+    padding:12px 25px;
+    border-radius:15px;
+    color:white;
+    text-decoration:none;
+    font-weight:bold;
+}
+
+.medicamentos-grid{
+    display:grid;
+    grid-template-columns:repeat(auto-fit,minmax(320px,1fr));
+    gap:25px;
+}
+
+.med-card{
+    background:rgba(255,255,255,.06);
+    border:1px solid rgba(0,200,255,.25);
+    border-radius:20px;
+    padding:25px;
+    box-shadow:0 0 20px rgba(0,200,255,.15);
+}
+
+.med-header{
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+    margin-bottom:20px;
+}
+
+.med-header h3{
+    color:#8be9ff;
+}
+
+.estados{
+    display:flex;
+    gap:8px;
+    flex-wrap:wrap;
+}
+
+.activo{
+    background:#16c78433;
+    color:#7dffb5;
+    padding:8px 12px;
+    border-radius:20px;
+}
+
+.tomado{
+    background:#008cff33;
+    color:#8bd8ff;
+    padding:8px 12px;
+    border-radius:20px;
+}
+
+.pendiente{
+    background:#ffaa0033;
+    color:#ffd27d;
+    padding:8px 12px;
+    border-radius:20px;
+}
+
+.suspendido{
+    background:#ff444433;
+    color:#ff9999;
+    padding:8px 12px;
+    border-radius:20px;
+}
+
+.dato{
+    margin:12px 0;
+    font-size:16px;
+}
+
+.botones{
+    margin-top:25px;
+    display:flex;
+    gap:10px;
+    flex-wrap:wrap;
+}
+
+.botones a,
+.botones button{
+    border:none;
+    padding:10px 15px;
+    border-radius:12px;
+    color:white;
+    text-decoration:none;
+    cursor:pointer;
+    font-weight:bold;
+    transition:.2s;
+}
+
+.tomar{
+    background:#00a86b;
+}
+
+.editar{
+    background:#008cff;
+}
+
+.eliminar{
+    background:#d9534f;
+}
+
+button.tomado{
+    background:#16c784;
+    cursor:default;
+}
+
+.sin-datos{
+    background:#111;
+    padding:30px;
+    border-radius:15px;
+    text-align:center;
+}
+
+</style>
+
+{% endblock %}

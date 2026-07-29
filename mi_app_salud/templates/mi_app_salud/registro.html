@@ -1,0 +1,472 @@
+
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<title>Jarvice Health AI - Registro</title>
+
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700;800&display=swap" rel="stylesheet">
+
+
+<style>
+
+
+*{
+
+margin:0;
+padding:0;
+box-sizing:border-box;
+
+}
+
+
+
+body{
+
+min-height:100vh;
+
+display:flex;
+
+justify-content:center;
+
+align-items:center;
+
+font-family:'Inter',sans-serif;
+
+background:
+
+radial-gradient(circle at top,#123f72,#08182d 45%,#040b16);
+
+color:white;
+
+}
+
+
+
+
+.container{
+
+width:95%;
+
+max-width:450px;
+
+}
+
+
+
+
+.logo{
+
+text-align:center;
+
+margin-bottom:25px;
+
+}
+
+
+
+.logo-icon{
+
+font-size:65px;
+
+}
+
+
+
+.logo h1{
+
+color:#8be9ff;
+
+font-size:30px;
+
+font-weight:800;
+
+}
+
+
+
+.logo p{
+
+color:#bfe9ff;
+
+font-size:14px;
+
+margin-top:8px;
+
+}
+
+
+
+
+
+
+
+.card{
+
+
+background:
+
+rgba(255,255,255,.08);
+
+
+backdrop-filter:blur(20px);
+
+
+border-radius:25px;
+
+
+padding:35px;
+
+
+border:1px solid rgba(139,233,255,.25);
+
+
+box-shadow:
+
+0 0 40px rgba(0,212,255,.15);
+
+
+}
+
+
+
+
+
+label{
+
+display:block;
+
+margin-bottom:8px;
+
+font-size:14px;
+
+color:#bfe9ff;
+
+}
+
+
+
+input, select{
+
+
+width:100%;
+
+padding:14px;
+
+margin-bottom:18px;
+
+border-radius:15px;
+
+border:none;
+
+outline:none;
+
+background:
+
+rgba(0,0,0,.35);
+
+color:white;
+
+font-size:15px;
+
+}
+
+
+
+select option{
+
+color:black;
+
+}
+
+
+
+
+button{
+
+
+width:100%;
+
+
+padding:16px;
+
+
+border:none;
+
+
+border-radius:18px;
+
+
+background:
+
+linear-gradient(
+135deg,
+#00d4ff,
+#0077ff
+);
+
+
+color:white;
+
+
+font-size:16px;
+
+
+font-weight:800;
+
+
+cursor:pointer;
+
+
+transition:.3s;
+
+
+}
+
+
+
+button:hover{
+
+transform:translateY(-3px);
+
+box-shadow:
+
+0 10px 30px rgba(0,212,255,.4);
+
+}
+
+
+
+
+.volver{
+
+
+text-align:center;
+
+margin-top:20px;
+
+
+}
+
+
+
+.volver a{
+
+
+color:#8be9ff;
+
+text-decoration:none;
+
+font-size:14px;
+
+
+}
+
+
+
+.seguridad{
+
+
+margin-top:20px;
+
+text-align:center;
+
+color:#7dffb5;
+
+font-size:13px;
+
+
+}
+
+
+
+</style>
+
+
+</head>
+
+
+<body>
+
+
+
+<div class="container">
+
+
+
+<div class="logo">
+
+
+<div class="logo-icon">
+🧬
+</div>
+
+
+<h1>
+JARVICE HEALTH AI
+</h1>
+
+
+<p>
+Crear nueva cuenta del sistema
+</p>
+
+
+</div>
+
+
+
+
+
+<div class="card">
+
+
+
+<form method="POST">
+
+
+{% csrf_token %}
+
+
+
+<label>
+👤 Usuario
+</label>
+
+
+<input 
+type="text"
+name="username"
+placeholder="Nombre de usuario"
+required>
+
+
+
+
+
+<label>
+📧 Email
+</label>
+
+
+<input 
+type="email"
+name="email"
+placeholder="correo@email.com"
+required>
+
+
+
+
+
+<label>
+🔒 Contraseña
+</label>
+
+
+<input 
+type="password"
+name="password"
+placeholder="Crear contraseña"
+required>
+
+
+
+
+
+<label>
+🏥 Tipo de usuario
+</label>
+
+
+
+<select name="rol">
+
+
+<option value="MEDICO">
+👨‍⚕️ Médico
+</option>
+
+
+<option value="ENFERMERIA">
+👩‍⚕️ Enfermería
+</option>
+
+
+<option value="FAMILIAR">
+👨‍👩‍👧 Familiar
+</option>
+
+
+<option value="PACIENTE">
+👤 Paciente
+</option>
+
+
+
+</select>
+
+
+
+
+
+<button type="submit">
+
+🚀 CREAR CUENTA
+
+</button>
+
+
+
+</form>
+
+
+
+
+
+<div class="volver">
+
+
+<a href="/login/">
+
+← Volver al login
+
+</a>
+
+
+</div>
+
+
+
+
+<div class="seguridad">
+
+🟢 Cuenta protegida por Jarvice Security
+
+</div>
+
+
+
+
+</div>
+
+
+
+
+</div>
+
+
+
+</body>
+
+
+</html>
+

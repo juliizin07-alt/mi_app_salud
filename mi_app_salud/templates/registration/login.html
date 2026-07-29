@@ -1,0 +1,558 @@
+{% extends "mi_app_salud/base_login.html" %}
+
+{% block contenido %}
+
+<div class="login-container">
+
+
+    <div class="login-card">
+
+
+        <div class="logo">
+
+            <h1>
+                ⚕ JARVICE
+            </h1>
+
+            <span>
+                Health AI System
+            </span>
+
+        </div>
+
+
+
+        <div class="secure">
+
+            🔒 Sistema protegido
+            <br>
+            <small>
+                Acceso autorizado solamente
+            </small>
+
+        </div>
+
+
+
+        {% if form.errors %}
+
+        <div class="error">
+
+            Usuario o contraseña incorrectos
+
+        </div>
+
+        {% endif %}
+
+
+
+        <form method="POST">
+
+            {% csrf_token %}
+
+
+
+            <div class="campo">
+
+                <label>
+                    👤 Usuario
+                </label>
+
+
+                <input 
+                type="text"
+                name="username"
+                placeholder="Ingrese usuario"
+                required>
+
+            </div>
+
+
+
+
+            <div class="campo">
+
+                <label>
+                    🔑 Contraseña
+                </label>
+
+
+                <input 
+                type="password"
+                name="password"
+                placeholder="Ingrese contraseña"
+                required>
+
+            </div>
+
+
+
+            <button class="btn-login">
+
+                INGRESAR
+
+            </button>
+
+
+        </form>
+
+
+
+
+        <a href="#" class="recuperar">
+
+            ¿Olvidaste tu contraseña?
+
+        </a>
+
+
+
+
+        <div class="roles">
+
+
+            <h3>
+                Tipo de acceso
+            </h3>
+
+
+
+            <div class="roles-grid">
+
+
+                <div class="rol medico">
+
+                    👨‍⚕️
+                    <span>
+                        Médico
+                    </span>
+
+                </div>
+
+
+
+                <div class="rol enfermeria">
+
+                    👩‍⚕️
+                    <span>
+                        Enfermería
+                    </span>
+
+                </div>
+
+
+
+                <div class="rol paciente">
+
+                    👤
+                    <span>
+                        Paciente
+                    </span>
+
+                </div>
+
+
+
+                <div class="rol emergencia">
+
+                    🚨
+                    <span>
+                        Emergencia
+                    </span>
+
+                </div>
+
+
+            </div>
+
+
+        </div>
+
+
+
+        <div class="footer">
+
+            Jarvice Health AI © 2026
+
+        </div>
+
+
+
+    </div>
+
+
+</div>
+
+
+
+
+
+<style>
+
+
+body{
+
+background:
+radial-gradient(circle at top,#003b70,#020617);
+
+}
+
+
+
+.login-container{
+
+min-height:90vh;
+
+display:flex;
+
+justify-content:center;
+
+align-items:center;
+
+}
+
+
+
+.login-card{
+
+
+width:420px;
+
+background:
+rgba(0,20,45,.85);
+
+border:
+
+1px solid rgba(0,180,255,.4);
+
+
+border-radius:25px;
+
+
+padding:35px;
+
+
+box-shadow:
+
+0 0 35px rgba(0,150,255,.35);
+
+
+color:white;
+
+
+backdrop-filter:blur(15px);
+
+
+}
+
+
+
+.logo{
+
+text-align:center;
+
+margin-bottom:25px;
+
+}
+
+
+
+.logo h1{
+
+font-size:42px;
+
+color:#4ddcff;
+
+text-shadow:
+
+0 0 15px #00bfff;
+
+
+margin:0;
+
+}
+
+
+
+.logo span{
+
+color:#8bdcff;
+
+font-size:18px;
+
+}
+
+
+
+
+.secure{
+
+text-align:center;
+
+padding:12px;
+
+border-radius:15px;
+
+background:
+
+rgba(0,150,255,.12);
+
+
+color:#7ee8ff;
+
+margin-bottom:25px;
+
+}
+
+
+
+
+
+.campo{
+
+margin-bottom:20px;
+
+}
+
+
+
+.campo label{
+
+display:block;
+
+margin-bottom:8px;
+
+color:#9eeaff;
+
+}
+
+
+
+.campo input{
+
+
+width:100%;
+
+padding:14px;
+
+border-radius:12px;
+
+border:none;
+
+outline:none;
+
+
+background:#07182c;
+
+color:white;
+
+
+border:
+
+1px solid rgba(0,200,255,.3);
+
+
+}
+
+
+
+.btn-login{
+
+
+width:100%;
+
+
+padding:15px;
+
+
+border:none;
+
+
+border-radius:15px;
+
+
+background:
+
+linear-gradient(90deg,#00aaff,#0066ff);
+
+
+color:white;
+
+
+font-size:18px;
+
+
+font-weight:bold;
+
+
+cursor:pointer;
+
+
+box-shadow:
+
+0 0 20px rgba(0,170,255,.5);
+
+
+}
+
+
+
+
+.recuperar{
+
+
+display:block;
+
+
+text-align:center;
+
+
+margin:20px;
+
+
+color:#65dfff;
+
+
+text-decoration:none;
+
+
+}
+
+
+
+
+.roles h3{
+
+text-align:center;
+
+color:#9eeaff;
+
+}
+
+
+
+.roles-grid{
+
+
+display:grid;
+
+
+grid-template-columns:1fr 1fr;
+
+
+gap:12px;
+
+
+}
+
+
+
+.rol{
+
+
+padding:15px;
+
+
+border-radius:15px;
+
+
+text-align:center;
+
+
+background:
+
+rgba(255,255,255,.06);
+
+
+border:
+
+1px solid rgba(0,180,255,.25);
+
+
+cursor:pointer;
+
+
+transition:.3s;
+
+
+}
+
+
+
+.rol:hover{
+
+
+transform:scale(1.05);
+
+
+box-shadow:
+
+0 0 15px #00bfff;
+
+
+}
+
+
+
+.rol span{
+
+
+display:block;
+
+
+font-size:14px;
+
+
+margin-top:5px;
+
+
+}
+
+
+
+.error{
+
+
+background:#ff444455;
+
+
+padding:12px;
+
+
+border-radius:12px;
+
+
+text-align:center;
+
+
+margin-bottom:15px;
+
+
+}
+
+
+
+
+.footer{
+
+
+text-align:center;
+
+
+margin-top:25px;
+
+
+font-size:13px;
+
+
+color:#8aa;
+
+
+}
+
+
+
+</style>
+
+
+{% endblock %}

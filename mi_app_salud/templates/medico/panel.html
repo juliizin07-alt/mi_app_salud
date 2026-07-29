@@ -1,0 +1,202 @@
+{% extends "mi_app_salud/base.html" %}
+
+{% block contenido %}
+
+<div class="jarvice-panel">
+
+    <header class="header">
+
+        <div>
+            <h1>🩺 Panel Médico Jarvice AI</h1>
+            <p>Centro de monitoreo clínico inteligente</p>
+        </div>
+
+        <div class="estado">
+            🟢 Sistema Online
+        </div>
+
+    </header>
+
+
+    <div class="grid">
+
+
+        <div class="card">
+            <h2>👥 Pacientes</h2>
+            <h1>{{ pacientes|length }}</h1>
+            <p>Pacientes registrados</p>
+        </div>
+
+
+        <div class="card">
+            <h2>❤️ Signos Vitales</h2>
+            <h1>78 BPM</h1>
+            <p>Monitorización activa</p>
+        </div>
+
+
+        <div class="card">
+            <h2>💊 Medicación</h2>
+            <h1>Control</h1>
+            <p>Confirmaciones pendientes</p>
+        </div>
+
+
+        <div class="card alerta">
+
+            <h2>🚨 Alertas</h2>
+
+            <h1>
+                0
+            </h1>
+
+            <p>
+                Sin emergencias activas
+            </p>
+
+        </div>
+
+
+    </div>
+
+
+
+    <div class="panel IA">
+
+        <h2>
+            🧠 Inteligencia Artificial Jarvice
+        </h2>
+
+        <p>
+            Analizando información clínica del paciente...
+        </p>
+
+        <div class="ia-status">
+            ESTABLE
+        </div>
+
+    </div>
+
+
+</div>
+
+
+
+<style>
+
+.jarvice-panel{
+
+    color:white;
+
+}
+
+
+.header{
+
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+    margin-bottom:30px;
+
+}
+
+
+.header h1{
+
+    color:#8be9ff;
+    font-size:35px;
+
+}
+
+
+.estado{
+
+    background:#00ff9933;
+    color:#7dffb5;
+    padding:12px 25px;
+    border-radius:30px;
+    font-weight:bold;
+
+}
+
+
+
+.grid{
+
+    display:grid;
+    grid-template-columns:
+    repeat(auto-fit,minmax(250px,1fr));
+
+    gap:20px;
+
+}
+
+
+
+.card,
+.panel{
+
+    background:rgba(255,255,255,.06);
+
+    border:1px solid rgba(0,200,255,.25);
+
+    border-radius:20px;
+
+    padding:25px;
+
+    box-shadow:
+    0 0 20px rgba(0,200,255,.15);
+
+}
+
+
+
+.card h2{
+
+    color:#8be9ff;
+
+}
+
+
+.card h1{
+
+    font-size:40px;
+    margin:15px 0;
+
+}
+
+
+
+.alerta{
+
+    border-color:#ff4444;
+
+}
+
+
+
+.IA{
+
+    margin-top:30px;
+
+}
+
+
+
+.ia-status{
+
+    margin-top:20px;
+
+    color:#00ff99;
+
+    font-size:35px;
+
+    font-weight:bold;
+
+}
+
+
+</style>
+
+
+{% endblock %}
