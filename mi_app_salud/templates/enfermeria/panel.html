@@ -1,0 +1,96 @@
+{% extends "mi_app_salud/base.html" %}
+
+
+{% block contenido %}
+
+<div class="contenido">
+
+
+<h1>
+🩺 Panel Enfermería
+</h1>
+
+
+<p>
+Usuario conectado:
+<strong>
+{{ request.user.username }}
+</strong>
+</p>
+
+
+<div style="
+display:grid;
+grid-template-columns:repeat(auto-fit,minmax(250px,1fr));
+gap:20px;
+margin-top:30px;
+">
+
+
+<div style="
+background:#10263d;
+padding:25px;
+border-radius:20px;
+">
+
+<h2>👥 Pacientes</h2>
+
+<p>
+Control y seguimiento de pacientes registrados.
+</p>
+
+<a href="{% url 'pacientes' %}">
+Ver pacientes
+</a>
+
+</div>
+
+
+
+<div style="
+background:#10263d;
+padding:25px;
+border-radius:20px;
+">
+
+<h2>💊 Medicación</h2>
+
+<p>
+Administración de tratamientos.
+</p>
+
+<a href="{% url 'medicacion' %}">
+Ver medicación
+</a>
+
+</div>
+
+
+
+<div style="
+background:#10263d;
+padding:25px;
+border-radius:20px;
+">
+
+<h2>🚨 Alertas</h2>
+
+<p>
+Estados críticos detectados por Jarvice.
+</p>
+
+<a href="{% url 'emergencia' %}">
+Abrir emergencia
+</a>
+
+</div>
+
+
+
+</div>
+
+
+</div>
+
+
+{% endblock %}

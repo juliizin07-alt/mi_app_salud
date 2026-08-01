@@ -180,7 +180,11 @@ USE_TZ = True
 # STATIC FILES
 # =====================================================
 
-STATIC_URL = "static/"
+STATIC_URL = "/static/"
+
+STATICFILES_DIRS = [
+    BASE_DIR / "mi_app_salud" / "static",
+]
 
 
 # =====================================================
@@ -196,9 +200,3 @@ LOGOUT_REDIRECT_URL = '/login/'
 # =====================================================
 
 DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
-
-LOGIN_URL = "/login/"
-
-LOGIN_REDIRECT_URL = "/dashboard/"
-
-LOGOUT_REDIRECT_URL = "/login/"

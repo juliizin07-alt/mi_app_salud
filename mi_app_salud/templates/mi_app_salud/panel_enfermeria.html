@@ -1,0 +1,26 @@
+{% extends "mi_app_salud/base.html" %}
+
+{% block content %}
+
+<div class="card">
+
+    <h1>🩺 Panel Enfermería</h1>
+
+    <p>
+        Bienvenida/o {{ user.username }}
+    </p>
+
+    <hr>
+
+    <h3>Funciones disponibles:</h3>
+
+    <ul>
+        <li>Control de pacientes</li>
+        <li>Registro de signos vitales</li>
+        <li>Administración de medicación</li>
+        <li>Alertas Jarvice</li>
+    </ul>
+
+</div>
+
+{% endblock %}

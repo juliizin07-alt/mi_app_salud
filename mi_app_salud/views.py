@@ -7,7 +7,8 @@ from django.http import JsonResponse
 from django.contrib import messages
 from django.contrib.auth.models import User
 from django.contrib.auth.decorators import login_required
-from django.contrib.auth import logout
+from django.contrib.auth import logout, authenticate, login
+from django.utils import timezone
 
 
 from .models import (
@@ -69,16 +70,59 @@ def registro(request):
     request,
     "mi_app_salud/registro.html"
 )
+# ==================================================
+# LOGIN USUARIO
+# ==================================================
 
+def login_view(request):
+
+    if request.method == "POST":
+
+        username = request.POST.get("username")
+        password = request.POST.get("password")
+
+
+        usuario = authenticate(
+            request,
+            username=username,
+            password=password
+        )
+
+
+        if usuario is not None:
+
+            login(
+                request,
+                usuario
+            )
+
+            return redirect(
+                "dashboard"
+            )
+
+
+        messages.error(
+            request,
+            "Usuario o contraseña incorrectos"
+        )
+
+
+    return render(
+        request,
+        "mi_app_salud/login.html"
+    )
 
 # ==================================================
 # DASHBOARD PRINCIPAL JARVICE
 # ==================================================
 
 @login_required
-def lista_pacientes(request):
+def inicio(request):
 
-    perfil = PerfilUsuario.objects.get(usuario=request.user)
+    perfil = get_object_or_404(
+    PerfilUsuario,
+    usuario=request.user
+)
 
     pacientes = Paciente.objects.all()
 
@@ -90,90 +134,45 @@ def lista_pacientes(request):
             "rol": perfil.rol,
         }
     )
-
-
-
 @login_required
 def dashboard_redirect(request):
 
-    perfil = get_object_or_404(
-        PerfilUsuario,
-        usuario=request.user
-    )
-
-
-    if perfil.rol == "MEDICO":
-
-        return redirect("panel_medico")
-
-
-    elif perfil.rol == "ENFERMERIA":
-
-        return redirect("panel_enfermeria")
-
-
-    elif perfil.rol == "PACIENTE":
-
-        return redirect("panel_paciente")
-
-
-    elif perfil.rol == "EMERGENCIA":
-
-        return redirect("panel_emergencia")
-
-
-    elif perfil.rol == "ADMIN":
-
-        return redirect("inicio")
-
-
-    else:
-
-        return redirect("inicio")
-
-# ==================================================
-# REDIRECCION SEGUN ROL
-# ==================================================
-
-@login_required
-def redireccion_rol(request):
-
-    perfil = get_object_or_404(
-        PerfilUsuario,
-        usuario=request.user
-    )
-
-
-    if perfil.rol == "MEDICO":
-
-        return redirect("panel_medico")
-
-
-    elif perfil.rol == "ENFERMERIA":
-
-        return redirect("panel_enfermeria")
-
-
-    elif perfil.rol == "PACIENTE":
-
-        return redirect("panel_paciente")
-
-
-    elif perfil.rol == "EMERGENCIA":
-
-        return redirect("panel_emergencia")
-
-
-    elif perfil.rol == "ADMIN":
-
-        return redirect("inicio")
-
-
-    else:
-
-        return redirect("inicio")
+    print("USUARIO:", request.user)
     
-    # ==================================================
+    perfil = get_object_or_404(
+        PerfilUsuario,
+        usuario=request.user
+    )
+
+    print("ROL:", perfil.rol)
+
+
+    if perfil.rol == "ADMIN":
+        return redirect("inicio")
+
+
+    if perfil.rol == "MEDICO":
+        return redirect("panel_medico")
+
+
+    if perfil.rol == "ENFERMERIA":
+        return redirect("panel_enfermeria")
+
+
+    if perfil.rol == "PACIENTE":
+        return redirect("panel_paciente")
+
+
+    if perfil.rol == "FAMILIAR":
+        return redirect("panel_familiar")
+
+
+    if perfil.rol == "EMERGENCIA":
+        return redirect("panel_emergencia")
+
+
+    return redirect("inicio")
+# ==================================================
 # PANELES POR ROL
 # ==================================================
 
@@ -196,7 +195,10 @@ def panel_enfermeria(request):
 
     return render(
         request,
-        "enfermeria/panel.html"
+        "enfermeria/panel.html",
+        {
+            "prueba": "Panel enfermería conectado correctamente"
+        }
     )
 
 
@@ -405,12 +407,12 @@ def crear_recordatorio(request, paciente_id):
 
 @login_required
 def seguridad(request):
-
     return render(
         request,
         "mi_app_salud/seguridad.html"
     )
-    # ==================================================
+
+# ==================================================
 # API PACIENTES
 # ==================================================
 
@@ -683,7 +685,6 @@ def crear_medicacion(request):
 # TOMAR MEDICACION
 # ==========================================
 
-from django.utils import timezone
 
 @login_required
 def tomar_medicacion(request, medicamento_id):
@@ -882,15 +883,10 @@ def configuracion(request):
 # LOGOUT
 # ==================================================
 
-@login_required
 def salir(request):
-
     logout(request)
+    return redirect("login")
 
-    return redirect(
-        "login"
-    )
-    
 # ==================================================
 # EMERGENCIA
 # ==================================================
@@ -901,4 +897,15 @@ def emergencia(request):
     return render(
         request,
         "mi_app_salud/emergencia.html"
+    )
+# ==================================================
+# PANEL FAMILIAR
+# ==================================================
+
+@login_required
+def panel_familiar(request):
+
+    return render(
+        request,
+        "mi_app_salud/panel_familiar.html"
     )

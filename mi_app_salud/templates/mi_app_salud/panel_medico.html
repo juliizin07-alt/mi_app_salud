@@ -1,0 +1,34 @@
+{% extends "mi_app_salud/base.html" %}
+
+{% block contenido %}
+
+<div style="padding:40px">
+
+<h1>👨‍⚕️ Panel Médico</h1>
+
+<p>Bienvenido a Jarvice Health AI.</p>
+
+<h2>Pacientes registrados</h2>
+
+<ul>
+
+{% for paciente in pacientes %}
+
+<li>
+
+{{ paciente.nombre }}
+{{ paciente.apellido }}
+
+</li>
+
+{% empty %}
+
+<li>No hay pacientes registrados.</li>
+
+{% endfor %}
+
+</ul>
+
+</div>
+
+{% endblock %}
