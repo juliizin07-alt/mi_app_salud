@@ -93,17 +93,31 @@ input:focus {
     <nav>
         🩺 Jarvice Salud
 
-        {% if user.is_authenticated %}
-        <form method="post" action="{% url 'logout' %}">
-            {% csrf_token %}
-            <button class="logout-btn" type="submit">Cerrar sesión</button>
-        </form>
-        {% endif %}
-    </nav>
+        Usuario actual: {{ user.username }} <br>
+¿Autenticado?: {{ user.is_authenticated }}
 
+{% if user.is_authenticated %}
+
+<form method="post" action="{% url 'logout' %}">
+    {% csrf_token %}
+    <button class="logout-btn" type="submit">
+        Cerrar sesión
+    </button>
+</form>
+
+{% else %}
+
+<p>No hay usuario autenticado</p>
+
+{% endif %}
     <div class="container">
-        {% block content %}
-        {% endblock %}
+
+    {% block content %}
+    {% endblock %}
+
+</div>
+
+</div>
     </div>
 
 </body>

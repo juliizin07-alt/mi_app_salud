@@ -1,0 +1,183 @@
+<header class="jarvice-header">
+
+    <div class="jarvice-logo">
+
+        <div class="logo-icon">
+            🧬
+        </div>
+
+        <div>
+            <h1>
+                JARVICE HEALTH AI
+            </h1>
+
+            <span>
+                Sistema inteligente de monitoreo
+            </span>
+        </div>
+
+    </div>
+
+
+    <div class="jarvice-status">
+
+        <span class="pulse"></span>
+
+        Sistema Online
+
+    </div>
+
+
+</header>
+
+
+<style>
+
+.jarvice-header{
+
+    width:100%;
+
+    display:flex;
+
+    justify-content:space-between;
+
+    align-items:center;
+
+    padding:25px 35px;
+
+    background:
+
+    rgba(10,25,45,.75);
+
+    backdrop-filter:blur(20px);
+
+    border-bottom:
+
+    1px solid rgba(139,233,255,.2);
+
+}
+
+
+
+.jarvice-logo{
+
+    display:flex;
+
+    align-items:center;
+
+    gap:15px;
+
+}
+
+
+
+.logo-icon{
+
+    font-size:45px;
+
+    filter:
+
+    drop-shadow(0 0 15px #00eaff);
+
+}
+
+
+
+.jarvice-logo h1{
+
+    margin:0;
+
+    color:#8be9ff;
+
+    font-size:28px;
+
+    font-weight:800;
+
+}
+
+
+
+.jarvice-logo span{
+
+    color:#b7dfff;
+
+    font-size:13px;
+
+}
+
+
+
+.jarvice-status{
+
+    display:flex;
+
+    align-items:center;
+
+    gap:10px;
+
+    padding:10px 20px;
+
+    border-radius:30px;
+
+    background:
+
+    rgba(0,255,150,.15);
+
+    color:#7dffb5;
+
+    font-weight:700;
+
+}
+
+
+
+.pulse{
+
+    width:12px;
+
+    height:12px;
+
+    background:#00ff99;
+
+    border-radius:50%;
+
+    animation:
+
+    latido 1.5s infinite;
+
+}
+
+
+
+@keyframes latido{
+
+
+0%{
+
+transform:scale(1);
+
+box-shadow:0 0 0 0 rgba(0,255,150,.7);
+
+}
+
+
+70%{
+
+transform:scale(1.2);
+
+box-shadow:0 0 0 15px rgba(0,255,150,0);
+
+}
+
+
+100%{
+
+transform:scale(1);
+
+}
+
+
+}
+
+
+</style>

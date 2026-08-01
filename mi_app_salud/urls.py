@@ -1,16 +1,18 @@
 from django.urls import path
 from . import views
 
+
 urlpatterns = [
 
-path(
-    "",
-    views.lista_pacientes,
-    name="inicio"
-),
     # ==================================================
-    # REGISTRO Y AUTENTICACIÓN
+    # AUTENTICACIÓN
     # ==================================================
+
+    path(
+        "login/",
+        views.login_view,
+        name="login"
+    ),
 
     path(
         "registro/",
@@ -19,8 +21,19 @@ path(
     ),
 
     path(
+    "logout/",
+    views.salir,
+    name="logout"
+),
+
+
+    # ==================================================
+    # DASHBOARD PRINCIPAL
+    # ==================================================
+
+    path(
         "",
-        views.lista_pacientes,
+        views.inicio,
         name="inicio"
     ),
 
@@ -30,21 +43,10 @@ path(
         name="dashboard"
     ),
 
-    path(
-        "logout/",
-        views.salir,
-        name="logout"
-    ),
 
     # ==================================================
     # PACIENTES
     # ==================================================
-
-    path(
-        "crear-paciente/",
-        views.crear_paciente,
-        name="crear_paciente"
-    ),
 
     path(
         "pacientes/",
@@ -53,10 +55,17 @@ path(
     ),
 
     path(
+        "crear-paciente/",
+        views.crear_paciente,
+        name="crear_paciente"
+    ),
+
+    path(
         "historial/<int:paciente_id>/",
         views.historial_paciente,
         name="historial_paciente"
     ),
+
 
     # ==================================================
     # RECORDATORIOS
@@ -67,6 +76,7 @@ path(
         views.crear_recordatorio,
         name="crear_recordatorio"
     ),
+
 
     # ==================================================
     # MEDICACIÓN
@@ -108,8 +118,9 @@ path(
         name="eliminar_medicacion"
     ),
 
+
     # ==================================================
-    # PANEL JARVICE
+    # MÓDULOS JARVICE
     # ==================================================
 
     path(
@@ -135,40 +146,51 @@ path(
         views.configuracion,
         name="configuracion"
     ),
+
     path(
-    "emergencia/",
-    views.emergencia,
-    name="emergencia"
-),
-# ==================================================
-# PANELES POR ROL JARVICE
-# ==================================================
+        "emergencia/",
+        views.emergencia,
+        name="emergencia"
+    ),
 
-path(
-    "panel/medico/",
-    views.panel_medico,
-    name="panel_medico"
-),
 
-path(
-    "panel/enfermeria/",
-    views.panel_enfermeria,
-    name="panel_enfermeria"
-),
-
-path(
-    "panel/paciente/",
-    views.panel_paciente,
-    name="panel_paciente"
-),
-
-path(
-    "panel/emergencia/",
-    views.panel_emergencia,
-    name="panel_emergencia"
-),
     # ==================================================
-    # API
+    # PANELES SEGÚN ROL
+    # ==================================================
+
+    path(
+        "panel/medico/",
+        views.panel_medico,
+        name="panel_medico"
+    ),
+
+    path(
+        "panel/enfermeria/",
+        views.panel_enfermeria,
+        name="panel_enfermeria"
+    ),
+
+    path(
+        "panel/paciente/",
+        views.panel_paciente,
+        name="panel_paciente"
+    ),
+
+    path(
+        "panel/familiar/",
+        views.panel_familiar,
+        name="panel_familiar"
+    ),
+
+    path(
+        "panel/emergencia/",
+        views.panel_emergencia,
+        name="panel_emergencia"
+    ),
+
+
+    # ==================================================
+    # API JARVICE
     # ==================================================
 
     path(
@@ -196,35 +218,3 @@ path(
     ),
 
 ]
-path(
-    "emergencia/",
-    views.emergencia,
-    name="emergencia"
-),
-# ==================================================
-# PANELES PROFESIONALES
-# ==================================================
-
-path(
-    "panel/medico/",
-    views.panel_medico,
-    name="panel_medico"
-),
-
-path(
-    "panel/enfermeria/",
-    views.panel_enfermeria,
-    name="panel_enfermeria"
-),
-
-path(
-    "panel/paciente/",
-    views.panel_paciente,
-    name="panel_paciente"
-),
-
-path(
-    "panel/emergencia/",
-    views.panel_emergencia,
-    name="panel_emergencia"
-),
