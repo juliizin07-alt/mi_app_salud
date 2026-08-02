@@ -1,1 +1,1783 @@
 {% extends "mi_app_salud/base.html" %}
+
+{% block contenido %}
+
+<div class="ficha-jarvice">
+
+
+    <!-- CABECERA PACIENTE -->
+
+    <div class="ficha-header">
+
+    <div class="paciente-info">
+
+        <div class="avatar">
+            🧑
+        </div>
+
+        <div>
+
+    
+                <h1>
+                    {{ paciente.nombre }} {{ paciente.apellido }}
+                </h1>
+
+                <p>
+                    Edad: {{ paciente.edad }} años
+                </p>
+
+            </div>
+
+        </div>
+
+
+        <div class="estado">
+
+            🟢 Paciente registrado
+
+        </div>
+
+
+    </div>
+
+    <div class="acciones-medicas">
+
+    <a href="{% url 'crear_recordatorio' paciente.id %}" class="btn-accion azul">
+        ➕ Recordatorio
+    </a>
+
+    <a href="{% url 'crear_medicacion' %}" class="btn-accion verde">
+        💊 Medicación
+    </a>
+
+    <button class="btn-accion naranja">
+        🧪 Estudios
+    </button>
+
+    <button class="btn-accion violeta">
+        📝 Evolución
+    </button>
+
+</div>
+
+
+    <!-- PANEL RESUMEN -->
+
+    <div class="tarjetas">
+
+
+        <div class="tarjeta">
+
+            ❤️
+
+            <h3>
+                Estado de salud
+            </h3>
+
+            <p>
+                Monitoreo activo
+            </p>
+
+        </div>
+
+
+
+        <div class="tarjeta">
+
+            📋
+
+            <h3>
+                Registros
+            </h3>
+
+            <p>
+                {{ registros|length }} controles
+            </p>
+
+        </div>
+
+
+
+        <div class="tarjeta">
+
+            ⏰
+
+            <h3>
+                Recordatorios
+            </h3>
+
+            <p>
+                {{ recordatorios|length }} pendientes
+            </p>
+
+        </div>
+
+
+    </div>
+
+
+<!-- MONITOR CLÍNICO JARVICE -->
+
+<div class="monitor-jarvice">
+
+    <h2>
+        ❤️ Monitor Clínico Jarvice
+    </h2>
+
+
+    <div class="signos-grid">
+
+
+        <div class="signo-card">
+
+            ❤️
+
+            <h3>
+                Frecuencia cardíaca
+            </h3>
+
+            <strong>
+                78 BPM
+            </strong>
+
+            <p>
+                Ritmo estable
+            </p>
+
+        </div>
+
+
+
+        <div class="signo-card">
+
+            🫁
+
+            <h3>
+                Saturación O₂
+            </h3>
+
+            <strong>
+                98%
+            </strong>
+
+            <p>
+                Oxigenación normal
+            </p>
+
+        </div>
+
+
+
+        <div class="signo-card">
+
+            🌡️
+
+            <h3>
+                Temperatura
+            </h3>
+
+            <strong>
+                36.5 °C
+            </strong>
+
+            <p>
+                Dentro del rango
+            </p>
+
+        </div>
+
+
+
+        <div class="signo-card">
+
+            🧠
+
+            <h3>
+                Estado emocional
+            </h3>
+
+            <strong class="verde-texto">
+                🟢 Estable
+            </strong>
+
+            <p>
+                Sin alertas detectadas
+            </p>
+
+        </div>
+
+
+    </div>
+
+
+</div> 
+
+<!-- ALERTAS JARVICE -->
+
+<div class="alertas-jarvice">
+
+    <h2>
+        🚨 Alertas Jarvice
+    </h2>
+
+
+    <div class="semáforo-container">
+
+
+        <div class="nivel riesgo-bajo">
+
+            🟢
+
+            <h3>
+                Estado Normal
+            </h3>
+
+            <p>
+                Paciente estable.
+            </p>
+
+            <strong>
+                Riesgo Bajo
+            </strong>
+
+        </div>
+
+
+
+        <div class="nivel riesgo-medio">
+
+            🟡
+
+            <h3>
+                Seguimiento
+            </h3>
+
+            <p>
+                Cambios detectados.
+            </p>
+
+            <strong>
+                Riesgo Moderado
+            </strong>
+
+        </div>
+
+
+
+        <div class="nivel riesgo-alto">
+
+            🔴
+
+            <h3>
+                Emergencia
+            </h3>
+
+            <p>
+                Requiere atención inmediata.
+            </p>
+
+            <strong>
+                Riesgo Alto
+            </strong>
+
+        </div>
+
+
+    </div>
+
+
+    <div class="mensaje-ia">
+
+        🤖 Jarvice analiza:
+
+        <span>
+            Sin alteraciones críticas detectadas.
+        </span>
+
+    </div>
+
+
+</div>
+
+    <!-- HISTORIAL SALUD -->
+
+    <div class="seccion">
+
+
+        <h2>
+            ❤️ Historial clínico
+        </h2>
+
+
+
+        {% for registro in registros %}
+
+
+        <div class="registro">
+
+
+            <strong>
+
+                {{ registro.fecha }}
+
+            </strong>
+
+
+            <span>
+
+                {{ registro.estado }}
+
+            </span>
+
+
+        </div>
+
+
+
+        {% empty %}
+
+
+        <p>
+            No existen registros todavía.
+        </p>
+
+
+        {% endfor %}
+
+
+
+    </div>
+
+    
+
+        <!-- TRATAMIENTO ACTUAL -->
+
+<div class="seccion">
+
+    <h2>💊 Tratamiento actual</h2>
+
+    {% for medicamento in medicaciones %}
+
+    <div class="registro">
+
+        <div>
+
+            <strong>{{ medicamento.nombre }}</strong>
+
+            <br>
+
+            Dosis:
+            {{ medicamento.dosis }}
+
+        </div>
+
+        <div>
+
+            ⏰ {{ medicamento.horario }}
+
+            <br>
+
+            {% if medicamento.activo %}
+                🟢 Activo
+            {% else %}
+                🔴 Suspendido
+            {% endif %}
+
+        </div>
+
+    </div>
+
+    {% empty %}
+
+    <p>No hay tratamientos registrados.</p>
+
+    {% endfor %}
+
+</div>
+<!-- ACTIVIDAD RECIENTE JARVICE -->
+
+<div class="actividad-jarvice">
+
+    <h2>
+        ⏱ Última actividad Jarvice
+    </h2>
+
+
+    <div class="actividad-lista">
+
+
+        {% if medicaciones %}
+
+        <div class="actividad-item">
+
+            <span>
+                💊
+            </span>
+
+            <div>
+
+                <strong>
+                    Tratamiento registrado
+                </strong>
+
+                <p>
+                    {{ medicaciones.0.nombre }}
+                    - {{ medicaciones.0.horario }}
+                </p>
+
+            </div>
+
+        </div>
+
+        {% endif %}
+
+
+
+        {% if registros %}
+
+        <div class="actividad-item">
+
+            <span>
+                📋
+            </span>
+
+            <div>
+
+                <strong>
+                    Último control clínico
+                </strong>
+
+                <p>
+                    Estado:
+                    {{ registros.0.estado }}
+                </p>
+
+            </div>
+
+        </div>
+
+        {% endif %}
+
+
+
+        {% if recordatorios %}
+
+        <div class="actividad-item">
+
+            <span>
+                ⏰
+            </span>
+
+            <div>
+
+                <strong>
+                    Recordatorio activo
+                </strong>
+
+                <p>
+                    {{ recordatorios.0 }}
+                </p>
+
+            </div>
+
+        </div>
+
+        {% endif %}
+
+
+
+        {% if not registros and not recordatorios and not medicaciones %}
+
+        <p>
+            Jarvice no registra actividad reciente.
+        </p>
+
+        {% endif %}
+
+
+    </div>
+
+
+</div>
+
+<!-- EVOLUCIÓN INTELIGENTE JARVICE -->
+
+<div class="evolucion-jarvice">
+
+    <h2>
+        🧠 Evolución Inteligente Jarvice
+    </h2>
+
+
+    <div class="evolucion-grid">
+
+
+        <div class="indicador">
+
+            ❤️
+
+            <h3>
+                Estado físico
+            </h3>
+
+            <div class="barra">
+
+                <div class="progreso fisico"></div>
+
+            </div>
+
+            <strong>
+                80%
+            </strong>
+
+        </div>
+
+
+
+        <div class="indicador">
+
+            😊
+
+            <h3>
+                Estado emocional
+            </h3>
+
+            <div class="barra">
+
+                <div class="progreso emocional"></div>
+
+            </div>
+
+            <strong>
+                70%
+            </strong>
+
+        </div>
+
+
+
+        <div class="indicador">
+
+            💊
+
+            <h3>
+                Adherencia tratamiento
+            </h3>
+
+            <div class="barra">
+
+                <div class="progreso medicacion"></div>
+
+            </div>
+
+            <strong>
+                90%
+            </strong>
+
+        </div>
+
+
+    </div>
+
+
+
+    <div class="analisis-ia">
+
+        🤖 Análisis Jarvice:
+
+        <p>
+            El paciente mantiene estabilidad.
+            Se recomienda continuar seguimiento.
+        </p>
+
+    </div>
+
+
+</div>
+<!-- JARVICE AI INSIGHT -->
+
+<div class="insight-jarvice">
+
+    <h2>
+        🤖 Jarvice AI Insight
+    </h2>
+
+
+    <div class="insight-contenido">
+
+
+        <div class="insight-item">
+
+            ❤️
+
+            <div>
+
+                <strong>
+                    Estado general
+                </strong>
+
+                <p>
+                    {% if registros %}
+                        Último estado:
+                        {{ registros.0.estado }}
+                    {% else %}
+                        Sin registros clínicos
+                    {% endif %}
+                </p>
+
+            </div>
+
+        </div>
+
+
+
+        <div class="insight-item">
+
+            💊
+
+            <div>
+
+                <strong>
+                    Tratamiento
+                </strong>
+
+                <p>
+
+                    {% if medicaciones %}
+
+                        {{ medicaciones|length }}
+                        medicación(es) activa(s)
+
+                    {% else %}
+
+                        Sin tratamientos registrados
+
+                    {% endif %}
+
+                </p>
+
+            </div>
+
+        </div>
+
+
+
+        <div class="insight-item">
+
+            🚨
+
+            <div>
+
+                <strong>
+                    Nivel de riesgo
+                </strong>
+
+                <p>
+                    🟢 Bajo
+                </p>
+
+            </div>
+
+        </div>
+
+
+    </div>
+
+
+
+    <div class="recomendacion-jarvice">
+
+        🧠 Recomendación Jarvice:
+
+        <p>
+
+        Continuar seguimiento del paciente.
+        Mantener controles periódicos.
+
+        </p>
+
+    </div>
+
+
+</div>
+
+<!-- SEMAFORO RIESGO JARVICE -->
+
+<div class="semaforo-panel {{ color_riesgo }}">
+
+    <div class="semaforo-icono">
+
+        {% if color_riesgo == "verde" %}
+            🟢
+        {% elif color_riesgo == "amarillo" %}
+            🟡
+        {% else %}
+            🔴
+        {% endif %}
+
+    </div>
+
+
+    <div>
+
+        <h2>
+            🤖 Jarvice Risk AI
+        </h2>
+
+
+        <h3>
+            Riesgo: {{ riesgo }}
+        </h3>
+
+
+        {% if riesgo == "BAJO" %}
+
+            <p>
+                Paciente estable. No se detectan alertas activas.
+            </p>
+
+
+        {% elif riesgo == "ATENCION" %}
+
+            <p>
+                Jarvice recomienda seguimiento del paciente.
+            </p>
+
+
+        {% else %}
+
+            <p>
+                Se requiere evaluación inmediata.
+            </p>
+
+
+        {% endif %}
+
+
+    </div>
+
+</div>
+
+    <!-- IA -->
+
+    <div class="ia-panel">
+
+
+        🤖 Jarvice Clinical AI
+
+
+        <p>
+
+        Analizando evolución del paciente...
+
+        </p>
+
+
+        <strong>
+
+            ESTADO NORMAL
+
+        </strong>
+
+
+    </div>
+
+
+
+</div>
+
+
+
+
+<style>
+
+
+.ficha-jarvice{
+
+    padding:35px;
+
+    color:white;
+
+}
+
+
+
+.ficha-header{
+
+    display:flex;
+
+    justify-content:space-between;
+
+    align-items:center;
+
+    flex-wrap:wrap;
+
+    gap:20px;
+
+}
+
+
+
+.paciente-info{
+
+    display:flex;
+
+    align-items:center;
+
+    gap:20px;
+
+}
+
+
+
+.avatar{
+
+    font-size:60px;
+
+}
+
+
+
+.ficha-header h1{
+
+    color:#8be9ff;
+
+}
+
+
+
+.estado{
+
+    background:#003d26;
+
+    color:#00ff99;
+
+    padding:12px 25px;
+
+    border-radius:25px;
+
+}
+
+
+
+.tarjetas{
+
+    display:grid;
+
+    grid-template-columns:repeat(auto-fit,minmax(220px,1fr));
+
+    gap:20px;
+
+    margin:35px 0;
+
+}
+
+
+
+.tarjeta,
+.seccion,
+.ia-panel{
+
+
+    background:rgba(255,255,255,.08);
+
+    border-radius:25px;
+
+    padding:25px;
+
+    border:1px solid rgba(139,233,255,.2);
+
+    backdrop-filter:blur(15px);
+
+}
+
+
+
+.tarjeta{
+
+    text-align:center;
+
+    font-size:35px;
+
+}
+
+
+
+.tarjeta h3{
+
+    color:#8be9ff;
+
+    font-size:20px;
+
+}
+
+
+
+.seccion{
+
+    margin-top:25px;
+
+}
+
+
+
+.seccion h2{
+
+    color:#8be9ff;
+
+}
+
+
+
+.registro{
+
+    display:flex;
+
+    justify-content:space-between;
+
+    padding:15px;
+
+    margin-top:10px;
+
+    background:rgba(0,0,0,.2);
+
+    border-radius:15px;
+
+}
+
+
+
+.ia-panel{
+
+    margin-top:30px;
+
+    text-align:center;
+
+    font-size:25px;
+
+    color:#8be9ff;
+
+}
+
+
+
+.ia-panel strong{
+
+    color:#00ff99;
+
+}
+.acciones-medicas{
+
+    display:flex;
+
+    gap:15px;
+
+    flex-wrap:wrap;
+
+    margin:30px 0;
+
+}
+
+.btn-accion{
+
+    padding:12px 22px;
+
+    border-radius:20px;
+
+    text-decoration:none;
+
+    color:white;
+
+    font-weight:bold;
+
+    transition:.3s;
+
+}
+
+.btn-accion:hover{
+
+    transform:translateY(-4px);
+
+}
+
+.azul{
+
+    background:#0d8eff;
+
+}
+
+.verde{
+
+    background:#00c26f;
+
+}
+
+.naranja{
+
+    background:#ff9800;
+
+    border:none;
+
+    cursor:pointer;
+
+}
+
+.violeta{
+
+    background:#8b5cf6;
+
+    border:none;
+
+    cursor:pointer;
+
+}
+.dashboard-clinico{
+
+    display:grid;
+
+    grid-template-columns:repeat(auto-fit,minmax(180px,1fr));
+
+    gap:20px;
+
+    margin-bottom:35px;
+
+}
+
+.mini-card{
+
+    background:rgba(255,255,255,.07);
+
+    border:1px solid rgba(139,233,255,.20);
+
+    backdrop-filter:blur(12px);
+
+    border-radius:20px;
+
+    padding:20px;
+
+    text-align:center;
+
+    transition:.3s;
+
+}
+
+.mini-card:hover{
+
+    transform:translateY(-6px);
+
+    box-shadow:0 0 20px rgba(139,233,255,.20);
+
+}
+
+.mini-card{
+
+    font-size:40px;
+
+}
+
+.mini-card h3{
+
+    margin-top:10px;
+
+    color:#8be9ff;
+
+    font-size:18px;
+
+}
+
+.mini-card strong{
+
+    display:block;
+
+    margin-top:10px;
+
+    font-size:28px;
+
+    color:#00ff99;
+
+}
+/* ==========================
+MONITOR CLÍNICO JARVICE
+========================== */
+
+
+.monitor-jarvice{
+
+    margin-top:35px;
+
+    background:
+    rgba(255,255,255,.08);
+
+    border-radius:25px;
+
+    padding:30px;
+
+    border:
+    1px solid rgba(139,233,255,.25);
+
+    backdrop-filter:blur(15px);
+
+}
+
+
+
+.monitor-jarvice h2{
+
+    color:#8be9ff;
+
+    margin-bottom:25px;
+
+}
+
+
+
+.signos-grid{
+
+    display:grid;
+
+    grid-template-columns:
+    repeat(auto-fit,minmax(220px,1fr));
+
+    gap:20px;
+
+}
+
+
+
+.signo-card{
+
+    background:
+    rgba(0,0,0,.20);
+
+    padding:25px;
+
+    border-radius:20px;
+
+    text-align:center;
+
+    transition:.3s;
+
+}
+
+
+
+.signo-card:hover{
+
+    transform:translateY(-5px);
+
+    box-shadow:
+    0 0 25px rgba(139,233,255,.25);
+
+}
+
+
+
+.signo-card:first-letter{
+
+    font-size:35px;
+
+}
+
+
+
+.signo-card h3{
+
+    color:#bfe9ff;
+
+    margin:15px 0;
+
+}
+
+
+
+.signo-card strong{
+
+    display:block;
+
+    font-size:32px;
+
+    color:#00ff99;
+
+}
+
+
+
+.signo-card p{
+
+    color:#d5f4ff;
+
+    margin-top:10px;
+
+}
+
+
+
+.verde-texto{
+
+    color:#00ff99!important;
+
+}
+/* ==========================
+   ALERTAS JARVICE
+========================== */
+
+
+.alertas-jarvice{
+
+    margin-top:35px;
+
+    padding:30px;
+
+    background:
+    rgba(255,255,255,.08);
+
+    border-radius:25px;
+
+    border:
+    1px solid rgba(139,233,255,.25);
+
+    backdrop-filter:blur(15px);
+
+}
+
+
+
+.alertas-jarvice h2{
+
+    color:#8be9ff;
+
+    margin-bottom:25px;
+
+}
+
+
+
+.semáforo-container{
+
+    display:grid;
+
+    grid-template-columns:
+    repeat(auto-fit,minmax(220px,1fr));
+
+    gap:20px;
+
+}
+
+
+
+.nivel{
+
+    padding:25px;
+
+    border-radius:20px;
+
+    text-align:center;
+
+    transition:.3s;
+
+}
+
+
+
+.nivel:hover{
+
+    transform:translateY(-6px);
+
+}
+
+
+
+.nivel h3{
+
+    margin:15px 0;
+
+}
+
+
+
+.nivel strong{
+
+    display:block;
+
+    margin-top:15px;
+
+    font-size:22px;
+
+}
+
+
+
+.riesgo-bajo{
+
+    background:
+    rgba(0,255,120,.15);
+
+    border:
+    1px solid #00ff99;
+
+}
+
+
+
+.riesgo-medio{
+
+    background:
+    rgba(255,200,0,.15);
+
+    border:
+    1px solid #ffd000;
+
+}
+
+
+
+.riesgo-alto{
+
+    background:
+    rgba(255,0,0,.15);
+
+    border:
+    1px solid #ff4444;
+
+}
+
+
+
+.mensaje-ia{
+
+    margin-top:25px;
+
+    padding:20px;
+
+    border-radius:20px;
+
+    background:
+    rgba(0,0,0,.25);
+
+    color:#bfe9ff;
+
+}
+
+
+
+.mensaje-ia span{
+
+    color:#00ff99;
+
+    font-weight:bold;
+
+}
+/* ==========================
+EVOLUCION JARVICE
+========================== */
+
+
+.evolucion-jarvice{
+
+    margin-top:35px;
+
+    padding:30px;
+
+    background:rgba(255,255,255,.08);
+
+    border-radius:25px;
+
+    border:1px solid rgba(139,233,255,.25);
+
+    backdrop-filter:blur(15px);
+
+}
+
+
+
+.evolucion-jarvice h2{
+
+    color:#8be9ff;
+
+}
+
+
+
+.evolucion-grid{
+
+    display:grid;
+
+    grid-template-columns:repeat(auto-fit,minmax(220px,1fr));
+
+    gap:20px;
+
+    margin-top:25px;
+
+}
+
+
+
+.indicador{
+
+    background:rgba(0,0,0,.20);
+
+    padding:25px;
+
+    border-radius:20px;
+
+    text-align:center;
+
+}
+
+
+
+.indicador h3{
+
+    color:#bfe9ff;
+
+}
+
+
+
+.barra{
+
+    height:15px;
+
+    background:#1c3440;
+
+    border-radius:20px;
+
+    overflow:hidden;
+
+    margin:20px 0;
+
+}
+
+
+
+.progreso{
+
+    height:100%;
+
+    border-radius:20px;
+
+}
+
+
+
+.fisico{
+
+    width:80%;
+
+    background:#00ff99;
+
+}
+
+
+
+.emocional{
+
+    width:70%;
+
+    background:#6fdcff;
+
+}
+
+
+
+.medicacion{
+
+    width:90%;
+
+    background:#8be9ff;
+
+}
+
+
+
+.indicador strong{
+
+    font-size:28px;
+
+    color:#00ff99;
+
+}
+
+
+
+.analisis-ia{
+
+    margin-top:25px;
+
+    padding:20px;
+
+    border-radius:20px;
+
+    background:rgba(0,0,0,.25);
+
+    color:#d9f5ff;
+
+}
+/* ==========================
+ACTIVIDAD JARVICE
+========================== */
+
+
+.actividad-jarvice{
+
+    margin-top:35px;
+
+    padding:30px;
+
+    background:
+    rgba(255,255,255,.08);
+
+    border-radius:25px;
+
+    border:
+    1px solid rgba(139,233,255,.25);
+
+    backdrop-filter:blur(15px);
+
+}
+
+
+
+.actividad-jarvice h2{
+
+    color:#8be9ff;
+
+    margin-bottom:25px;
+
+}
+
+
+
+.actividad-lista{
+
+    display:flex;
+
+    flex-direction:column;
+
+    gap:15px;
+
+}
+
+
+
+.actividad-item{
+
+    display:flex;
+
+    align-items:center;
+
+    gap:20px;
+
+    padding:20px;
+
+    background:
+    rgba(0,0,0,.20);
+
+    border-radius:18px;
+
+}
+
+
+
+.actividad-item span{
+
+    font-size:35px;
+
+}
+
+
+
+.actividad-item strong{
+
+    color:#00ff99;
+
+    font-size:18px;
+
+}
+
+
+
+.actividad-item p{
+
+    margin-top:5px;
+
+    color:#d9f5ff;
+
+}
+/* ==========================
+   JARVICE AI INSIGHT
+========================== */
+
+
+.insight-jarvice{
+
+    margin-top:35px;
+
+    padding:30px;
+
+    background:
+    rgba(0,0,0,.20);
+
+    border-radius:25px;
+
+    border:
+    1px solid rgba(139,233,255,.25);
+
+}
+
+
+
+.insight-jarvice h2{
+
+    color:#8be9ff;
+
+}
+
+
+
+.insight-contenido{
+
+    display:grid;
+
+    grid-template-columns:
+    repeat(auto-fit,minmax(230px,1fr));
+
+    gap:20px;
+
+    margin-top:25px;
+
+}
+
+
+
+.insight-item{
+
+    display:flex;
+
+    align-items:center;
+
+    gap:15px;
+
+    padding:20px;
+
+    border-radius:20px;
+
+    background:
+    rgba(255,255,255,.08);
+
+}
+
+
+
+.insight-item:first-child{
+
+    font-size:30px;
+
+}
+
+
+
+.insight-item strong{
+
+    color:#00ff99;
+
+}
+
+
+
+.insight-item p{
+
+    color:#d9f5ff;
+
+}
+
+
+
+.recomendacion-jarvice{
+
+    margin-top:25px;
+
+    padding:20px;
+
+    border-radius:20px;
+
+    background:
+    rgba(0,255,153,.10);
+
+    color:#bfe9ff;
+
+}
+
+
+.recomendacion-jarvice p{
+
+    color:white;
+
+    margin-top:10px;
+
+}
+.semaforo-panel{
+
+    margin-top:30px;
+
+    padding:25px;
+
+    border-radius:25px;
+
+    display:flex;
+
+    align-items:center;
+
+    gap:25px;
+
+    background:rgba(255,255,255,.08);
+
+    backdrop-filter:blur(15px);
+
+}
+
+
+.semaforo-icono{
+
+    font-size:60px;
+
+}
+
+
+.semaforo-panel h2{
+
+    color:#8be9ff;
+
+}
+
+
+.semaforo-panel h3{
+
+    font-size:28px;
+
+}
+
+
+.semaforo-panel.verde{
+
+    border:2px solid #00ff99;
+
+}
+
+
+.semaforo-panel.amarillo{
+
+    border:2px solid #ffd000;
+
+}
+
+
+.semaforo-panel.rojo{
+
+    border:2px solid #ff4d4d;
+
+}
+</style>
+
+
+{% endblock %}

@@ -1,5 +1,6 @@
 from django.db import models
 from django.contrib.auth.models import User
+from django.utils import timezone
 
 
 # ============================
@@ -318,3 +319,35 @@ class Medicacion(models.Model):
     def __str__(self):
 
         return self.nombre
+    # ==================================================
+# EVOLUCIÓN MÉDICA
+# ==================================================
+
+class EvolucionMedica(models.Model):
+
+    paciente = models.ForeignKey(
+        Paciente,
+        on_delete=models.CASCADE,
+        related_name="evoluciones"
+    )
+
+    fecha = models.DateTimeField(
+        auto_now_add=True
+    )
+
+    descripcion = models.TextField()
+
+    diagnostico = models.TextField(
+        blank=True,
+        null=True
+    )
+
+    indicaciones = models.TextField(
+        blank=True,
+        null=True
+    )
+
+
+    def __str__(self):
+
+        return f"Evolución de {self.paciente.nombre} - {self.fecha.date()}"

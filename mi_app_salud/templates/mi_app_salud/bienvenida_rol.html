@@ -1,0 +1,305 @@
+{% extends "mi_app_salud/base.html" %}
+
+{% block contenido %}
+
+<div class="bienvenida-jarvice">
+
+    <div class="logo-jarvice">
+        🤖
+    </div>
+
+    <h1>Jarvice Health AI</h1>
+
+    <h2>
+        Bienvenido {{ request.user.first_name|default:request.user.username }}
+    </h2>
+
+    {% if perfil.rol == "MEDICO" %}
+
+        <div class="rol medico">
+            👨‍⚕️
+            <h3>Acceso Médico</h3>
+            <p>Cargando panel clínico...</p>
+        </div>
+
+    {% elif perfil.rol == "ENFERMERIA" %}
+
+        <div class="rol enfermeria">
+            👩‍⚕️
+            <h3>Acceso Enfermería</h3>
+            <p>Cargando panel asistencial...</p>
+        </div>
+
+    {% elif perfil.rol == "PACIENTE" %}
+
+        <div class="rol paciente">
+            🧑
+            <h3>Acceso Paciente</h3>
+            <p>Cargando monitoreo personal...</p>
+        </div>
+
+    {% elif perfil.rol == "FAMILIAR" %}
+
+        <div class="rol familiar">
+            👨‍👩‍👧
+            <h3>Acceso Familiar</h3>
+            <p>Cargando seguimiento del paciente...</p>
+        </div>
+
+    {% elif perfil.rol == "EMERGENCIA" %}
+
+        <div class="rol emergencia">
+            🚨
+            <h3>Centro de Emergencias</h3>
+            <p>Preparando protocolo de respuesta...</p>
+        </div>
+
+    {% elif perfil.rol == "ADMIN" %}
+
+        <div class="rol admin">
+            🤖
+            <h3>Administrador Jarvice</h3>
+            <p>Acceso completo al sistema.</p>
+        </div>
+
+    {% endif %}
+
+    <div class="cargando" id="estadoJarvice">
+        Inicializando IA...
+    </div>
+
+</div>
+
+<style>
+
+.bienvenida-jarvice{
+
+    min-height:80vh;
+
+    display:flex;
+    flex-direction:column;
+    justify-content:center;
+    align-items:center;
+
+    text-align:center;
+
+    animation:fadeIn .8s;
+
+}
+
+.logo-jarvice{
+
+    font-size:90px;
+
+    margin-bottom:10px;
+
+    animation:flotar 2s infinite;
+
+}
+
+h1{
+
+    color:#8be9ff;
+
+    font-size:42px;
+
+    margin-bottom:10px;
+
+}
+
+h2{
+
+    color:white;
+
+    margin-bottom:30px;
+
+}
+
+.rol{
+
+    width:420px;
+    max-width:95%;
+
+    padding:30px;
+
+    border-radius:25px;
+
+    background:rgba(255,255,255,.08);
+
+    backdrop-filter:blur(15px);
+
+    border:1px solid rgba(139,233,255,.25);
+
+    box-shadow:0 0 25px rgba(0,180,255,.15);
+
+}
+
+.rol h3{
+
+    margin:15px 0;
+
+    font-size:28px;
+
+}
+
+.rol p{
+
+    color:#cfefff;
+
+}
+
+.medico{
+
+    border-color:#00d9ff;
+
+}
+
+.enfermeria{
+
+    border-color:#6bffcf;
+
+}
+
+.paciente{
+
+    border-color:#ffe66b;
+
+}
+
+.familiar{
+
+    border-color:#b794ff;
+
+}
+
+.emergencia{
+
+    border-color:#ff4444;
+
+}
+
+.admin{
+
+    border-color:#00ff99;
+
+}
+
+.cargando{
+
+    margin-top:35px;
+
+    color:#8be9ff;
+
+    font-size:18px;
+
+    font-weight:bold;
+
+    letter-spacing:1px;
+
+}
+
+@keyframes flotar{
+
+    0%{
+
+        transform:translateY(0);
+
+    }
+
+    50%{
+
+        transform:translateY(-12px);
+
+    }
+
+    100%{
+
+        transform:translateY(0);
+
+    }
+
+}
+
+@keyframes fadeIn{
+
+    from{
+
+        opacity:0;
+
+    }
+
+    to{
+
+        opacity:1;
+
+    }
+
+}
+
+</style>
+
+<script>
+
+const mensajes=[
+
+"Inicializando IA...",
+"Verificando identidad...",
+"Comprobando permisos...",
+"Cargando historial clínico...",
+"Sincronizando módulos...",
+"Preparando panel personalizado..."
+
+];
+
+let i=0;
+
+const intervalo=setInterval(function(){
+
+    if(i<mensajes.length){
+
+        document.getElementById("estadoJarvice").innerHTML=mensajes[i];
+
+        i++;
+
+    }else{
+
+        clearInterval(intervalo);
+
+    }
+
+},500);
+
+
+setTimeout(function(){
+
+    {% if perfil.rol == "MEDICO" %}
+
+        window.location.href="{% url 'panel_medico' %}";
+
+    {% elif perfil.rol == "ENFERMERIA" %}
+
+        window.location.href="{% url 'panel_enfermeria' %}";
+
+    {% elif perfil.rol == "PACIENTE" %}
+
+        window.location.href="{% url 'panel_paciente' %}";
+
+    {% elif perfil.rol == "FAMILIAR" %}
+
+        window.location.href="{% url 'panel_familiar' %}";
+
+    {% elif perfil.rol == "EMERGENCIA" %}
+
+        window.location.href="{% url 'panel_emergencia' %}";
+
+    {% elif perfil.rol == "ADMIN" %}
+
+        window.location.href="{% url 'inicio' %}";
+
+    {% endif %}
+
+},3500);
+
+</script>
+
+{% endblock %}

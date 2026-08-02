@@ -81,13 +81,11 @@ def login_view(request):
         username = request.POST.get("username")
         password = request.POST.get("password")
 
-
         usuario = authenticate(
             request,
             username=username,
             password=password
         )
-
 
         if usuario is not None:
 
@@ -97,9 +95,8 @@ def login_view(request):
             )
 
             return redirect(
-                "dashboard"
+                "bienvenida_rol"
             )
-
 
         messages.error(
             request,
@@ -112,6 +109,24 @@ def login_view(request):
         "mi_app_salud/login.html"
     )
 
+
+
+# ==================================================
+# BIENVENIDA SEGÚN ROL JARVICE
+# ==================================================
+
+@login_required
+def bienvenida_rol(request):
+
+    perfil = request.user.perfilusuario
+
+    return render(
+        request,
+        "mi_app_salud/bienvenida_rol.html",
+        {
+            "perfil": perfil
+        }
+    )
 # ==================================================
 # DASHBOARD PRINCIPAL JARVICE
 # ==================================================
@@ -183,7 +198,7 @@ def panel_medico(request):
 
     return render(
         request,
-        "medico/panel.html",
+        "mi_app_salud/panel_medico.html",
         {
             "pacientes": pacientes
         }
@@ -333,17 +348,58 @@ def historial_paciente(request, paciente_id):
     ).order_by("-fecha")
 
 
+    medicaciones = Medicacion.objects.filter(
+        paciente=paciente
+    )
+
+
+    # ==========================================
+    # ANALISIS RIESGO JARVICE
+    # ==========================================
+
+    riesgo = "BAJO"
+    color_riesgo = "verde"
+
+
+    ultimo_registro = registros.first()
+
+
+    if ultimo_registro:
+
+        if ultimo_registro.estado == "CRITICO":
+
+            riesgo = "CRITICO"
+            color_riesgo = "rojo"
+
+
+        elif ultimo_registro.estado in ["DOLOR", "CANSADO"]:
+
+            riesgo = "ATENCION"
+            color_riesgo = "amarillo"
+
+
+
+    for medicamento in medicaciones:
+
+        if not medicamento.activo:
+
+            riesgo = "ATENCION"
+            color_riesgo = "amarillo"
+
+
+
     return render(
         request,
         "mi_app_salud/historial.html",
         {
             "paciente": paciente,
             "registros": registros,
-            "recordatorios": recordatorios
+            "recordatorios": recordatorios,
+            "medicaciones": medicaciones,
+            "riesgo": riesgo,
+            "color_riesgo": color_riesgo
         }
     )
-
-
 
 # ==================================================
 # RECORDATORIOS
