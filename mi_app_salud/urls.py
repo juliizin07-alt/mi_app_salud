@@ -13,6 +13,12 @@ urlpatterns = [
         views.login_view,
         name="login"
     ),
+    
+    path(
+    "bienvenida/",
+    views.bienvenida_rol,
+    name="bienvenida_rol"
+    ),
 
     path(
         "registro/",
