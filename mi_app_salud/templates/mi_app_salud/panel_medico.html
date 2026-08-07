@@ -260,48 +260,93 @@
 
 <div class="pacientes-medico">
 
+</form>
+
 
     <div class="pacientes-header">
+
+    <div>
 
         <h2>
             👥 Pacientes registrados
         </h2>
 
-        <span>
-            {{ pacientes|length }} pacientes
-        </span>
+        <p>
+            Gestión de historias clínicas y monitoreo Jarvice AI
+        </p>
 
     </div>
 
 
+    <span class="contador-pacientes">
 
-    <table class="tabla-pacientes">
+        {{ pacientes|length }} pacientes
 
+    </span>
 
-        <thead>
+</div>
 
-            <tr>
+    <div class="buscador-contenedor">
 
-                <th>
-                    Nombre
-                </th>
+    <span class="icono-busqueda">
+        🔍
+    </span>
+    <form method="GET" class="buscador-pacientes">
 
-                <th>
-                    Edad
-                </th>
+    <div class="buscador-contenedor">
 
-                <th>
-                    Estado
-                </th>
+        <span class="icono-busqueda">
+            🔍
+        </span>
 
-                <th>
-                    Acción
-                </th>
+        <input
+            type="text"
+            name="buscar"
+            placeholder="Buscar por HC, nombre, apellido o DNI..."
+            value="{{ buscar }}"
+        >
 
-            </tr>
+        <button type="submit">
+            Buscar
+        </button>
 
-        </thead>
+    </div>
 
+</form>
+
+<table class="tabla-pacientes">
+
+    <thead>
+
+        <tr>
+
+            <th>
+                HC
+            </th>
+
+            <th>
+                Paciente
+            </th>
+
+            <th>
+                Edad
+            </th>
+
+            <th>
+             Estado
+            </th>
+
+            <th>
+           Último control
+            </th>
+
+            <th>
+            Acción
+            </th>
+
+        </tr>
+
+    </thead>
 
 
         <tbody>
@@ -312,57 +357,102 @@
 
             <tr>
 
-                <td>
+    <td>
 
-                    {{ paciente.nombre }}
-                    {{ paciente.apellido }}
+        <strong>{{ paciente.historia_clinica }}</strong>
 
-                </td>
+    </td>
 
+    <td>
 
-                <td>
+        {{ paciente.nombre }} {{ paciente.apellido }}
 
-                    {{ paciente.edad }}
+    </td>
 
-                </td>
+   <td>
 
+    {{ paciente.edad }}
 
-                <td>
-
-                    🟢 Estable
-
-                </td>
+</td>
 
 
-                <td>
+<td>
 
-                    <a href="{% url 'historial_paciente' paciente.id %}" class="btn">
+    {% if paciente.ultimo_estado %}
 
-                        Ver ficha
+        {% if paciente.ultimo_estado.estado == "OK" %}
 
-                    </a>
+            <span class="estado-badge verde">
+                🟢 Estable
+            </span>
 
-                </td>
+        {% elif paciente.ultimo_estado.estado == "CANSADO" %}
 
+            <span class="estado-badge amarillo">
+                🟡 Seguimiento
+            </span>
 
-            </tr>
+        {% elif paciente.ultimo_estado.estado == "DOLOR" %}
 
+            <span class="estado-badge naranja">
+                🟠 Dolor
+            </span>
 
-        {% empty %}
+        {% elif paciente.ultimo_estado.estado == "CRITICO" %}
 
+            <span class="estado-badge rojo">
+                🔴 Crítico
+            </span>
 
-            <tr>
+        {% endif %}
 
-                <td colspan="4">
+    {% else %}
 
-                    No hay pacientes registrados
+        ⚪ Sin datos
 
-                </td>
+    {% endif %}
 
-            </tr>
+</td>
 
+<td>
 
-        {% endfor %}
+    {% if paciente.ultimo_estado %}
+
+        {{ paciente.ultimo_estado.fecha|date:"d/m/Y" }}
+
+    {% else %}
+
+        Sin datos
+
+    {% endif %}
+
+</td>
+
+    <td>
+
+       <a href="{% url 'historial_paciente' paciente.id %}" class="btn-ficha">
+
+    📋 Abrir historia
+
+</a>
+
+    </td>
+
+</tr>
+
+       {% empty %}
+
+<tr>
+
+    <td colspan="5">
+
+        No hay pacientes registrados
+
+    </td>
+
+</tr>
+
+{% endfor %}
 
 
         </tbody>
@@ -372,6 +462,57 @@
 
 
 </div>
+
+</div>
+<div class="resumen-medico">
+
+
+    <div class="card-resumen">
+
+        👥
+
+        <h3>
+            Pacientes
+        </h3>
+
+        <strong>
+            {{ pacientes|length }}
+        </strong>
+
+    </div>
+
+
+
+    <div class="card-resumen">
+
+        💊
+
+        <h3>
+            Tratamientos
+        </h3>
+
+        <strong>
+            {{ medicamentos|length }}
+        </strong>
+
+    </div>
+
+
+
+    <div class="card-resumen">
+
+        🚨
+
+        <h3>
+            Alertas IA
+        </h3>
+
+        <strong>
+            0
+        </strong>
+
+    </div>
+
 
 </div>
     <div class="modulos">
@@ -1065,6 +1206,294 @@
 .tabla-pacientes tr:hover{
 
     background:rgba(139,233,255,.08);
+
+}
+/* ==========================================
+   ESTADOS PACIENTE JARVICE
+========================================== */
+
+.estado-badge {
+
+    padding: 6px 12px;
+
+    border-radius: 20px;
+
+    font-size: 14px;
+
+    font-weight: bold;
+
+    display: inline-block;
+
+}
+
+
+/* ESTABLE */
+
+.estado-badge.verde {
+
+    background: #d1fae5;
+
+    color: #047857;
+
+}
+
+
+/* SEGUIMIENTO */
+
+.estado-badge.amarillo {
+
+    background: #fef3c7;
+
+    color: #b45309;
+
+}
+
+
+/* DOLOR */
+
+.estado-badge.naranja {
+
+    background: #fed7aa;
+
+    color: #c2410c;
+
+}
+
+
+/* CRITICO */
+
+.estado-badge.rojo {
+
+    background: #fee2e2;
+
+    color: #b91c1c;
+
+}
+/* ==========================================
+   BOTÓN HISTORIA CLÍNICA
+========================================== */
+
+.btn-ficha {
+
+    background: #0ea5e9;
+
+    color: white;
+
+    padding: 8px 15px;
+
+    border-radius: 10px;
+
+    text-decoration: none;
+
+    font-weight: bold;
+
+    font-size: 14px;
+
+    display: inline-block;
+
+    transition: 0.3s;
+
+}
+
+
+.btn-ficha:hover {
+
+    background: #0284c7;
+
+    transform: translateY(-2px);
+
+}
+/* ==========================================
+   RESUMEN PANEL MÉDICO
+========================================== */
+
+.resumen-medico {
+
+    display: grid;
+
+    grid-template-columns: repeat(3, 1fr);
+
+    gap: 20px;
+
+    margin: 25px 0;
+
+}
+
+
+.card-resumen {
+
+    background: rgba(255,255,255,0.08);
+
+    border-radius: 18px;
+
+    padding: 20px;
+
+    text-align: center;
+
+    box-shadow: 0 8px 25px rgba(0,0,0,0.15);
+
+    backdrop-filter: blur(10px);
+
+}
+
+
+.card-resumen h3 {
+
+    margin: 10px 0;
+
+    font-size: 16px;
+
+}
+
+
+.card-resumen strong {
+
+    font-size: 32px;
+
+    display: block;
+
+    margin-top: 10px;
+
+}
+/* ==========================================
+   BUSCADOR PACIENTES JARVICE
+========================================== */
+
+.buscador-pacientes {
+
+    margin: 25px 0;
+
+}
+
+
+.buscador-contenedor {
+
+    display: flex;
+
+    align-items: center;
+
+    gap: 12px;
+
+    background: rgba(255,255,255,0.08);
+
+    padding: 12px 15px;
+
+    border-radius: 18px;
+
+    backdrop-filter: blur(10px);
+
+    box-shadow: 0 8px 25px rgba(0,0,0,0.15);
+
+}
+
+
+.icono-busqueda {
+
+    font-size: 22px;
+
+}
+
+
+.buscador-contenedor input {
+
+    flex: 1;
+
+    background: rgba(255,255,255,0.12);
+
+    border: none;
+
+    outline: none;
+
+    padding: 12px 15px;
+
+    border-radius: 12px;
+
+    color: white;
+
+    font-size: 15px;
+
+}
+
+
+.buscador-contenedor input::placeholder {
+
+    color: #cbd5e1;
+
+}
+
+
+.buscador-contenedor button {
+
+    background: #0ea5e9;
+
+    color: white;
+
+    border: none;
+
+    padding: 12px 25px;
+
+    border-radius: 12px;
+
+    font-weight: bold;
+
+    cursor: pointer;
+
+    transition: .3s;
+
+}
+
+
+.buscador-contenedor button:hover {
+
+    background: #0284c7;
+
+    transform: translateY(-2px);
+
+}
+/* ==========================================
+   CABECERA PACIENTES
+========================================== */
+
+.pacientes-header {
+
+    display: flex;
+
+    justify-content: space-between;
+
+    align-items: center;
+
+    margin-bottom: 20px;
+
+}
+
+
+.pacientes-header h2 {
+
+    margin: 0;
+
+}
+
+
+.pacientes-header p {
+
+    margin-top: 5px;
+
+    color: #94a3b8;
+
+}
+
+
+.contador-pacientes {
+
+    background: rgba(14,165,233,0.15);
+
+    color: #38bdf8;
+
+    padding: 10px 18px;
+
+    border-radius: 20px;
+
+    font-weight: bold;
 
 }
 </style>

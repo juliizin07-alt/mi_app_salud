@@ -194,23 +194,42 @@ def dashboard_redirect(request):
 
 
     return redirect("inicio")
+
 # ==================================================
-# PANELES POR ROL
+# PANEL MÉDICO
 # ==================================================
+
+from django.db.models import Q
+
 
 @login_required
 def panel_medico(request):
 
+    buscar = request.GET.get("buscar", "")
+
     pacientes = Paciente.objects.all()
+
+    if buscar:
+
+        palabras = buscar.split()
+
+    for palabra in palabras:
+
+        pacientes = pacientes.filter(
+            Q(nombre__icontains=palabra) |
+            Q(apellido__icontains=palabra) |
+            Q(historia_clinica__icontains=palabra) |
+            Q(dni__icontains=palabra)
+        )
 
     return render(
         request,
         "mi_app_salud/panel_medico.html",
         {
-            "pacientes": pacientes
+            "pacientes": pacientes,
+            "buscar": buscar,
         }
     )
-
 
 @login_required
 def panel_enfermeria(request):
@@ -347,7 +366,7 @@ def crear_paciente(request):
             return redirect("crear_paciente")
 
 
-        Paciente.objects.create(
+        paciente = Paciente.objects.create(
 
             nombre=nombre,
 
@@ -356,6 +375,11 @@ def crear_paciente(request):
             edad=edad
 
         )
+
+
+        paciente.historia_clinica = f"HC{paciente.id:06d}"
+
+        paciente.save()
 
 
         messages.success(
@@ -371,9 +395,6 @@ def crear_paciente(request):
         request,
         "mi_app_salud/crear_paciente.html"
     )
-
-
-
 # ==================================================
 # LISTADO PACIENTES
 # ==================================================
