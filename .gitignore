@@ -1,10 +1,10 @@
 ﻿# Python
-__pycache__/
+**/__pycache__/
 *.py[cod]
-*.class
+*$py.class
 
 # Django
-*.sqlite3
+db.sqlite3
 
 # Entorno virtual
 venv/
