@@ -1,0 +1,160 @@
+{% extends "mi_app_salud/base.html" %}
+
+{% block contenido %}
+
+<div class="ficha-jarvice">
+
+    <div class="seccion">
+
+        <h2>
+            📝 Nueva evolución médica
+        </h2>
+
+        <p>
+            Paciente:
+            <strong>
+                {{ paciente.nombre }} {{ paciente.apellido }}
+            </strong>
+        </p>
+
+
+        <form method="POST">
+
+            {% csrf_token %}
+
+
+            <label>
+                Evolución clínica
+            </label>
+
+            <textarea
+                name="descripcion"
+                placeholder="Describa la evolución del paciente..."
+                required
+            ></textarea>
+
+
+            <label>
+                Diagnóstico
+            </label>
+
+            <textarea
+                name="diagnostico"
+                placeholder="Ingrese diagnóstico..."
+            ></textarea>
+
+
+            <label>
+                Indicaciones médicas
+            </label>
+
+            <textarea
+                name="indicaciones"
+                placeholder="Tratamiento, recomendaciones o controles..."
+            ></textarea>
+
+
+            <button type="submit" class="btn-guardar-evolucion">
+
+            💾 Guardar evolución
+
+                </button>
+
+
+        </form>
+
+
+    </div>
+
+
+</div>
+
+
+<style>
+
+
+textarea{
+
+    width:100%;
+
+    min-height:120px;
+
+    margin:10px 0 20px;
+
+    padding:15px;
+
+    border-radius:15px;
+
+    border:1px solid rgba(139,233,255,.3);
+
+    background:rgba(0,0,0,.25);
+
+    color:white;
+
+    font-size:16px;
+
+    resize:vertical;
+
+}
+
+
+label{
+
+    color:#8be9ff;
+
+    font-weight:bold;
+
+    display:block;
+
+    margin-top:15px;
+
+}
+.btn-guardar-evolucion{
+
+    background:linear-gradient(
+        135deg,
+        #00ff88,
+        #00995c
+    );
+
+    color:white;
+
+    padding:14px 30px;
+
+    border:none;
+
+    border-radius:16px;
+
+    font-size:16px;
+
+    font-weight:800;
+
+    cursor:pointer;
+
+    display:flex;
+
+    align-items:center;
+
+    gap:10px;
+
+    box-shadow:
+    0 0 20px rgba(0,255,120,.4);
+
+    transition:.3s;
+}
+
+
+.btn-guardar-evolucion:hover{
+
+    transform:translateY(-4px);
+
+    box-shadow:
+    0 0 30px rgba(0,255,120,.9);
+
+}
+
+
+</style>
+
+
+{% endblock %}

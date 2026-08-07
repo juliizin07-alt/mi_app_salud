@@ -1,0 +1,172 @@
+{% extends "mi_app_salud/base.html" %}
+
+{% block contenido %}
+
+<div class="contenedor">
+
+    <div class="card">
+
+        <h1>🧪 Nuevo estudio médico</h1>
+
+        <p>
+            Registrar un estudio para el paciente:
+            <strong>{{ paciente.nombre }} {{ paciente.apellido }}</strong>
+        </p>
+
+        <form method="POST" enctype="multipart/form-data">
+
+            {% csrf_token %}
+
+            <label>Tipo de estudio</label>
+
+            <input
+                type="text"
+                name="tipo"
+                placeholder="Ej: Laboratorio, Radiografía..."
+                required
+            >
+
+            <label>Nombre</label>
+
+            <input
+                type="text"
+                name="nombre"
+                placeholder="Ej: Hemograma completo"
+                required
+            >
+
+            <label>Fecha</label>
+
+            <input
+                type="date"
+                name="fecha"
+                required
+            >
+
+            <label>Observaciones</label>
+
+            <textarea
+                name="observaciones"
+                rows="5"
+                placeholder="Escriba observaciones..."
+            ></textarea>
+
+            <label>Archivo</label>
+
+            <input
+                type="file"
+                name="archivo"
+            >
+
+            <button type="submit">
+                💾 Guardar estudio
+            </button>
+
+        </form>
+
+    </div>
+
+</div>
+
+<style>
+
+.contenedor{
+
+    display:flex;
+    justify-content:center;
+    margin-top:40px;
+
+}
+
+.card{
+
+    width:700px;
+
+    background:rgba(255,255,255,.08);
+
+    backdrop-filter:blur(15px);
+
+    border-radius:25px;
+
+    padding:35px;
+
+    border:1px solid rgba(139,233,255,.25);
+
+    color:white;
+
+}
+
+.card h1{
+
+    color:#8be9ff;
+
+    margin-bottom:20px;
+
+}
+
+label{
+
+    display:block;
+
+    margin-top:20px;
+
+    margin-bottom:8px;
+
+    font-weight:bold;
+
+}
+
+input,
+textarea{
+
+    width:100%;
+
+    padding:12px;
+
+    border-radius:12px;
+
+    border:none;
+
+    background:#1e2b36;
+
+    color:white;
+
+}
+
+button{
+
+    margin-top:30px;
+
+    width:100%;
+
+    padding:15px;
+
+    border:none;
+
+    border-radius:15px;
+
+    background:#00c26f;
+
+    color:white;
+
+    font-size:18px;
+
+    font-weight:bold;
+
+    cursor:pointer;
+
+    transition:.3s;
+
+}
+
+button:hover{
+
+    background:#00a85f;
+
+    transform:scale(1.02);
+
+}
+
+</style>
+
+{% endblock %}

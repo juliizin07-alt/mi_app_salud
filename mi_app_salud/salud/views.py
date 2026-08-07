@@ -56,10 +56,78 @@ def registrar_estado(request, paciente_id, estado):
 # 📋 HISTORIAL DEL PACIENTE
 @login_required
 def historial_paciente(request, paciente_id):
-    paciente = get_object_or_404(Paciente, id=paciente_id)
-    registros = paciente.registros.all().order_by('-fecha')
 
-    return render(request, 'historial.html', {
-        'paciente': paciente,
-        'registros': registros
-    })
+    paciente = get_object_or_404(
+        Paciente,
+        id=paciente_id
+    )
+
+
+    registros = RegistroSalud.objects.filter(
+        paciente=paciente
+    ).order_by("-fecha")
+
+
+    recordatorios = Recordatorio.objects.filter(
+        paciente=paciente
+    ).order_by("-fecha")
+
+
+    medicaciones = Medicacion.objects.filter(
+        paciente=paciente
+    )
+
+
+    evoluciones = EvolucionMedica.objects.filter(
+        paciente=paciente
+    ).order_by("-fecha")
+
+
+    # ==========================================
+    # ANALISIS RIESGO JARVICE
+    # ==========================================
+
+    riesgo = "BAJO"
+    color_riesgo = "verde"
+
+
+    ultimo_registro = registros.first()
+
+
+    if ultimo_registro:
+
+        if ultimo_registro.estado == "CRITICO":
+
+            riesgo = "CRITICO"
+            color_riesgo = "rojo"
+
+
+        elif ultimo_registro.estado in ["DOLOR", "CANSADO"]:
+
+            riesgo = "ATENCION"
+            color_riesgo = "amarillo"
+
+
+
+    for medicamento in medicaciones:
+
+        if not medicamento.activo:
+
+            riesgo = "ATENCION"
+            color_riesgo = "amarillo"
+
+
+
+    return render(
+        request,
+        "mi_app_salud/historial.html",
+        {
+            "paciente": paciente,
+            "registros": registros,
+            "recordatorios": recordatorios,
+            "medicaciones": medicaciones,
+            "evoluciones": evoluciones,
+            "riesgo": riesgo,
+            "color_riesgo": color_riesgo,
+        }
+    )

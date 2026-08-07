@@ -22,8 +22,12 @@ class PerfilUsuario(models.Model):
     ("FAMILIAR", "Familiar"),
 
     ("EMERGENCIA", "Emergencias"),
+    
+    ("INSTITUCION", "Institución"),
+
 
 )
+    
 
     usuario = models.OneToOneField(
         User,
@@ -262,14 +266,11 @@ class Recordatorio(models.Model):
 
         return f"{self.paciente.nombre} - {self.texto}"
 
-
-
 # ============================
-# MEDICACION JARVICE
+# MEDICACIÓN JARVICE
 # ============================
 
 class Medicacion(models.Model):
-
 
     paciente = models.ForeignKey(
         Paciente,
@@ -277,49 +278,33 @@ class Medicacion(models.Model):
         related_name="medicaciones"
     )
 
+    nombre = models.CharField(max_length=100)
 
-    nombre = models.CharField(
-        max_length=100
-    )
-
-
-    dosis = models.CharField(
-        max_length=50
-    )
-
+    dosis = models.CharField(max_length=50)
 
     horario = models.TimeField()
 
+    activo = models.BooleanField(default=True)
 
-    activo = models.BooleanField(
-        default=True
-    )
-
-
-    tomado = models.BooleanField(
-        default=False
-    )
-
+    tomado = models.BooleanField(default=False)
 
     fecha_ultima_toma = models.DateTimeField(
         null=True,
         blank=True
     )
 
-
-    
     confirmado_por = models.ForeignKey(
-    User,
-    on_delete=models.SET_NULL,
-    null=True,
-    blank=True
-)
-
+        User,
+        on_delete=models.SET_NULL,
+        null=True,
+        blank=True
+    )
 
     def __str__(self):
-
         return self.nombre
-    # ==================================================
+
+
+# ==================================================
 # EVOLUCIÓN MÉDICA
 # ==================================================
 
@@ -331,9 +316,15 @@ class EvolucionMedica(models.Model):
         related_name="evoluciones"
     )
 
-    fecha = models.DateTimeField(
-        auto_now_add=True
+    usuario = models.ForeignKey(
+        User,
+        on_delete=models.SET_NULL,
+        null=True,
+        blank=True,
+        related_name="evoluciones_creadas"
     )
+
+    fecha = models.DateTimeField(auto_now_add=True)
 
     descripcion = models.TextField()
 
@@ -347,7 +338,157 @@ class EvolucionMedica(models.Model):
         null=True
     )
 
+    def __str__(self):
+        return f"Evolución de {self.paciente.nombre} - {self.fecha.date()}"
+
+# ==================================================
+# ESTUDIO MÉDICO
+# ==================================================
+
+class EstudioMedico(models.Model):
+
+    paciente = models.ForeignKey(
+        Paciente,
+        on_delete=models.CASCADE,
+        related_name="estudios"
+    )
+
+    fecha = models.DateField()
+
+    tipo = models.CharField(max_length=100)
+
+    nombre = models.CharField(max_length=200)
+
+    institucion = models.CharField(
+        max_length=150,
+        blank=True
+    )
+
+    profesional = models.CharField(
+        max_length=150,
+        blank=True
+    )
+
+    observaciones = models.TextField(
+        blank=True,
+        null=True
+    )
+
+    archivo = models.FileField(
+        upload_to="estudios/",
+        blank=True,
+        null=True
+    )
+
+    def __str__(self):
+        return f"{self.tipo} - {self.paciente.nombre}"
+  # ==================================================
+# SOLICITUDES DE ESTUDIOS
+# ==================================================
+
+class SolicitudEstudio(models.Model):
+
+    ESTADOS = [
+        ("PENDIENTE", "Pendiente"),
+        ("REALIZADO", "Realizado"),
+        ("CANCELADO", "Cancelado"),
+    ]
+
+
+    paciente = models.ForeignKey(
+        Paciente,
+        on_delete=models.CASCADE,
+        related_name="solicitudes_estudios"
+    )
+
+
+    medico = models.ForeignKey(
+        User,
+        on_delete=models.SET_NULL,
+        null=True,
+        blank=True
+    )
+
+
+    estudio = models.CharField(
+        max_length=150
+    )
+
+
+    motivo = models.TextField(
+        blank=True
+    )
+
+
+    fecha_solicitud = models.DateTimeField(
+        auto_now_add=True
+    )
+
+
+    # ==========================================
+    # RESULTADO DEL ESTUDIO
+    # ==========================================
+
+    archivo_informe = models.FileField(
+        upload_to="estudios/",
+        null=True,
+        blank=True
+    )
+
+
+    informe = models.TextField(
+        blank=True,
+        null=True
+    )
+
+
+    fecha_realizacion = models.DateTimeField(
+        null=True,
+        blank=True
+    )
+
+
+    estado = models.CharField(
+        max_length=20,
+        choices=ESTADOS,
+        default="PENDIENTE"
+    )
+
 
     def __str__(self):
 
-        return f"Evolución de {self.paciente.nombre} - {self.fecha.date()}"
+        return f"{self.estudio} - {self.paciente.nombre}"
+
+    # ==========================================
+    # RESULTADO DEL ESTUDIO
+    # ==========================================
+
+    archivo_informe = models.FileField(
+        upload_to="estudios/",
+        null=True,
+        blank=True
+    )
+
+
+    informe = models.TextField(
+        blank=True,
+        null=True
+    )
+
+
+    fecha_realizacion = models.DateTimeField(
+        null=True,
+        blank=True
+    )
+
+
+    estado = models.CharField(
+        max_length=20,
+        choices=ESTADOS,
+        default="PENDIENTE"
+    )
+
+
+    def __str__(self):
+
+        return f"{self.estudio} - {self.paciente.nombre}"

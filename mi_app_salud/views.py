@@ -11,12 +11,16 @@ from django.contrib.auth import logout, authenticate, login
 from django.utils import timezone
 
 
+
 from .models import (
+    PerfilUsuario,
     Paciente,
     RegistroSalud,
     Recordatorio,
-    PerfilUsuario,
-    Medicacion
+    Medicacion,
+    EvolucionMedica,
+    EstudioMedico,
+    SolicitudEstudio
 )
 
 
@@ -184,6 +188,9 @@ def dashboard_redirect(request):
 
     if perfil.rol == "EMERGENCIA":
         return redirect("panel_emergencia")
+    
+    if perfil.rol == "INSTITUCION":
+        return redirect("panel_institucion")
 
 
     return redirect("inicio")
@@ -235,7 +242,87 @@ def panel_emergencia(request):
         request,
         "emergencia/panel.html"
     )
+    
+    # ==================================================
+# PANEL INSTITUCIÓN
+# ==================================================
 
+@login_required
+def panel_institucion(request):
+
+    solicitudes = SolicitudEstudio.objects.filter(
+        estado="PENDIENTE"
+    ).order_by("-fecha_solicitud")
+
+    print("SOLICITUDES:", solicitudes)
+    print("CANTIDAD:", solicitudes.count())
+
+    return render(
+        request,
+        "mi_app_salud/panel_institucion.html",
+        {
+            "solicitudes": solicitudes
+        }
+    )
+ # ==================================================
+# CARGAR RESULTADO ESTUDIO (INSTITUCIÓN)
+# ==================================================
+
+@login_required
+def cargar_resultado_estudio(request, solicitud_id):
+
+    solicitud = get_object_or_404(
+        SolicitudEstudio,
+        id=solicitud_id
+    )
+
+
+    if request.method == "POST":
+
+        print("==============================")
+        print("POST RECIBIDO")
+        print("DATOS:", request.POST)
+        print("ARCHIVOS:", request.FILES)
+        print("==============================")
+
+
+        solicitud.informe = request.POST.get(
+            "informe"
+        )
+
+
+        solicitud.archivo_informe = request.FILES.get(
+            "archivo_informe"
+        )
+
+
+        solicitud.fecha_realizacion = timezone.now()
+
+
+        solicitud.estado = "REALIZADO"
+
+
+        solicitud.save()
+
+
+        messages.success(
+            request,
+            "Resultado del estudio cargado correctamente."
+        )
+
+
+        return redirect(
+            "panel_institucion"
+        )
+
+
+    return render(
+        request,
+        "mi_app_salud/cargar_resultado_estudio.html",
+        {
+            "solicitud": solicitud
+        }
+    )
 # ==================================================
 # CREAR PACIENTE
 # ==================================================
@@ -353,6 +440,24 @@ def historial_paciente(request, paciente_id):
     )
 
 
+    evoluciones = EvolucionMedica.objects.filter(
+        paciente=paciente
+    ).order_by("-fecha")
+
+
+    estudios = EstudioMedico.objects.filter(
+        paciente=paciente
+    ).order_by("-fecha")
+
+
+    # SOLICITUDES DE ESTUDIOS DEL MÉDICO
+
+    solicitudes_estudios = SolicitudEstudio.objects.filter(
+        paciente=paciente
+    ).order_by("-fecha_solicitud")
+
+
+
     # ==========================================
     # ANALISIS RIESGO JARVICE
     # ==========================================
@@ -372,34 +477,130 @@ def historial_paciente(request, paciente_id):
             color_riesgo = "rojo"
 
 
-        elif ultimo_registro.estado in ["DOLOR", "CANSADO"]:
+        elif ultimo_registro.estado in [
+            "DOLOR",
+            "CANSADO"
+        ]:
 
             riesgo = "ATENCION"
             color_riesgo = "amarillo"
 
 
 
-    for medicamento in medicaciones:
+        for medicamento in medicaciones:
 
-        if not medicamento.activo:
+            if not medicamento.activo:
 
-            riesgo = "ATENCION"
-            color_riesgo = "amarillo"
+                riesgo = "ATENCION"
+                color_riesgo = "amarillo"
 
+    # ==========================================
+    # ÚLTIMO ESTADO PARA JARVICE AI
+    # ==========================================
+
+    ultimo_estado = RegistroSalud.objects.filter(
+        paciente=paciente
+    ).order_by("-fecha").first()
 
 
     return render(
         request,
-        "mi_app_salud/historial.html",
+        "mi_app_salud/historial_paciente.html",
         {
             "paciente": paciente,
             "registros": registros,
             "recordatorios": recordatorios,
             "medicaciones": medicaciones,
-            "riesgo": riesgo,
-            "color_riesgo": color_riesgo
+            "evoluciones": evoluciones,
+            "solicitudes_estudios": solicitudes_estudios,
+            "ultimo_estado": ultimo_estado,
         }
     )
+
+
+# ==================================================
+# CREAR EVOLUCIÓN MÉDICA
+# ==================================================
+
+@login_required
+def crear_evolucion(request, paciente_id):
+
+    paciente = get_object_or_404(
+        Paciente,
+        id=paciente_id
+    )
+
+    if request.method == "POST":
+
+        descripcion = request.POST.get("descripcion")
+        diagnostico = request.POST.get("diagnostico")
+        indicaciones = request.POST.get("indicaciones")
+
+        EvolucionMedica.objects.create(
+    paciente=paciente,
+    usuario=request.user,
+    descripcion=descripcion,
+    diagnostico=diagnostico,
+    indicaciones=indicaciones
+)
+    
+
+        messages.success(
+            request,
+            "Evolución médica registrada correctamente"
+        )
+
+        return redirect(
+            "historial_paciente",
+            paciente_id=paciente.id
+        )
+
+    return render(
+        request,
+        "mi_app_salud/crear_evolucion.html",
+        {
+            "paciente": paciente
+        }
+    )
+
+
+@login_required
+def crear_estudio(request, paciente_id):
+
+    paciente = get_object_or_404(
+        Paciente,
+        id=paciente_id
+    )
+
+    if request.method == "POST":
+
+        EstudioMedico.objects.create(
+            paciente=paciente,
+            tipo=request.POST.get("tipo"),
+            nombre=request.POST.get("nombre"),
+            fecha=request.POST.get("fecha"),
+            observaciones=request.POST.get("observaciones"),
+            archivo=request.FILES.get("archivo")
+        )
+
+        messages.success(
+            request,
+            "Estudio médico registrado correctamente."
+        )
+
+        return redirect(
+            "historial_paciente",
+            paciente_id=paciente.id
+        )
+
+    return render(
+        request,
+        "mi_app_salud/crear_estudio.html",
+        {
+            "paciente": paciente
+        }
+    )
+   
 
 # ==================================================
 # RECORDATORIOS

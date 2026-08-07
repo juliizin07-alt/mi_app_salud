@@ -1,0 +1,124 @@
+{% extends "mi_app_salud/base.html" %}
+
+{% block contenido %}
+
+<div class="contenedor">
+
+    <div class="card">
+
+        <h1>⏰ Nuevo Recordatorio</h1>
+
+        <p>
+            Paciente:
+            <strong>{{ paciente.nombre }} {{ paciente.apellido }}</strong>
+        </p>
+
+        <form method="POST">
+
+            {% csrf_token %}
+
+            <label>Título</label>
+
+            <input
+                type="text"
+                name="titulo"
+                required
+            >
+
+            <label>Descripción</label>
+
+            <textarea
+                name="descripcion"
+                rows="4"
+            ></textarea>
+
+            <label>Fecha</label>
+
+            <input
+                type="date"
+                name="fecha"
+                required
+            >
+
+            <label>Hora</label>
+
+            <input
+                type="time"
+                name="hora"
+                required
+            >
+
+            <button type="submit">
+                💾 Guardar Recordatorio
+            </button>
+
+        </form>
+
+    </div>
+
+</div>
+
+<style>
+
+.contenedor{
+    display:flex;
+    justify-content:center;
+    padding:40px;
+}
+
+.card{
+    width:700px;
+    background:rgba(255,255,255,.08);
+    backdrop-filter:blur(15px);
+    border-radius:25px;
+    padding:35px;
+    color:white;
+    border:1px solid rgba(139,233,255,.25);
+}
+
+.card h1{
+    color:#8be9ff;
+    margin-bottom:20px;
+}
+
+label{
+    display:block;
+    margin-top:18px;
+    margin-bottom:8px;
+    color:#8be9ff;
+}
+
+input,
+textarea{
+
+    width:100%;
+    padding:12px;
+    border:none;
+    border-radius:12px;
+    background:#1d2935;
+    color:white;
+    font-size:15px;
+}
+
+button{
+
+    margin-top:30px;
+    width:100%;
+    padding:15px;
+    border:none;
+    border-radius:15px;
+    background:#00c26f;
+    color:white;
+    font-size:17px;
+    font-weight:bold;
+    cursor:pointer;
+}
+
+button:hover{
+
+    background:#00d67a;
+}
+
+</style>
+
+{% endblock %}

@@ -1,0 +1,292 @@
+{% extends "mi_app_salud/base.html" %}
+
+{% block contenido %}
+
+<h1>🏥 Panel de Institución</h1>
+
+<p class="contador">
+    Total de solicitudes: {{ solicitudes|length }}
+</p>
+
+
+{% for solicitud in solicitudes %}
+
+
+<div class="tarjeta-estudio">
+
+
+    <div class="cabecera">
+
+        <h3>
+            🧪 {{ solicitud.estudio }}
+        </h3>
+
+
+        {% if solicitud.estado == "PENDIENTE" %}
+
+        <span class="estado pendiente">
+            🟡 Pendiente
+        </span>
+
+
+        {% elif solicitud.estado == "REALIZADO" %}
+
+        <span class="estado realizado">
+            🟢 Realizado
+        </span>
+
+
+        {% else %}
+
+        <span class="estado cancelado">
+            🔴 Cancelado
+        </span>
+
+        {% endif %}
+
+
+    </div>
+
+
+
+    <div class="datos">
+
+
+        <p>
+            👤 <strong>Paciente:</strong>
+            {{ solicitud.paciente }}
+        </p>
+
+
+        <p>
+            📝 <strong>Motivo:</strong>
+            {{ solicitud.motivo }}
+        </p>
+
+
+        <p>
+            📅 <strong>Fecha solicitud:</strong>
+            {{ solicitud.fecha_solicitud|date:"d/m/Y H:i" }}
+        </p>
+
+
+    </div>
+
+
+
+    {% if solicitud.estado == "PENDIENTE" %}
+
+    <a 
+    href="{% url 'cargar_resultado_estudio' solicitud.id %}"
+    class="btn-resultado">
+
+        📤 Cargar informe
+
+    </a>
+
+
+    {% else %}
+
+    <div class="resultado">
+
+    ✅ Resultado cargado
+
+    {% if solicitud.archivo_informe %}
+
+    <br><br>
+
+    <a 
+    href="{{ solicitud.archivo_informe.url }}"
+    target="_blank"
+    style="color:#8be9ff;"
+    >
+        📄 Ver informe adjunto
+    </a>
+
+    {% endif %}
+
+
+    {% if solicitud.informe %}
+
+    <p>
+        📝 {{ solicitud.informe }}
+    </p>
+
+    {% endif %}
+
+</div>
+
+    {% endif %}
+
+
+
+</div>
+
+
+{% empty %}
+
+
+<div class="sin-estudios">
+
+    <h2>
+        💤 No hay solicitudes pendientes.
+    </h2>
+
+</div>
+
+
+{% endfor %}
+
+
+
+<style>
+
+
+.tarjeta-estudio{
+
+    background:rgba(255,255,255,.06);
+
+    border:1px solid rgba(255,255,255,.12);
+
+    padding:25px;
+
+    border-radius:20px;
+
+    margin-top:20px;
+
+    box-shadow:
+    0 10px 30px rgba(0,0,0,.25);
+
+}
+
+
+
+.cabecera{
+
+    display:flex;
+
+    justify-content:space-between;
+
+    align-items:center;
+
+}
+
+
+
+.cabecera h3{
+
+    color:white;
+
+    margin:0;
+
+}
+
+
+
+.estado{
+
+    padding:8px 15px;
+
+    border-radius:20px;
+
+    font-weight:bold;
+
+}
+
+
+
+.pendiente{
+
+    background:#ffd54a33;
+
+    color:#ffd54a;
+
+}
+
+
+
+.realizado{
+
+    background:#16c78433;
+
+    color:#7dffb5;
+
+}
+
+
+
+.cancelado{
+
+    background:#ff4d4d33;
+
+    color:#ff9090;
+
+}
+
+
+
+.datos p{
+
+    color:#d8f3ff;
+
+}
+
+
+
+.btn-resultado{
+
+    display:inline-flex;
+
+    align-items:center;
+
+    gap:8px;
+
+    margin-top:15px;
+
+    padding:12px 22px;
+
+    background:linear-gradient(
+        135deg,
+        #00c6ff,
+        #0072ff
+    );
+
+    color:white;
+
+    text-decoration:none;
+
+    font-weight:700;
+
+    border-radius:14px;
+
+    transition:.3s;
+
+}
+
+
+
+.btn-resultado:hover{
+
+    transform:translateY(-3px);
+
+}
+
+
+
+.resultado{
+
+    margin-top:15px;
+
+    color:#7dffb5;
+
+    font-weight:bold;
+
+}
+
+
+
+</style>
+
+
+
+{% endblock %}

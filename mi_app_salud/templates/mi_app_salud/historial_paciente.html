@@ -50,16 +50,168 @@
         💊 Medicación
     </a>
 
-    <button class="btn-accion naranja">
-        🧪 Estudios
-    </button>
+    <a href="{% url 'crear_estudio' paciente.id %}" class="btn-accion naranja">
+    🧪 Estudios
+</a>
 
-    <button class="btn-accion violeta">
-        📝 Evolución
-    </button>
+    <a href="{% url 'crear_evolucion' paciente.id %}" class="btn-accion violeta">
+    📝 Evolución
+</a>
+
+</div>
+<!-- RESUMEN IA JARVICE -->
+
+<div class="jarvice-ai">
+     
+    <div class="ai-card estado-ai">
+
+    <div class="estado-icono">
+
+        {% if ultimo_estado %}
+
+            {% if ultimo_estado.estado == "OK" %}
+                🟢
+
+            {% elif ultimo_estado.estado == "CANSADO" %}
+                🟡
+
+            {% elif ultimo_estado.estado == "DOLOR" %}
+                🟠
+
+            {% elif ultimo_estado.estado == "CRITICO" %}
+                🔴
+
+            {% endif %}
+
+        {% else %}
+
+            ⚪
+
+        {% endif %}
+
+    </div>
+
+
+    <h3>
+        Estado general
+    </h3>
+
+
+    <div class="estado-texto">
+
+    {% if ultimo_estado %}
+
+        {% if ultimo_estado.estado == "OK" %}
+
+            <strong>Paciente estable</strong>
+            <p>Sin alertas detectadas por Jarvice AI.</p>
+
+
+        {% elif ultimo_estado.estado == "CANSADO" %}
+
+            <strong>Requiere seguimiento</strong>
+            <p>Se recomienda controlar evolución.</p>
+
+
+        {% elif ultimo_estado.estado == "DOLOR" %}
+
+            <strong>Dolor registrado</strong>
+            <p>Se recomienda valoración médica.</p>
+
+
+        {% elif ultimo_estado.estado == "CRITICO" %}
+
+            <strong>Atención inmediata</strong>
+            <p>Jarvice recomienda intervención.</p>
+
+        {% endif %}
+
+
+    {% else %}
+
+        <strong>Sin datos</strong>
+        <p>No hay registros recientes.</p>
+
+    {% endif %}
+
+    </div>
+
 
 </div>
 
+
+        <div class="ai-card">
+
+            🩺
+
+            <h3>
+                Última evolución
+            </h3>
+
+
+            <p>
+
+            {% if evoluciones %}
+
+                {{ evoluciones.first.descripcion }}
+
+            {% else %}
+
+                Sin registros
+
+            {% endif %}
+
+
+            </p>
+
+
+        </div>
+
+
+
+        <div class="ai-card">
+
+            🧪
+
+            <h3>
+                Último estudio
+            </h3>
+
+
+            <p>
+
+            {% if solicitudes_estudios %}
+
+                {{ solicitudes_estudios.first.estudio }}
+
+                <br>
+
+                Estado:
+                {{ solicitudes_estudios.first.estado }}
+
+            {% else %}
+
+                Sin estudios
+
+            {% endif %}
+
+
+            </p>
+
+
+        </div>
+
+
+    </div>
+
+
+</div>
+<!-- RESUMEN IA JARVICE -->
+
+<div class="jarvice-ai">
+
+    <h2>
+        
 
     <!-- PANEL RESUMEN -->
 
@@ -394,6 +546,202 @@
     {% endfor %}
 
 </div>
+<div class="seccion">
+
+    <h2>🩺 Evoluciones médicas</h2>
+
+    {% for evolucion in evoluciones %}
+
+        <div class="registro evolucion-card">
+
+    <div class="evolucion-fecha">
+
+        📅 {{ evolucion.fecha|date:"d/m/Y H:i" }}
+
+    </div>
+
+
+    <div class="evolucion-contenido">
+
+        <p>
+            📝 <strong>Evolución:</strong><br>
+            {{ evolucion.descripcion }}
+        </p>
+
+
+        {% if evolucion.diagnostico %}
+
+        <p>
+            🔎 <strong>Diagnóstico:</strong><br>
+            {{ evolucion.diagnostico }}
+        </p>
+
+        {% endif %}
+
+
+        {% if evolucion.indicaciones %}
+
+        <p>
+            📌 <strong>Indicaciones:</strong><br>
+            {{ evolucion.indicaciones }}
+        </p>
+
+        {% endif %}
+
+    </div>
+
+</div>
+
+    {% empty %}
+
+        <p>No hay evoluciones registradas.</p>
+
+    {% endfor %}
+
+</div>
+
+
+</div>
+
+
+<div class="seccion">
+
+    <h2>🧪 Estudios e informes</h2>
+
+  {% for solicitud in solicitudes_estudios %}
+
+<div class="registro estudio-card">
+
+    <div class="estudio-header">
+
+        <h3>
+            🧪 {{ solicitud.estudio }}
+        </h3>
+
+
+        {% if solicitud.estado == "PENDIENTE" %}
+
+            <span class="estado pendiente">
+                🟡 Pendiente
+            </span>
+
+        {% elif solicitud.estado == "REALIZADO" %}
+
+            <span class="estado realizado">
+                🟢 Realizado
+            </span>
+
+        {% else %}
+
+            <span class="estado cancelado">
+                🔴 Cancelado
+            </span>
+
+        {% endif %}
+
+
+    </div>
+
+
+    <div class="estudio-datos">
+
+
+        <p>
+            📝 <strong>Motivo:</strong><br>
+            {{ solicitud.motivo }}
+        </p>
+
+
+        <p>
+            👨‍⚕️ <strong>Médico solicitante:</strong><br>
+            {{ solicitud.medico }}
+        </p>
+
+
+
+        {% if solicitud.estado == "REALIZADO" %}
+
+
+        <p>
+            📅 <strong>Realizado:</strong><br>
+            {{ solicitud.fecha_realizacion|date:"d/m/Y H:i" }}
+        </p>
+
+
+        <p>
+            📄 <strong>Informe:</strong><br>
+
+            {{ solicitud.informe }}
+        </p>
+
+
+        {% if solicitud.archivo_informe %}
+
+            <a 
+            href="{{ solicitud.archivo_informe.url }}"
+            target="_blank"
+            class="btn-archivo">
+
+                📎 Ver archivo del estudio
+
+            </a>
+
+        {% endif %}
+
+
+
+        {% else %}
+
+            <p>
+                ⏳ Esperando resultado
+            </p>
+
+        {% endif %}
+
+
+    </div>
+
+
+</div>
+
+    <div>
+
+        {% if solicitud.estado == "REALIZADO" %}
+
+            <p>
+                <strong>📅 Realizado:</strong>
+                {{ solicitud.fecha_realizacion|date:"d/m/Y H:i" }}
+            </p>
+
+            <p>
+                <strong>📝 Informe:</strong><br>
+                {{ solicitud.informe }}
+            </p>
+
+            {% if solicitud.archivo_informe %}
+                <a href="{{ solicitud.archivo_informe.url }}" target="_blank">
+                    📄 Ver archivo del estudio
+                </a>
+            {% endif %}
+
+        {% else %}
+
+            ⏳ Esperando resultado
+
+        {% endif %}
+
+    </div>
+
+</div>
+
+{% empty %}
+
+<p>No hay solicitudes de estudios.</p>
+
+{% endfor %}
+
+</div>
+
 <!-- ACTIVIDAD RECIENTE JARVICE -->
 
 <div class="actividad-jarvice">
@@ -1775,6 +2123,264 @@ ACTIVIDAD JARVICE
 .semaforo-panel.rojo{
 
     border:2px solid #ff4d4d;
+
+}
+
+
+.estudio-card{
+
+    border-left:6px solid #00c6ff;
+
+    background:rgba(255,255,255,.05);
+
+    border-radius:14px;
+
+    padding:20px;
+
+    margin-bottom:18px;
+
+}
+
+
+.estudio-card p{
+
+    margin:8px 0;
+
+    color:#d8f3ff;
+
+}
+.estado{
+
+    padding:6px 14px;
+
+    border-radius:20px;
+
+    font-weight:bold;
+
+}
+
+.pendiente{
+
+    background:#ffd54a33;
+
+    color:#ffd54a;
+
+}
+
+.realizado{
+
+    background:#16c78433;
+
+    color:#7dffb5;
+
+}
+
+.cancelado{
+
+    background:#ff4d4d33;
+
+    color:#ff9090;
+
+}
+.evolucion-card{
+
+    background:rgba(0,198,255,.08);
+
+    border-left:5px solid #8b5cf6;
+
+    padding:20px;
+
+    border-radius:16px;
+
+    margin-bottom:15px;
+
+}
+
+
+.evolucion-card p{
+
+    color:#d8f3ff;
+
+    margin:10px 0;
+
+}
+
+
+.evolucion-fecha{
+
+    color:#8be9ff;
+
+    font-weight:bold;
+
+    margin-bottom:10px;
+
+}
+.estudio-header{
+
+    display:flex;
+
+    justify-content:space-between;
+
+    align-items:center;
+
+    margin-bottom:15px;
+
+}
+
+
+.estudio-header h3{
+
+    color:white;
+
+    margin:0;
+
+}
+
+
+.estudio-datos p{
+
+    color:#d8f3ff;
+
+}
+
+
+.btn-archivo{
+
+    display:inline-block;
+
+    margin-top:10px;
+
+    padding:10px 18px;
+
+    background:#00c6ff;
+
+    color:white;
+
+    border-radius:12px;
+
+    text-decoration:none;
+
+    font-weight:bold;
+
+}
+.jarvice-ai{
+
+    margin-top:25px;
+
+    background:linear-gradient(
+        135deg,
+        rgba(0,198,255,.15),
+        rgba(0,114,255,.15)
+    );
+
+    border:1px solid rgba(0,198,255,.3);
+
+    border-radius:20px;
+
+    padding:25px;
+
+}
+
+
+.jarvice-ai h2{
+
+    color:white;
+
+}
+
+
+
+.ai-grid{
+
+    display:grid;
+
+    grid-template-columns:repeat(
+        3,
+        1fr
+    );
+
+    gap:20px;
+
+}
+
+
+
+.ai-card{
+
+    background:rgba(255,255,255,.06);
+
+    padding:20px;
+
+    border-radius:16px;
+
+    color:#d8f3ff;
+
+}
+
+
+.ai-card h3{
+
+    color:white;
+
+}
+.jarvice-ai{
+
+    margin-top:25px;
+
+    background:linear-gradient(
+        135deg,
+        rgba(0,198,255,.15),
+        rgba(0,114,255,.15)
+    );
+
+    border:1px solid rgba(0,198,255,.3);
+
+    border-radius:20px;
+
+    padding:25px;
+
+}
+
+
+.jarvice-ai h2{
+
+    color:white;
+
+}
+
+
+
+.ai-grid{
+
+    display:grid;
+
+    grid-template-columns:repeat(
+        3,
+        1fr
+    );
+
+    gap:20px;
+
+}
+
+
+
+.ai-card{
+
+    background:rgba(255,255,255,.06);
+
+    padding:20px;
+
+    border-radius:16px;
+
+    color:#d8f3ff;
+
+}
+
+
+.ai-card h3{
+
+    color:white;
 
 }
 </style>
