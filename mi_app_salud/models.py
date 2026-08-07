@@ -96,6 +96,13 @@ class Paciente(models.Model):
     nombre = models.CharField(max_length=100)
 
     apellido = models.CharField(max_length=100)
+    
+    historia_clinica = models.CharField(
+    max_length=20,
+    unique=True,
+    blank=True,
+    null=True
+)
 
     dni = models.CharField(
         max_length=20,
