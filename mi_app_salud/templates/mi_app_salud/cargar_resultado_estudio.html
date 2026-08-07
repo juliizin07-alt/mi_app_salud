@@ -1,0 +1,62 @@
+{% extends "mi_app_salud/base.html" %}
+
+
+{% block contenido %}
+
+<h1>📄 Cargar resultado del estudio</h1>
+
+
+<h3>
+{{ solicitud.estudio }}
+</h3>
+
+
+<p>
+Paciente:
+{{ solicitud.paciente }}
+</p>
+
+
+<form method="POST" enctype="multipart/form-data">
+
+{% csrf_token %}
+
+
+<label>
+Informe:
+</label>
+
+<br>
+
+<textarea 
+name="informe"
+rows="6"
+cols="60"></textarea>
+
+
+<br><br>
+
+
+<label>
+Archivo PDF / Imagen:
+</label>
+
+<br>
+
+<input 
+type="file"
+name="archivo_informe">
+
+
+<br><br>
+
+
+<button type="submit">
+💾 Guardar resultado
+</button>
+
+
+</form>
+
+
+{% endblock %}

@@ -2,11 +2,15 @@
 
 {% block contenido %}
 
-<div class="container mt-5">
+<div class="crear-med-panel">
 
-    <h1>💊 Nuevo Medicamento</h1>
+    <div class="titulo">
+        <h1>💊 Nuevo Medicamento</h1>
+        <p>Registro inteligente de medicación del paciente.</p>
+    </div>
 
-    <div class="card p-4 mt-4">
+
+    <div class="med-form-card">
 
 
         <form method="POST">
@@ -15,13 +19,11 @@
 
 
             <label>
-                Paciente
+                👤 Paciente
             </label>
 
-
             <select 
-                name="paciente" 
-                class="form-control"
+                name="paciente"
                 required
             >
 
@@ -37,73 +39,65 @@
 
 
 
-
-            <label class="mt-3">
-                Medicamento
+            <label>
+                💊 Medicamento
             </label>
-
 
             <input 
                 type="text"
                 name="nombre"
-                class="form-control"
                 placeholder="Ej: Losartan"
                 required
             >
 
 
 
-
-            <label class="mt-3">
-                Dosis
+            <label>
+                💉 Dosis
             </label>
-
 
             <input 
                 type="text"
                 name="dosis"
-                class="form-control"
                 placeholder="Ej: 50 mg"
                 required
             >
 
 
 
-
-            <label class="mt-3">
-                Horario
+            <label>
+                ⏰ Horario
             </label>
-
 
             <input 
                 type="time"
                 name="horario"
-                class="form-control"
                 required
             >
 
 
 
-
-            <br>
-
-
-            <button class="btn btn-success">
-
-                💾 Guardar medicamento
-
-            </button>
+            <div class="acciones-formulario">
 
 
+                <button 
+                    type="submit"
+                    class="btn-guardar"
+                >
+                    💾 Guardar medicamento
+                </button>
 
-            <a 
-                href="{% url 'medicacion' %}" 
-                class="btn btn-secondary"
-            >
 
-                Cancelar
 
-            </a>
+                <a 
+                    href="{% url 'medicacion' %}"
+                    class="btn-cancelar"
+                >
+                    ❌ Cancelar
+                </a>
+
+
+            </div>
 
 
         </form>
@@ -111,7 +105,236 @@
 
     </div>
 
+
 </div>
+
+
+
+<style>
+
+
+.crear-med-panel{
+
+    color:white;
+
+}
+
+
+.titulo h1{
+
+    color:#69d8ff;
+
+}
+
+
+.titulo p{
+
+    color:#b8dfff;
+
+}
+
+
+
+.med-form-card{
+
+    margin-top:25px;
+
+    background:rgba(255,255,255,.06);
+
+    border:1px solid rgba(0,200,255,.25);
+
+    border-radius:20px;
+
+    padding:30px;
+
+    box-shadow:
+    0 0 25px rgba(0,200,255,.15);
+
+}
+
+
+
+.med-form-card label{
+
+    display:block;
+
+    margin-top:18px;
+
+    margin-bottom:8px;
+
+    color:#8be9ff;
+
+    font-weight:700;
+
+}
+
+
+
+.med-form-card input,
+.med-form-card select{
+
+
+    width:100%;
+
+    padding:14px;
+
+    border-radius:14px;
+
+    border:1px solid rgba(0,200,255,.35);
+
+    background:#081522;
+
+    color:white;
+
+    font-size:16px;
+
+    outline:none;
+
+}
+
+
+
+.med-form-card input:focus,
+.med-form-card select:focus{
+
+    border-color:#00c6ff;
+
+    box-shadow:
+    0 0 15px rgba(0,198,255,.5);
+
+}
+
+
+
+/* CONTENEDOR BOTONES */
+
+.acciones-formulario{
+
+    display:flex;
+
+    gap:15px;
+
+    margin-top:30px;
+
+    flex-wrap:wrap;
+
+}
+
+
+
+/* BOTONES BASE */
+
+.btn-guardar,
+.btn-cancelar{
+
+
+    padding:14px 25px;
+
+    border-radius:16px;
+
+    color:white !important;
+
+    font-weight:800;
+
+    text-decoration:none;
+
+    border:none;
+
+    cursor:pointer;
+
+    display:flex;
+
+    align-items:center;
+
+    gap:8px;
+
+    transition:.3s;
+
+    font-size:16px;
+
+}
+
+
+
+/* GUARDAR */
+
+
+.btn-guardar{
+
+
+    background:
+    linear-gradient(
+        135deg,
+        #00ff88,
+        #00995c
+    );
+
+
+    box-shadow:
+
+    0 0 20px rgba(0,255,120,.4);
+
+
+}
+
+
+
+.btn-guardar:hover{
+
+
+    transform:translateY(-4px);
+
+
+    box-shadow:
+
+    0 0 30px rgba(0,255,120,.9);
+
+
+}
+
+
+
+
+/* CANCELAR */
+
+
+.btn-cancelar{
+
+
+    background:
+    linear-gradient(
+        135deg,
+        #ff5555,
+        #990000
+    );
+
+
+    box-shadow:
+
+    0 0 20px rgba(255,50,50,.4);
+
+
+}
+
+
+
+.btn-cancelar:hover{
+
+
+    transform:translateY(-4px);
+
+
+    box-shadow:
+
+    0 0 30px rgba(255,50,50,.9);
+
+
+}
+
+
+
+</style>
+
 
 
 {% endblock %}

@@ -92,11 +92,10 @@
 
                 {% else %}
 
-                    <a href="{% url 'tomar_medicacion' medicamento.id %}" class="tomar">
-                        ✔ Tomar
-                    </a>
-
-                {% endif %}
+                    <a href="{% url 'tomar_medicacion' medicamento.id %}" class="btn-tomar">
+                        💊 Tomar medicamento
+                                </a>
+                        {% endif %}
 
                 <a href="{% url 'editar_medicacion' medicamento.id %}" class="editar">
                     ✏ Editar
@@ -225,38 +224,254 @@
 
 .botones a,
 .botones button{
+
     border:none;
-    padding:10px 15px;
-    border-radius:12px;
+    padding:12px 20px;
+
+    border-radius:14px;
+
     color:white;
+
     text-decoration:none;
+
     cursor:pointer;
-    font-weight:bold;
-    transition:.2s;
+
+    font-weight:700;
+
+    display:flex;
+
+    align-items:center;
+
+    gap:8px;
+
+    transition:.3s;
+
+    box-shadow:
+    0 5px 15px rgba(0,0,0,.25);
+
 }
 
-.tomar{
-    background:#00a86b;
+
+.botones a:hover,
+.botones button:hover{
+
+    transform:translateY(-3px);
+
+    filter:brightness(1.2);
+
 }
+
+.btn-tomar{
+
+    background:
+    linear-gradient(
+        135deg,
+        #00ff88,
+        #00995c
+    );
+
+    color:white;
+
+    padding:12px 22px;
+
+    border-radius:14px;
+
+    font-weight:700;
+
+    text-decoration:none;
+
+    display:flex;
+
+    align-items:center;
+
+    gap:8px;
+
+    box-shadow:
+    0 0 15px rgba(0,255,120,.4);
+
+}
+
+
+.btn-tomar:hover{
+
+    transform:translateY(-3px);
+
+    box-shadow:
+    0 0 25px rgba(0,255,120,.8);
+
+}
+
 
 .editar{
-    background:#008cff;
+
+    background:
+    linear-gradient(
+        135deg,
+        #00bfff,
+        #0066ff
+    );
+
 }
+
 
 .eliminar{
-    background:#d9534f;
+
+    background:
+    linear-gradient(
+        135deg,
+        #ff5555,
+        #990000
+    );
+
 }
+
 
 button.tomado{
+
     background:#16c784;
+
     cursor:default;
+
 }
 
+
 .sin-datos{
+
     background:#111;
+
     padding:30px;
+
     border-radius:15px;
+
     text-align:center;
+
+}
+
+
+/* =========================
+   BOTONES MEDICACION
+========================= */
+
+.botones a,
+.botones button{
+
+    border:none;
+    padding:12px 22px;
+    border-radius:14px;
+
+    color:white;
+
+    text-decoration:none;
+
+    cursor:pointer;
+
+    font-weight:700;
+
+    display:flex;
+
+    align-items:center;
+
+    gap:8px;
+
+    transition:.3s;
+
+    box-shadow:0 5px 15px rgba(0,0,0,.25);
+
+}
+
+
+.botones a:hover,
+.botones button:hover{
+
+    transform:translateY(-3px);
+
+    filter:brightness(1.2);
+
+}
+
+
+/* TOMAR */
+
+.botones .btn-tomar{
+
+    background:linear-gradient(
+        135deg,
+        #00ff88,
+        #00995c
+    ) !important;
+
+    color:white !important;
+
+    padding:14px 25px !important;
+
+    border-radius:18px !important;
+
+    font-size:16px !important;
+
+    font-weight:800 !important;
+
+    text-decoration:none !important;
+
+    display:flex !important;
+
+    align-items:center;
+
+    gap:10px;
+
+    box-shadow:
+    0 0 20px rgba(0,255,120,.5);
+
+}
+
+
+.botones .btn-tomar:hover{
+
+    transform:translateY(-4px);
+
+    box-shadow:
+    0 0 30px rgba(0,255,120,.9);
+
+}
+
+
+/* EDITAR */
+
+.editar{
+
+    background:linear-gradient(
+        135deg,
+        #00bfff,
+        #0066ff
+    ) !important;
+
+}
+
+
+/* SUSPENDER */
+
+.eliminar{
+
+    background:linear-gradient(
+        135deg,
+        #ff5555,
+        #990000
+    ) !important;
+
+}
+
+
+/* YA TOMADO */
+
+button.tomado{
+
+    background:#16c784;
+
+    cursor:default;
+
+}
+.botones .btn-tomar{
+    background:red !important;
+    color:white !important;
 }
 
 </style>

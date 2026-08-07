@@ -71,6 +71,12 @@ urlpatterns = [
         views.historial_paciente,
         name="historial_paciente"
     ),
+    
+    path(
+    "crear-evolucion/<int:paciente_id>/",
+    views.crear_evolucion,
+    name="crear_evolucion"
+    ),
 
 
     # ==================================================
@@ -193,7 +199,23 @@ urlpatterns = [
         views.panel_emergencia,
         name="panel_emergencia"
     ),
+    
+    path(
+    "panel/institucion/",
+    views.panel_institucion,
+    name="panel_institucion",
+),
 
+path(
+    "institucion/cargar/<int:solicitud_id>/",
+    views.cargar_resultado_estudio,
+    name="cargar_resultado_estudio"
+),
+path(
+    "cargar-resultado/<int:solicitud_id>/",
+    views.cargar_resultado_estudio,
+    name="cargar_resultado_estudio"
+),
 
     # ==================================================
     # API JARVICE
@@ -222,5 +244,10 @@ urlpatterns = [
         views.tercer_contacto,
         name="tercer_contacto"
     ),
+    path(
+    "crear-estudio/<int:paciente_id>/",
+    views.crear_estudio,
+    name="crear_estudio"
+),
 
 ]
