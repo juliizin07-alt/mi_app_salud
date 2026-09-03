@@ -1,19 +1,70 @@
-﻿# Python
-**/__pycache__/
+# ============================================================
+# JARVICE HEALTH AI - GITIGNORE
+# ============================================================
+
+# ------------------------------------------------------------
+# Python
+# ------------------------------------------------------------
+__pycache__/
 *.py[cod]
 *$py.class
 
-# Django
-db.sqlite3
-
-# Entorno virtual
+# ------------------------------------------------------------
+# Entornos virtuales
+# ------------------------------------------------------------
 venv/
 .venv/
 env/
 
-# Variables de entorno
-.env
+# ------------------------------------------------------------
+# Django / bases de datos locales
+# ------------------------------------------------------------
+*.sqlite3
+*.sqlite3-journal
 
+# ------------------------------------------------------------
+# Variables de entorno y secretos
+# ------------------------------------------------------------
+.env
+*.env
+.env.txt
+*.env.txt
+*claves*.txt
+
+# ------------------------------------------------------------
 # IDE
+# ------------------------------------------------------------
 .vscode/
 .idea/
+
+# ------------------------------------------------------------
+# Backups de desarrollo
+# ------------------------------------------------------------
+BACKUPS_JARVICE/
+**/*backup*
+**/*BACKUP*
+**/*_backup*
+
+# ------------------------------------------------------------
+# Documentación personal
+# ------------------------------------------------------------
+estudios/
+
+# ------------------------------------------------------------
+# Archivos de auditoría local
+# ------------------------------------------------------------
+auditoria_estructura.txt
+AUDITORIA_ARCHIVOS_JARVICE.txt
+
+# ------------------------------------------------------------
+# Archivos accidentales
+# ------------------------------------------------------------
+mi_app_salud/models_prueba_codificacion.py
+mi_app_salud/templates/mi_app_salud/jarvice_core_antes_restaurar.html
+mi_app_salud/templates/mi_app_salud/jarvice_core_roto_css.html
+mi_app_salud/templates/mi_app_salud/panel_medico_pre_vitales.html
+inicio_backup.html
+
+# Archivos temporales de diagn�stico/desarrollo
+error_jarvice.txt
+resultado_evolucion.html

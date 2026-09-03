@@ -1,25 +1,1015 @@
 {% extends "mi_app_salud/base.html" %}
 
-
 {% block contenido %}
 
-<h1>⚙ Configuración</h1>
+<style>
+
+:root {
+    --jarvice-blue: #38bdf8;
+    --jarvice-blue-dark: #0ea5e9;
+    --jarvice-cyan: #22d3ee;
+    --jarvice-green: #34d399;
+    --jarvice-yellow: #fbbf24;
+    --jarvice-red: #fb7185;
+    --jarvice-purple: #a78bfa;
+    --jarvice-bg: #07111f;
+    --jarvice-card: rgba(15, 31, 51, 0.82);
+    --jarvice-border: rgba(148, 163, 184, 0.13);
+    --jarvice-text: #e5f3ff;
+    --jarvice-muted: #94a9bd;
+}
+
+/* ==============================
+   CONTENEDOR
+================================ */
+
+.config-page {
+    width: 100%;
+    max-width: 1400px;
+    margin: 0 auto;
+    padding: 10px 0 50px;
+    color: var(--jarvice-text);
+}
+
+/* ==============================
+   HERO
+================================ */
+
+.config-hero {
+    position: relative;
+    overflow: hidden;
+    padding: 34px;
+    margin-bottom: 26px;
+    border-radius: 24px;
+
+    background:
+        radial-gradient(
+            circle at 85% 15%,
+            rgba(56, 189, 248, 0.18),
+            transparent 35%
+        ),
+        radial-gradient(
+            circle at 15% 90%,
+            rgba(34, 211, 238, 0.08),
+            transparent 35%
+        ),
+        linear-gradient(
+            135deg,
+            rgba(13, 30, 49, 0.96),
+            rgba(7, 17, 31, 0.96)
+        );
+
+    border: 1px solid rgba(56, 189, 248, 0.16);
+    box-shadow:
+        0 20px 60px rgba(0, 0, 0, 0.25),
+        inset 0 1px 0 rgba(255,255,255,0.03);
+}
+
+.config-hero::after {
+    content: "";
+    position: absolute;
+    width: 220px;
+    height: 220px;
+    right: -100px;
+    top: -110px;
+
+    border-radius: 50%;
+
+    background: rgba(56, 189, 248, 0.08);
+    filter: blur(5px);
+}
+
+.config-eyebrow {
+    display: flex;
+    align-items: center;
+    gap: 9px;
+
+    margin-bottom: 10px;
+
+    color: var(--jarvice-blue);
+    font-size: 12px;
+    font-weight: 800;
+    letter-spacing: 1.8px;
+    text-transform: uppercase;
+}
+
+.config-hero h1 {
+    margin: 0 0 10px;
+
+    font-size: clamp(28px, 4vw, 42px);
+    font-weight: 800;
+    letter-spacing: -1px;
+}
+
+.config-hero p {
+    max-width: 760px;
+    margin: 0;
+
+    color: var(--jarvice-muted);
+    font-size: 15px;
+    line-height: 1.7;
+}
+
+.system-status {
+    position: relative;
+    z-index: 2;
+
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+
+    margin-top: 20px;
+    padding: 8px 13px;
+
+    border-radius: 999px;
+
+    background: rgba(52, 211, 153, 0.08);
+    border: 1px solid rgba(52, 211, 153, 0.2);
+
+    color: #a7f3d0;
+    font-size: 12px;
+    font-weight: 700;
+}
+
+.status-dot {
+    width: 8px;
+    height: 8px;
+
+    border-radius: 50%;
+    background: var(--jarvice-green);
+
+    box-shadow: 0 0 12px rgba(52, 211, 153, 0.8);
+
+    animation: statusPulse 2s infinite;
+}
+
+@keyframes statusPulse {
+    0%, 100% {
+        opacity: 1;
+        transform: scale(1);
+    }
+
+    50% {
+        opacity: .45;
+        transform: scale(.8);
+    }
+}
+
+/* ==============================
+   SECCIONES
+================================ */
+
+.config-section {
+    margin-bottom: 30px;
+}
+
+.config-section-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-end;
+
+    margin-bottom: 14px;
+}
+
+.config-section-title {
+    margin: 0;
+
+    font-size: 18px;
+    font-weight: 800;
+}
+
+.config-section-description {
+    margin: 4px 0 0;
+
+    color: var(--jarvice-muted);
+    font-size: 13px;
+}
+
+/* ==============================
+   GRID
+================================ */
+
+.config-grid {
+    display: grid;
+
+    grid-template-columns:
+        repeat(auto-fit, minmax(260px, 1fr));
+
+    gap: 15px;
+}
+
+/* ==============================
+   CARD
+================================ */
+
+.config-card {
+    position: relative;
+
+    display: flex;
+    align-items: flex-start;
+    gap: 15px;
+
+    min-height: 120px;
+    padding: 20px;
+
+    border-radius: 18px;
+
+    background: var(--jarvice-card);
+
+    border: 1px solid var(--jarvice-border);
+
+    box-shadow:
+        0 12px 35px rgba(0,0,0,.14),
+        inset 0 1px 0 rgba(255,255,255,.025);
+
+    transition:
+        transform .2s ease,
+        border-color .2s ease,
+        box-shadow .2s ease;
+}
+
+.config-card:hover {
+    transform: translateY(-3px);
+
+    border-color: rgba(56, 189, 248, .3);
+
+    box-shadow:
+        0 18px 45px rgba(0,0,0,.22),
+        0 0 25px rgba(56,189,248,.05);
+}
+
+.config-icon {
+    flex-shrink: 0;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    width: 48px;
+    height: 48px;
+
+    border-radius: 14px;
+
+    background: rgba(56,189,248,.08);
+
+    border: 1px solid rgba(56,189,248,.14);
+
+    font-size: 22px;
+}
+
+.config-card-content {
+    flex: 1;
+}
+
+.config-card h3 {
+    margin: 1px 0 6px;
+
+    font-size: 15px;
+    font-weight: 800;
+}
+
+.config-card p {
+    margin: 0;
+
+    color: var(--jarvice-muted);
+
+    font-size: 12px;
+    line-height: 1.6;
+}
+
+.config-card-link {
+    display: inline-flex;
+    align-items: center;
+    gap: 5px;
+
+    margin-top: 11px;
+
+    color: var(--jarvice-blue);
+
+    font-size: 11px;
+    font-weight: 800;
+
+    text-decoration: none;
+}
+
+.config-card-link:hover {
+    color: var(--jarvice-cyan);
+}
+
+/* ==============================
+   VARIANTES
+================================ */
+
+.config-card.green .config-icon {
+    background: rgba(52,211,153,.08);
+    border-color: rgba(52,211,153,.15);
+}
+
+.config-card.yellow .config-icon {
+    background: rgba(251,191,36,.08);
+    border-color: rgba(251,191,36,.15);
+}
+
+.config-card.red .config-icon {
+    background: rgba(251,113,133,.08);
+    border-color: rgba(251,113,133,.15);
+}
+
+.config-card.purple .config-icon {
+    background: rgba(167,139,250,.08);
+    border-color: rgba(167,139,250,.15);
+}
+
+/* ==============================
+   FEEDBACK
+================================ */
+
+.feedback-panel {
+    position: relative;
+    overflow: hidden;
+
+    padding: 28px;
+
+    border-radius: 22px;
+
+    background:
+        linear-gradient(
+            135deg,
+            rgba(14, 165, 233, .12),
+            rgba(15, 31, 51, .88)
+        );
+
+    border: 1px solid rgba(56,189,248,.18);
+}
+
+.feedback-panel::before {
+    content: "✦";
+
+    position: absolute;
+
+    right: 28px;
+    top: 18px;
+
+    color: rgba(56,189,248,.15);
+
+    font-size: 80px;
+}
+
+.feedback-panel h2 {
+    margin: 0 0 8px;
+
+    font-size: 21px;
+}
+
+.feedback-panel > p {
+    max-width: 720px;
+
+    margin: 0 0 22px;
+
+    color: var(--jarvice-muted);
+
+    font-size: 13px;
+    line-height: 1.7;
+}
+
+.feedback-grid {
+    display: grid;
+
+    grid-template-columns:
+        repeat(auto-fit, minmax(220px, 1fr));
+
+    gap: 12px;
+}
+
+.feedback-item {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+
+    padding: 15px;
+
+    border-radius: 14px;
+
+    background: rgba(4, 13, 24, .4);
+
+    border: 1px solid rgba(148,163,184,.08);
+
+    transition: .2s ease;
+}
+
+.feedback-item:hover {
+    border-color: rgba(56,189,248,.22);
+    background: rgba(56,189,248,.05);
+}
+
+.feedback-item-icon {
+    font-size: 21px;
+}
+
+.feedback-item strong {
+    display: block;
+
+    margin-bottom: 3px;
+
+    font-size: 13px;
+}
+
+.feedback-item span {
+    color: var(--jarvice-muted);
+
+    font-size: 11px;
+}
+
+/* ==============================
+   LEGAL
+================================ */
+
+.legal-panel {
+    padding: 22px;
+
+    border-radius: 18px;
+
+    background: rgba(15,31,51,.62);
+
+    border: 1px solid var(--jarvice-border);
+}
+
+.legal-grid {
+    display: grid;
+
+    grid-template-columns:
+        repeat(auto-fit, minmax(240px, 1fr));
+
+    gap: 10px;
+}
+
+.legal-link {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+
+    padding: 14px 16px;
+
+    border-radius: 12px;
+
+    background: rgba(255,255,255,.02);
+
+    border: 1px solid rgba(148,163,184,.07);
+
+    color: var(--jarvice-text);
+
+    text-decoration: none;
+
+    font-size: 12px;
+
+    transition: .2s ease;
+}
+
+.legal-link:hover {
+    border-color: rgba(56,189,248,.2);
+    background: rgba(56,189,248,.04);
+}
+
+.legal-arrow {
+    color: var(--jarvice-blue);
+    font-size: 15px;
+}
+
+/* ==============================
+   FOOTER
+================================ */
+
+.config-footer {
+    margin-top: 30px;
+
+    text-align: center;
+
+    color: #61778c;
+
+    font-size: 11px;
+}
+
+.config-footer strong {
+    color: #8da7bc;
+}
+
+/* ==============================
+   RESPONSIVE
+================================ */
+
+@media (max-width: 700px) {
+
+    .config-hero {
+        padding: 25px 20px;
+        border-radius: 19px;
+    }
+
+    .config-card {
+        min-height: auto;
+    }
+
+    .feedback-panel {
+        padding: 22px 18px;
+    }
+
+    .config-section-header {
+        display: block;
+    }
+
+}
+
+</style>
 
 
-<div class="card">
+<div class="config-page">
 
-<p>
-Configuración del sistema Jarvice.
-</p>
 
-<ul>
-<li>Usuarios</li>
-<li>Contactos de emergencia</li>
-<li>Notificaciones</li>
-<li>Dispositivo wearable</li>
-</ul>
+    <!-- ======================================
+         HERO
+    ======================================= -->
+
+    <section class="config-hero">
+
+        <div class="config-eyebrow">
+            ⚙ JARVICE HEALTH AI
+        </div>
+
+        <h1>
+            Centro de configuración
+        </h1>
+
+        <p>
+            Personalizá tu experiencia en Jarvice, administrá tus
+            preferencias y encontrá rápidamente las herramientas
+            relacionadas con tu cuenta, seguridad, dispositivos y
+            comunicación con el equipo.
+        </p>
+
+        <div class="system-status">
+            <span class="status-dot"></span>
+            Sistema Jarvice operativo
+        </div>
+
+    </section>
+
+
+    <!-- ======================================
+         CUENTA Y PREFERENCIAS
+    ======================================= -->
+
+    <section class="config-section">
+
+        <div class="config-section-header">
+
+            <div>
+                <h2 class="config-section-title">
+                    👤 Cuenta y preferencias
+                </h2>
+
+                <p class="config-section-description">
+                    Administrá tu experiencia personal dentro de Jarvice.
+                </p>
+            </div>
+
+        </div>
+
+
+        <div class="config-grid">
+
+
+            <div class="config-card">
+
+                <div class="config-icon">
+                    👤
+                </div>
+
+                <div class="config-card-content">
+
+                    <h3>
+                        Mi cuenta
+                    </h3>
+
+                    <p>
+                        Información básica de tu usuario y configuración
+                        personal.
+                    </p>
+
+                    <a href="#" class="config-card-link">
+                        Ver configuración →
+                    </a>
+
+                </div>
+
+            </div>
+
+
+            <div class="config-card">
+
+                <div class="config-icon">
+                    🔔
+                </div>
+
+                <div class="config-card-content">
+
+                    <h3>
+                        Notificaciones
+                    </h3>
+
+                    <p>
+                        Preferencias para avisos, recordatorios y
+                        comunicaciones de Jarvice.
+                    </p>
+
+                    <a href="#" class="config-card-link">
+                        Administrar →
+                    </a>
+
+                </div>
+
+            </div>
+
+
+            <div class="config-card green">
+
+                <div class="config-icon">
+                    ⌚
+                </div>
+
+                <div class="config-card-content">
+
+                    <h3>
+                        Dispositivo wearable
+                    </h3>
+
+                    <p>
+                        Estado y configuración del dispositivo utilizado
+                        para el monitoreo de salud.
+                    </p>
+
+                    <a href="#" class="config-card-link">
+                        Administrar dispositivo →
+                    </a>
+
+                </div>
+
+            </div>
+
+
+            <div class="config-card red">
+
+                <div class="config-icon">
+                    🚨
+                </div>
+
+                <div class="config-card-content">
+
+                    <h3>
+                        Contactos de emergencia
+                    </h3>
+
+                    <p>
+                        Personas de confianza que pueden ser contactadas
+                        ante una situación de emergencia.
+                    </p>
+
+                    <a href="#" class="config-card-link">
+                        Gestionar contactos →
+                    </a>
+
+                </div>
+
+            </div>
+
+
+        </div>
+
+    </section>
+
+
+    <!-- ======================================
+         SEGURIDAD
+    ======================================= -->
+
+    <section class="config-section">
+
+        <div class="config-section-header">
+
+            <div>
+
+                <h2 class="config-section-title">
+                    🔐 Seguridad y privacidad
+                </h2>
+
+                <p class="config-section-description">
+                    Herramientas relacionadas con la protección de tu
+                    cuenta y tu información.
+                </p>
+
+            </div>
+
+        </div>
+
+
+        <div class="config-grid">
+
+
+            <div class="config-card purple">
+
+                <div class="config-icon">
+                    🔐
+                </div>
+
+                <div class="config-card-content">
+
+                    <h3>
+                        Seguridad de la cuenta
+                    </h3>
+
+                    <p>
+                        Revisá las opciones disponibles para mantener
+                        protegida tu cuenta Jarvice.
+                    </p>
+
+                    <a href="#" class="config-card-link">
+                        Revisar seguridad →
+                    </a>
+
+                </div>
+
+            </div>
+
+
+            <div class="config-card">
+
+                <div class="config-icon">
+                    🛡️
+                </div>
+
+                <div class="config-card-content">
+
+                    <h3>
+                        Privacidad y datos
+                    </h3>
+
+                    <p>
+                        Información sobre el tratamiento, protección y
+                        utilización de los datos dentro de Jarvice.
+                    </p>
+
+                    <a href="#" class="config-card-link">
+                        Ver información →
+                    </a>
+
+                </div>
+
+            </div>
+
+
+        </div>
+
+    </section>
+
+
+    <!-- ======================================
+         OPINIÓN
+    ======================================= -->
+
+    <section class="config-section">
+
+        <div class="feedback-panel">
+
+            <h2>
+                💙 Tu opinión ayuda a mejorar Jarvice
+            </h2>
+
+            <p>
+                Jarvice está pensado para evolucionar junto con las
+                personas que lo utilizan. Podés comunicar sugerencias,
+                experiencias, problemas o reclamos para ayudarnos a
+                mejorar continuamente la plataforma.
+            </p>
+
+
+            <div class="feedback-grid">
+
+
+                <div class="feedback-item">
+
+                    <div class="feedback-item-icon">
+                        💡
+                    </div>
+
+                    <div>
+
+                        <strong>
+                            Enviar una sugerencia
+                        </strong>
+
+                        <span>
+                            Proponé nuevas ideas o mejoras.
+                        </span>
+
+                    </div>
+
+                </div>
+
+
+                <div class="feedback-item">
+
+                    <div class="feedback-item-icon">
+                        ⭐
+                    </div>
+
+                    <div>
+
+                        <strong>
+                            Dejar una opinión
+                        </strong>
+
+                        <span>
+                            Contanos tu experiencia con Jarvice.
+                        </span>
+
+                    </div>
+
+                </div>
+
+
+                <div class="feedback-item">
+
+                    <div class="feedback-item-icon">
+                        🐛
+                    </div>
+
+                    <div>
+
+                        <strong>
+                            Informar un problema
+                        </strong>
+
+                        <span>
+                            Reportá errores o comportamientos inesperados.
+                        </span>
+
+                    </div>
+
+                </div>
+
+
+                <div class="feedback-item">
+
+                    <div class="feedback-item-icon">
+                        📕
+                    </div>
+
+                    <div>
+
+                        <strong>
+                            Libro de quejas y reclamos
+                        </strong>
+
+                        <span>
+                            Presentá formalmente una queja o reclamo.
+                        </span>
+
+                    </div>
+
+                </div>
+
+
+                <div class="feedback-item">
+
+                    <div class="feedback-item-icon">
+                        🧑‍💻
+                    </div>
+
+                    <div>
+
+                        <strong>
+                            Atención al usuario
+                        </strong>
+
+                        <span>
+                            Solicitá ayuda o realizá una consulta.
+                        </span>
+
+                    </div>
+
+                </div>
+
+
+            </div>
+
+        </div>
+
+    </section>
+
+
+    <!-- ======================================
+         INFORMACIÓN LEGAL
+    ======================================= -->
+
+    <section class="config-section">
+
+        <div class="config-section-header">
+
+            <div>
+
+                <h2 class="config-section-title">
+                    📚 Información y documentación
+                </h2>
+
+                <p class="config-section-description">
+                    Información importante sobre el uso de la plataforma.
+                </p>
+
+            </div>
+
+        </div>
+
+
+        <div class="legal-panel">
+
+            <div class="legal-grid">
+
+
+                <a href="#" class="legal-link">
+
+                    <span>
+                        📜 Términos y condiciones
+                    </span>
+
+                    <span class="legal-arrow">
+                        →
+                    </span>
+
+                </a>
+
+
+                <a href="#" class="legal-link">
+
+                    <span>
+                        🔒 Política de privacidad
+                    </span>
+
+                    <span class="legal-arrow">
+                        →
+                    </span>
+
+                </a>
+
+
+                <a href="#" class="legal-link">
+
+                    <span>
+                        🛡️ Protección de datos
+                    </span>
+
+                    <span class="legal-arrow">
+                        →
+                    </span>
+
+                </a>
+
+
+                <a href="#" class="legal-link">
+
+                    <span>
+                        ℹ️ Acerca de Jarvice
+                    </span>
+
+                    <span class="legal-arrow">
+                        →
+                    </span>
+
+                </a>
+
+
+            </div>
+
+        </div>
+
+    </section>
+
+
+    <!-- ======================================
+         FOOTER
+    ======================================= -->
+
+    <div class="config-footer">
+
+        <strong>
+            JARVICE HEALTH AI
+        </strong>
+
+        <br>
+
+        Plataforma inteligente de monitoreo y acompañamiento
+        para la salud.
+
+    </div>
+
 
 </div>
-
 
 {% endblock %}

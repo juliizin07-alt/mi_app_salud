@@ -1,1460 +1,1671 @@
-
-
-{% extends "mi_app_salud/base.html" %}
+﻿{% extends "mi_app_salud/base.html" %}
 
 {% block contenido %}
 
-<div class="panel-medico">
+<div class="jarvice-medical-pro">
 
-    <div class="titulo">
+    <!-- =====================================================
+         HEADER PRINCIPAL
+    ====================================================== -->
 
-        <div class="icono">
+    <section class="pro-header">
+
+        <div class="header-brand">
+
+            <div class="brand-orb">
+                🧬
+            </div>
+
+            <div>
+                <span class="eyebrow">
+                    JARVICE HEALTH AI · MEDICAL CORE
+                </span>
+
+                <h1>
+                    Panel Médico
+                </h1>
+
+                <p>
+                    Centro clínico inteligente · Supervisión médica asistida por IA
+                </p>
+            </div>
+
+        </div>
+
+
+        <div class="system-status">
+
+            <span class="status-dot"></span>
+
+            <div>
+                <strong>SISTEMA ONLINE</strong>
+                <small>Jarvice Clinical Core activo</small>
+            </div>
+
+        </div>
+
+    </section>
+
+
+    <!-- =====================================================
+         PERFIL MÉDICO
+    ====================================================== -->
+
+    <section class="doctor-card">
+
+        <div class="doctor-avatar">
             👨‍⚕️
         </div>
 
-        <div>
+        <div class="doctor-info">
 
-            <h1>Panel Médico Jarvice</h1>
-
-            <p>
-                Centro Clínico Inteligente
-            </p>
-
-        </div>
-
-        <div class="estado">
-            🟢 Sistema Online
-        </div>
-
-    </div>
-<!-- PERFIL MEDICO -->
-
-<div class="perfil-medico">
-
-    <div class="avatar-medico">
-        👨‍⚕️
-    </div>
-
-
-    <div class="datos-medico">
-
-        <h2>
-            Dr. {{ request.user.first_name|default:request.user.username }}
-        </h2>
-
-        <p>
-            Médico autorizado Jarvice Health AI
-        </p>
-
-        <span>
-            🟢 Sesión segura activa
-        </span>
-
-    </div>
-
-
-</div>
-
-
-
-<!-- RESUMEN DEL DIA -->
-
-
-<div class="resumen-medico">
-
-
-    <div class="resumen-card">
-
-        👥
-
-        <h3>
-            Pacientes
-        </h3>
-
-        <strong>
-            {{ pacientes|length }}
-        </strong>
-
-    </div>
-
-
-
-    <div class="resumen-card">
-
-        💊
-
-        <h3>
-            Tratamientos
-        </h3>
-
-        <strong>
-            Activos
-        </strong>
-
-    </div>
-
-
-
-    <div class="resumen-card">
-
-        🚨
-
-        <h3>
-            Alertas IA
-        </h3>
-
-        <strong>
-            0
-        </strong>
-
-    </div>
-
-
-
-    <div class="resumen-card">
-
-        🤖
-
-        <h3>
-            Jarvice IA
-        </h3>
-
-        <strong>
-            ONLINE
-        </strong>
-
-    </div>
-
-
-</div>
-    <!-- MONITOR VITAL JARVICE IA -->
-
-<div class="monitor-vital">
-
-
-    <div class="monitor-header">
-
-        ❤️
-
-        <div>
+            <span class="doctor-label">
+                MÉDICO AUTORIZADO
+            </span>
 
             <h2>
-                Monitor Vital Jarvice IA
+                Dr. {{ request.user.first_name|default:request.user.username }}
             </h2>
 
             <p>
-                Supervisión inteligente del estado del paciente
+                {{ request.user.username }}
+                · Jarvice Health AI
             </p>
 
-        </div>
-
-
-        <div class="ia-online">
-
-            🤖 IA ONLINE
-
-        </div>
-
-
-    </div>
-
-
-
-    <div class="vitales">
-
-
-        <div class="vital-card">
-
-            ❤️
-
-            <h3>
-                Frecuencia Cardíaca
-            </h3>
-
-            <strong>
-                78 BPM
-            </strong>
-
-            <p>
-                Ritmo estable
-            </p>
-
-        </div>
-
-
-
-        <div class="vital-card">
-
-            🫁
-
-            <h3>
-                Oxígeno
-            </h3>
-
-            <strong>
-                98 %
-            </strong>
-
-            <p>
-                Saturación normal
-            </p>
-
-        </div>
-
-
-
-        <div class="vital-card">
-
-            🌡️
-
-            <h3>
-                Temperatura
-            </h3>
-
-            <strong>
-                36.5 °C
-            </strong>
-
-            <p>
-                Sin fiebre detectada
-            </p>
-
-        </div>
-
-
-
-        <div class="vital-card">
-
-            🧠
-
-            <h3>
-                Estado IA
-            </h3>
-
-            <strong>
-                ESTABLE
-            </strong>
-
-            <p>
-                Sin alertas activas
-            </p>
-
-        </div>
-
-
-    </div>
-
-
-
-    <div class="analisis-ia">
-
-        🤖 Jarvice Clinical AI:
-
-        <span>
-            El sistema no detecta anomalías críticas.
-        </span>
-
-    </div>
-
-        <!-- LISTADO PACIENTES MEDICO -->
-
-<div class="pacientes-medico">
-
-</form>
-
-
-    <div class="pacientes-header">
-
-    <div>
-
-        <h2>
-            👥 Pacientes registrados
-        </h2>
-
-        <p>
-            Gestión de historias clínicas y monitoreo Jarvice AI
-        </p>
-
-    </div>
-
-
-    <span class="contador-pacientes">
-
-        {{ pacientes|length }} pacientes
-
-    </span>
-
-</div>
-
-    <div class="buscador-contenedor">
-
-    <span class="icono-busqueda">
-        🔍
-    </span>
-    <form method="GET" class="buscador-pacientes">
-
-    <div class="buscador-contenedor">
-
-        <span class="icono-busqueda">
-            🔍
-        </span>
-
-        <input
-            type="text"
-            name="buscar"
-            placeholder="Buscar por HC, nombre, apellido o DNI..."
-            value="{{ buscar }}"
-        >
-
-        <button type="submit">
-            Buscar
-        </button>
-
-    </div>
-
-</form>
-
-<table class="tabla-pacientes">
-
-    <thead>
-
-        <tr>
-
-            <th>
-                HC
-            </th>
-
-            <th>
-                Paciente
-            </th>
-
-            <th>
-                Edad
-            </th>
-
-            <th>
-             Estado
-            </th>
-
-            <th>
-           Último control
-            </th>
-
-            <th>
-            Acción
-            </th>
-
-        </tr>
-
-    </thead>
-
-
-        <tbody>
-
-
-        {% for paciente in pacientes %}
-
-
-            <tr>
-
-    <td>
-
-        <strong>{{ paciente.historia_clinica }}</strong>
-
-    </td>
-
-    <td>
-
-        {{ paciente.nombre }} {{ paciente.apellido }}
-
-    </td>
-
-   <td>
-
-    {{ paciente.edad }}
-
-</td>
-
-
-<td>
-
-    {% if paciente.ultimo_estado %}
-
-        {% if paciente.ultimo_estado.estado == "OK" %}
-
-            <span class="estado-badge verde">
-                🟢 Estable
+            <span class="secure-session">
+                🟢 Sesión segura activa
             </span>
 
-        {% elif paciente.ultimo_estado.estado == "CANSADO" %}
+        </div>
 
-            <span class="estado-badge amarillo">
-                🟡 Seguimiento
+
+        <div class="medical-core">
+
+            <span>
+                JARVICE
             </span>
 
-        {% elif paciente.ultimo_estado.estado == "DOLOR" %}
+            <strong>
+                MEDICAL CORE
+            </strong>
 
-            <span class="estado-badge naranja">
-                🟠 Dolor
-            </span>
+            <small>
+                IA CLÍNICA OPERATIVA
+            </small>
 
-        {% elif paciente.ultimo_estado.estado == "CRITICO" %}
+        </div>
 
-            <span class="estado-badge rojo">
-                🔴 Crítico
-            </span>
-
-        {% endif %}
-
-    {% else %}
-
-        ⚪ Sin datos
-
-    {% endif %}
-
-</td>
-
-<td>
-
-    {% if paciente.ultimo_estado %}
-
-        {{ paciente.ultimo_estado.fecha|date:"d/m/Y" }}
-
-    {% else %}
-
-        Sin datos
-
-    {% endif %}
-
-</td>
-
-    <td>
-
-       <a href="{% url 'historial_paciente' paciente.id %}" class="btn-ficha">
-
-    📋 Abrir historia
-
-</a>
-
-    </td>
-
-</tr>
-
-       {% empty %}
-
-<tr>
-
-    <td colspan="5">
-
-        No hay pacientes registrados
-
-    </td>
-
-</tr>
-
-{% endfor %}
+    </section>
 
 
-        </tbody>
+    <!-- =====================================================
+         KPIs
+    ====================================================== -->
 
+    <section class="kpi-grid">
 
-    </table>
-
-
-</div>
-
-</div>
-<div class="resumen-medico">
-
-
-    <div class="card-resumen">
-
-        👥
-
-        <h3>
-            Pacientes
-        </h3>
-
-        <strong>
-            {{ pacientes|length }}
-        </strong>
-
-    </div>
-
-
-
-    <div class="card-resumen">
-
-        💊
-
-        <h3>
-            Tratamientos
-        </h3>
-
-        <strong>
-            {{ medicamentos|length }}
-        </strong>
-
-    </div>
-
-
-
-    <div class="card-resumen">
-
-        🚨
-
-        <h3>
-            Alertas IA
-        </h3>
-
-        <strong>
-            0
-        </strong>
-
-    </div>
-
-
-</div>
-    <div class="modulos">
 
         <!-- PACIENTES -->
 
-        <div class="modulo">
+        <article class="kpi-card">
 
-            <div class="emoji">🧑‍⚕️</div>
+            <div class="kpi-icon blue">
+                👥
+            </div>
 
-            <h2>Pacientes</h2>
+            <div class="kpi-content">
 
-            <h1>{{ pacientes|length }}</h1>
+                <span>
+                    PACIENTES REGISTRADOS
+                </span>
 
-            <p>
-                Visualizar fichas clínicas, historial y monitoreo.
-            </p>
+                <strong>
+                    {{ total_pacientes }}
+                </strong>
 
-            <a href="{% url 'pacientes' %}" class="btn">
-                Ver pacientes
-            </a>
+                <small>
+                    ● Base clínica activa
+                </small>
 
-        </div>
+            </div>
 
-
-        <!-- MEDICACION -->
-
-        <div class="modulo">
-
-            <div class="emoji">💊</div>
-
-            <h2>Tratamientos</h2>
-
-            <p>
-                Administrar medicamentos y planes terapéuticos.
-            </p>
-
-            <a href="{% url 'medicacion' %}" class="btn">
-                Gestionar
-            </a>
-
-        </div>
+        </article>
 
 
-        <!-- ESTUDIOS -->
+        <!-- MEDICACIÓN -->
 
-        <div class="modulo">
+        <article class="kpi-card">
 
-            <div class="emoji">🧪</div>
+            <div class="kpi-icon cyan">
+                💊
+            </div>
 
-            <h2>Estudios</h2>
+            <div class="kpi-content">
 
-            <p>
-                Radiografías, laboratorio, tomografías y análisis.
-            </p>
+                <span>
+                    TRATAMIENTOS ACTIVOS
+                </span>
 
-            <button class="btn">
-                Próximamente
-            </button>
+                <strong>
+                    {{ total_medicamentos }}
+                </strong>
 
-        </div>
+                <small>
+                    ● Medicación registrada
+                </small>
 
+            </div>
 
-        <!-- EVOLUCION -->
-
-        <div class="modulo">
-
-            <div class="emoji">📝</div>
-
-            <h2>Evolución</h2>
-
-            <p>
-                Registrar evolución clínica del paciente.
-            </p>
-
-            <button class="btn">
-                Próximamente
-            </button>
-
-        </div>
+        </article>
 
 
         <!-- ALERTAS -->
 
-        <div class="modulo alerta">
+        <article class="kpi-card {% if total_alertas > 0 %}danger-card{% endif %}">
 
-            <div class="emoji">
+            <div class="kpi-icon red">
                 🚨
             </div>
 
-            <h2>
-                Alertas IA
-            </h2>
+            <div class="kpi-content">
 
-            <h1>
-                0
-            </h1>
+                <span>
+                    ALERTAS CRÍTICAS
+                </span>
 
-            <p>
-                Sin emergencias críticas.
-            </p>
+                <strong>
+                    {{ total_alertas }}
+                </strong>
 
-            <button class="btn alerta-btn">
-                Ver alertas
-            </button>
+                {% if total_alertas > 0 %}
 
-        </div>
+                    <small class="danger-text">
+                        ● Requieren atención
+                    </small>
+
+                {% else %}
+
+                    <small>
+                        ✓ Sin emergencias críticas
+                    </small>
+
+                {% endif %}
+
+            </div>
+
+        </article>
 
 
         <!-- IA -->
 
-        <div class="modulo ia">
+        <article class="kpi-card ai-card">
 
-            <div class="emoji">
+            <div class="kpi-icon purple">
                 🤖
             </div>
 
-            <h2>
-                Jarvice Clinical AI
-            </h2>
+            <div class="kpi-content">
 
-            <p>
-                Analizar síntomas, signos vitales y diagnóstico asistido.
-            </p>
+                <span>
+                    JARVICE CLINICAL AI
+                </span>
 
-            <button class="btn ia-btn">
-                Abrir IA
-            </button>
+                <strong>
+                    ONLINE
+                </strong>
+
+                <small>
+                    ● Motor clínico operativo
+                </small>
+
+            </div>
+
+        </article>
+
+
+    </section>
+
+
+    <!-- =====================================================
+         MONITOR CLÍNICO
+    ====================================================== -->
+
+    <section class="clinical-monitor">
+
+        <div class="section-header">
+
+            <div class="section-title">
+
+                <div class="section-icon">
+                    ❤️
+                </div>
+
+                <div>
+
+                    <span class="eyebrow">
+                        REAL-TIME MONITOR
+                    </span>
+
+                    <h2>
+                        Monitor Vital Jarvice IA
+                    </h2>
+
+                    <p>
+                        Supervisión inteligente de parámetros clínicos
+                    </p>
+
+                </div>
+
+            </div>
+
+
+            <div class="ai-status">
+
+                <span class="pulse"></span>
+
+                IA ONLINE
+
+            </div>
 
         </div>
 
-    </div>
+
+        <!-- VITALES -->
+
+<div class="vitals-grid">
+
+    <!-- FRECUENCIA CARDÍACA -->
+
+    <article class="vital-card heart">
+
+        <div class="vital-top">
+
+            <span class="vital-symbol">
+
+            </span>
+
+            {% if ultimo_signo_vital and ultimo_signo_vital.frecuencia_cardiaca %}
+    <span class="vital-status">
+        {{ estado_frecuencia }}
+    </span>
+{% else %}
+    <span class="vital-status">
+        SIN DATOS
+    </span>
+{% endif %}
+
+        </div>
+
+        <span class="vital-label">
+            FRECUENCIA CARDÍACA
+        </span>
+
+        <div class="vital-value">
+
+            <strong>
+                {% if ultimo_signo_vital and ultimo_signo_vital.frecuencia_cardiaca %}
+                    {{ ultimo_signo_vital.frecuencia_cardiaca }}
+                {% else %}
+                    --
+                {% endif %}
+            </strong>
+
+            <span>
+                BPM
+            </span>
+
+        </div>
+
+        <p>
+            {% if ultimo_signo_vital and ultimo_signo_vital.frecuencia_cardiaca %}
+                Ritmo cardíaco registrado
+            {% else %}
+                Sin registro disponible
+            {% endif %}
+        </p>
+
+        <div class="vital-line">
+            <span></span>
+        </div>
+
+    </article>
+
+
+    <!-- SATURACIÓN O -->
+
+    <article class="vital-card oxygen">
+
+        <div class="vital-top">
+
+            <span class="vital-symbol">
+
+            </span>
+
+            {% if ultimo_signo_vital and ultimo_signo_vital.saturacion_oxigeno %}
+    <span class="vital-status">
+        {{ estado_saturacion }}
+    </span>
+{% else %}
+    <span class="vital-status">
+        SIN DATOS
+    </span>
+{% endif %}
+
+        </div>
+
+        <span class="vital-label">
+            SATURACIÓN O
+        </span>
+
+        <div class="vital-value">
+
+            <strong>
+                {% if ultimo_signo_vital and ultimo_signo_vital.saturacion_oxigeno %}
+                    {{ ultimo_signo_vital.saturacion_oxigeno }}
+                {% else %}
+                    --
+                {% endif %}
+            </strong>
+
+            <span>
+                %
+            </span>
+
+        </div>
+
+        <p>
+            {% if ultimo_signo_vital and ultimo_signo_vital.saturacion_oxigeno %}
+                Saturación registrada
+            {% else %}
+                Sin registro disponible
+            {% endif %}
+        </p>
+
+        <div class="vital-line">
+            <span></span>
+        </div>
+
+    </article>
+
+
+    <!-- TEMPERATURA -->
+
+    <article class="vital-card temperature">
+
+        <div class="vital-top">
+
+            <span class="vital-symbol">
+
+            </span>
+
+           {% if ultimo_signo_vital and ultimo_signo_vital.temperatura %}
+    <span class="vital-status">
+        {{ estado_temperatura }}
+    </span>
+{% else %}
+    <span class="vital-status">
+        SIN DATOS
+    </span>
+{% endif %}
+
+        </div>
+
+        <span class="vital-label">
+            TEMPERATURA
+        </span>
+
+        <div class="vital-value">
+
+            <strong>
+                {% if ultimo_signo_vital and ultimo_signo_vital.temperatura %}
+                    {{ ultimo_signo_vital.temperatura }}
+                {% else %}
+                    --
+                {% endif %}
+            </strong>
+
+            <span>
+                °C
+            </span>
+
+        </div>
+
+        <p>
+            {% if ultimo_signo_vital and ultimo_signo_vital.temperatura %}
+                Temperatura registrada
+            {% else %}
+                Sin registro disponible
+            {% endif %}
+        </p>
+
+        <div class="vital-line">
+            <span></span>
+        </div>
+
+    </article>
+
+
+    <!-- ESTADO CLÍNICO IA -->
+
+    <article class="vital-card clinical">
+
+        <div class="vital-top">
+
+            <span class="vital-symbol">
+                🧠
+            </span>
+
+            <span class="vital-status">
+                IA
+            </span>
+
+        </div>
+
+        <span class="vital-label">
+            ESTADO CLÍNICO IA
+        </span>
+
+        <div class="vital-value">
+
+                    <strong>
+
+            {% if ultimo_signo_vital %}
+                {{ estado_clinico_ia }}
+            {% else %}
+                SIN DATOS
+            {% endif %}
+
+        </strong>
+
+            <span>
+                IA
+            </span>
+
+        </div>
+
+        <p>
+
+            {% if ultimo_signo_vital %}
+                Supervisión clínica activa
+            {% else %}
+                Esperando datos clínicos
+            {% endif %}
+
+        </p>
+
+        <div class="vital-line">
+            <span></span>
+        </div>
+
+    </article>
+
+</div>
+
+        <!-- ANALISIS IA -->
+
+        <div class="ai-analysis">
+
+            <div class="ai-analysis-icon">
+                🤖
+            </div>
+
+            <div>
+
+                <strong>
+                    JARVICE CLINICAL AI
+                </strong>
+
+                <p>
+                    El sistema no detecta anomalías críticas en los parámetros
+                    actualmente registrados.
+                </p>
+
+            </div>
+
+            <span class="analysis-ok">
+                BAJO RIESGO
+            </span>
+
+        </div>
+
+    </section>
+
+
+    <!-- =====================================================
+         PACIENTES
+    ====================================================== -->
+
+    <section class="patients-section">
+
+
+        <div class="section-header patients-header">
+
+            <div class="section-title">
+
+                <div class="section-icon">
+                    👥
+                </div>
+
+                <div>
+
+                    <span class="eyebrow">
+                        CLINICAL DATABASE
+                    </span>
+
+                    <h2>
+                        Pacientes registrados
+                    </h2>
+
+                    <p>
+                        Gestión de historias clínicas y monitoreo Jarvice AI
+                    </p>
+
+                </div>
+
+            </div>
+
+
+            <div class="patients-count">
+
+                <strong>
+                    {{ total_pacientes }}
+                </strong>
+
+                <span>
+                    pacientes
+                </span>
+
+            </div>
+
+        </div>
+
+
+        <!-- BUSCADOR -->
+
+        <form method="GET" class="pro-search">
+
+            <div class="search-icon">
+                🔍
+            </div>
+
+            <input
+                type="text"
+                name="buscar"
+                value="{{ buscar }}"
+                placeholder="Buscar por HC, nombre, apellido o DNI..."
+                autocomplete="off"
+            >
+
+            {% if buscar %}
+
+                <a href="{% url 'panel_medico' %}" class="clear-search">
+                    ✕
+                </a>
+
+            {% endif %}
+
+            <button type="submit">
+                BUSCAR
+            </button>
+
+        </form>
+
+
+        <!-- TABLA -->
+
+        <div class="table-wrapper">
+
+            <table class="patients-table">
+
+                <thead>
+
+                    <tr>
+
+                        <th>
+                            HC
+                        </th>
+
+                        <th>
+                            PACIENTE
+                        </th>
+
+                        <th>
+                            EDAD
+                        </th>
+
+                        <th>
+                            ESTADO
+                        </th>
+
+                        <th>
+                            ÚLTIMO CONTROL
+                        </th>
+
+                        <th>
+                            ACCIÓN
+                        </th>
+
+                    </tr>
+
+                </thead>
+
+
+                <tbody>
+
+                    {% for paciente in pacientes %}
+
+                    <tr>
+
+
+                        <!-- HC -->
+
+                        <td>
+
+                            <span class="hc-code">
+                                {{ paciente.historia_clinica }}
+                            </span>
+
+                        </td>
+
+
+                        <!-- PACIENTE -->
+
+                        <td>
+
+                            <div class="patient-cell">
+
+                                <div class="patient-avatar">
+                                    👤
+                                </div>
+
+                                <div>
+
+                                    <strong>
+                                        {{ paciente.nombre }} {{ paciente.apellido }}
+                                    </strong>
+
+                                    {% if paciente.dni %}
+
+                                        <small>
+                                            DNI {{ paciente.dni }}
+                                        </small>
+
+                                    {% endif %}
+
+                                </div>
+
+                            </div>
+
+                        </td>
+
+
+                        <!-- EDAD -->
+
+                        <td>
+
+                            <span class="age">
+                                {{ paciente.edad }} años
+                            </span>
+
+                        </td>
+
+
+                        <!-- ESTADO -->
+
+                        <td>
+
+                            {% if paciente.ultimo_estado %}
+
+
+                                {% if paciente.ultimo_estado.estado == "OK" %}
+
+                                    <span class="status-badge stable">
+                                        <i></i>
+                                        Estable
+                                    </span>
+
+
+                                {% elif paciente.ultimo_estado.estado == "CANSADO" %}
+
+                                    <span class="status-badge monitoring">
+                                        <i></i>
+                                        Seguimiento
+                                    </span>
+
+
+                                {% elif paciente.ultimo_estado.estado == "DOLOR" %}
+
+                                    <span class="status-badge pain">
+                                        <i></i>
+                                        Dolor
+                                    </span>
+
+
+                                {% elif paciente.ultimo_estado.estado == "CRITICO" %}
+
+                                    <span class="status-badge critical">
+                                        <i></i>
+                                        Crítico
+                                    </span>
+
+                                {% endif %}
+
+
+                            {% else %}
+
+                                <span class="status-badge unknown">
+                                    <i></i>
+                                    Sin datos
+                                </span>
+
+                            {% endif %}
+
+                        </td>
+
+
+                        <!-- FECHA -->
+
+                        <td>
+
+                            {% if paciente.ultimo_estado %}
+
+                                <span class="date-value">
+                                    {{ paciente.ultimo_estado.fecha|date:"d/m/Y" }}
+                                </span>
+
+                            {% else %}
+
+                                <span class="date-value muted">
+                                    Sin datos
+                                </span>
+
+                            {% endif %}
+
+                        </td>
+
+
+                        <!-- ACCION -->
+
+                        <td>
+
+                            <a
+                                href="{% url 'historial_paciente' paciente.id %}"
+                                class="history-button"
+                            >
+
+                                <span>
+                                    📋
+                                </span>
+
+                                Ver historia
+
+                                <b>
+                                    →
+                                </b>
+
+                            </a>
+
+                        </td>
+
+
+                    </tr>
+
+
+                    {% empty %}
+
+                    <tr>
+
+                        <td colspan="6" class="empty-state">
+
+                            <div>
+                                🔎
+                            </div>
+
+                            <strong>
+                                No se encontraron pacientes
+                            </strong>
+
+                            <p>
+                                Intentá realizar otra búsqueda.
+                            </p>
+
+                        </td>
+
+                    </tr>
+
+                    {% endfor %}
+
+                </tbody>
+
+            </table>
+
+        </div>
+
+    </section>
+
+
+    <!-- =====================================================
+         MÓDULOS CLÍNICOS
+    ====================================================== -->
+
+    <section class="modules-section">
+
+        <div class="section-header">
+
+            <div class="section-title">
+
+                <div class="section-icon">
+                    🧑‍⚕️
+                </div>
+
+                <div>
+
+                    <span class="eyebrow">
+                        MEDICAL MODULES
+                    </span>
+
+                    <h2>
+                        Módulos clínicos
+                    </h2>
+
+                    <p>
+                        Herramientas principales del centro médico Jarvice
+                    </p>
+
+                </div>
+
+            </div>
+
+        </div>
+
+
+        <div class="modules-grid">
+
+
+            <!-- PACIENTES -->
+
+            <article class="module-card">
+
+                <div class="module-icon blue">
+                    👥
+                </div>
+
+                <span class="module-tag">
+                    ACTIVO
+                </span>
+
+                <h3>
+                    Pacientes
+                </h3>
+
+                <strong>
+                    {{ total_pacientes }}
+                </strong>
+
+                <p>
+                    Visualizar fichas clínicas, historial y monitoreo.
+                </p>
+
+                <a href="{% url 'pacientes' %}">
+                    VER PACIENTES
+                    <span>→</span>
+                </a>
+
+            </article>
+
+
+            <!-- MEDICACION -->
+
+            <article class="module-card">
+
+                <div class="module-icon cyan">
+                    💊
+                </div>
+
+                <span class="module-tag">
+                    ACTIVO
+                </span>
+
+                <h3>
+                    Tratamientos
+                </h3>
+
+                <strong>
+                    {{ total_medicamentos }}
+                </strong>
+
+                <p>
+                    Administrar medicamentos y planes terapéuticos.
+                </p>
+
+                <a href="{% url 'medicacion' %}">
+                    GESTIONAR
+                    <span>→</span>
+                </a>
+
+            </article>
+
+
+            <!-- ESTUDIOS -->
+
+            <article class="module-card development">
+
+                <div class="module-icon purple">
+                    🧪
+                </div>
+
+                <span class="module-tag">
+                    EN DESARROLLO
+                </span>
+
+                <h3>
+                    Estudios
+                </h3>
+
+                <strong>
+                    —
+                </strong>
+
+                <p>
+                    Radiografías, laboratorio, tomografías y análisis clínicos.
+                </p>
+
+                <button type="button">
+                    PRÓXIMAMENTE
+                </button>
+
+            </article>
+
+
+            <!-- EVOLUCION -->
+
+            <article class="module-card development">
+
+                <div class="module-icon violet">
+                    📝
+                </div>
+
+                <span class="module-tag">
+                    EN DESARROLLO
+                </span>
+
+                <h3>
+                    Evolución clínica
+                </h3>
+
+                <strong>
+                    —
+                </strong>
+
+                <p>
+                    Registrar y consultar la evolución médica del paciente.
+                </p>
+
+                <button type="button">
+                    PRÓXIMAMENTE
+                </button>
+
+            </article>
+
+
+            <!-- ALERTAS -->
+
+            <article class="module-card alert-module">
+
+                <div class="module-icon red">
+                    🚨
+                </div>
+
+                <span class="module-tag">
+                    VIGILANCIA ACTIVA
+                </span>
+
+                <h3>
+                    Alertas IA
+                </h3>
+
+                <strong>
+                    {{ total_alertas }}
+                </strong>
+
+                {% if total_alertas > 0 %}
+
+                    <p>
+                        Existen eventos clínicos que requieren atención.
+                    </p>
+
+                {% else %}
+
+                    <p>
+                        No se detectan emergencias críticas.
+                    </p>
+
+                {% endif %}
+
+                <button type="button">
+                    VER ALERTAS
+                    <span>→</span>
+                </button>
+
+            </article>
+
+
+            <!-- IA -->
+
+            <article class="module-card ai-module">
+
+                <div class="module-icon ai">
+                    🤖
+                </div>
+
+                <span class="module-tag ai-tag">
+                    ONLINE
+                </span>
+
+                <h3>
+                    Jarvice Clinical AI
+                </h3>
+
+                <strong>
+                    AI
+                </strong>
+
+                <p>
+                    Analizar síntomas, signos vitales y patrones clínicos.
+                </p>
+
+                <button type="button">
+                    ABRIR IA
+                    <span>→</span>
+                </button>
+
+            </article>
+
+
+        </div>
+
+    </section>
+
+
+    <!-- =====================================================
+         FOOTER DEL CORE
+    ====================================================== -->
+
+    <footer class="medical-footer">
+
+        <div>
+
+            <strong>
+                🧬 JARVICE HEALTH AI
+            </strong>
+
+            <span>
+                MEDICAL CORE
+            </span>
+
+        </div>
+
+        <p>
+            Sistema de asistencia clínica inteligente
+        </p>
+
+        <div class="footer-status">
+
+            <span></span>
+
+            CORE ONLINE
+
+        </div>
+
+    </footer>
+
 
 </div>
 
 
-
 <style>
 
-.panel-medico{
+/* =========================================================
+   JARVICE MEDICAL PRO
+========================================================= */
 
-    padding:40px;
+.jarvice-medical-pro {
 
-}
+    width: 100%;
+    max-width: 1500px;
+    margin: 0 auto;
+    padding: 35px 40px 60px;
 
+    color: #e8f7ff;
 
-.titulo{
-
-    display:flex;
-
-    justify-content:space-between;
-
-    align-items:center;
-
-    margin-bottom:40px;
-
-    flex-wrap:wrap;
-
-    gap:20px;
-
-}
-
-
-.icono{
-
-    font-size:60px;
+    font-family:
+        Inter,
+        system-ui,
+        -apple-system,
+        BlinkMacSystemFont,
+        "Segoe UI",
+        sans-serif;
 
 }
 
 
-.titulo h1{
+/* =========================================================
+   HEADER
+========================================================= */
 
-    color:#8be9ff;
+.pro-header {
 
-    font-size:38px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
 
-}
+    gap: 30px;
 
-
-.titulo p{
-
-    color:#bfe9ff;
-
-}
-
-
-.estado{
-
-    background:#003d26;
-
-    color:#00ff99;
-
-    padding:12px 25px;
-
-    border-radius:30px;
-
-    font-weight:bold;
+    margin-bottom: 25px;
 
 }
 
 
-.modulos{
+.header-brand {
 
-    display:grid;
-
-    grid-template-columns:repeat(auto-fit,minmax(280px,1fr));
-
-    gap:25px;
-
-}
-
-
-.modulo{
-
-    background:rgba(255,255,255,.08);
-
-    backdrop-filter:blur(12px);
-
-    border-radius:25px;
-
-    padding:30px;
-
-    border:1px solid rgba(139,233,255,.20);
-
-    transition:.3s;
-
-}
-
-
-.modulo:hover{
-
-    transform:translateY(-8px);
-
-    box-shadow:0 0 25px rgba(139,233,255,.25);
-
-}
-
-
-.emoji{
-
-    font-size:50px;
-
-}
-
-
-.modulo h2{
-
-    margin-top:15px;
-
-    color:#8be9ff;
-
-}
-
-
-.modulo h1{
-
-    margin:15px 0;
-
-    font-size:40px;
-
-}
-
-
-.modulo p{
-
-    color:#d9f5ff;
-
-    min-height:60px;
-
-}
-
-
-.btn{
-
-    display:inline-block;
-
-    margin-top:20px;
-
-    padding:12px 20px;
-
-    border:none;
-
-    border-radius:20px;
-
-    background:#00ff99;
-
-    color:#00151f;
-
-    text-decoration:none;
-
-    font-weight:bold;
-
-    cursor:pointer;
-
-}
-
-
-.alerta{
-
-    border:1px solid rgba(255,80,80,.4);
-
-}
-
-
-.alerta-btn{
-
-    background:#ff4d4d;
-
-    color:white;
-
-}
-
-
-.ia-btn{
-
-    background:#6fdcff;
-
-}
-.perfil-medico{
-
-    display:flex;
-
-    align-items:center;
-
-    gap:25px;
-
-    padding:30px;
-
-    margin-bottom:30px;
-
-    background:rgba(255,255,255,.08);
-
-    border-radius:25px;
-
-    border:1px solid rgba(139,233,255,.25);
-
-    backdrop-filter:blur(15px);
-
-}
-
-
-
-.avatar-medico{
-
-    font-size:70px;
-
-}
-
-
-
-.datos-medico h2{
-
-    color:#8be9ff;
-
-    margin:0;
-
-}
-
-
-
-.datos-medico p{
-
-    color:#cdefff;
-
-}
-
-
-
-.datos-medico span{
-
-    display:inline-block;
-
-    margin-top:10px;
-
-    padding:8px 15px;
-
-    border-radius:20px;
-
-    background:#003d26;
-
-    color:#00ff99;
-
-}
-
-
-
-.resumen-medico{
-
-    display:grid;
-
-    grid-template-columns:
-
-    repeat(auto-fit,minmax(220px,1fr));
-
-    gap:20px;
-
-    margin-bottom:35px;
-
-}
-
-
-
-.resumen-card{
-
-    padding:25px;
-
-    text-align:center;
-
-    background:rgba(255,255,255,.06);
-
-    border-radius:22px;
-
-    border:1px solid rgba(139,233,255,.20);
-
-}
-
-
-
-.resumen-card h3{
-
-    color:#8be9ff;
-
-}
-
-
-
-.resumen-card strong{
-
-    display:block;
-
-    margin-top:15px;
-
-    font-size:30px;
-
-    color:#00ff99;
-
-}
-.monitor-vital{
-
-    margin:35px 0;
-
-    padding:30px;
-
-    border-radius:30px;
-
-    background:
-    linear-gradient(
-    145deg,
-    rgba(0,200,255,.15),
-    rgba(255,255,255,.05)
-    );
-
-    border:1px solid rgba(139,233,255,.25);
-
-    backdrop-filter:blur(15px);
-
-}
-
-
-
-.monitor-header{
-
-    display:flex;
-
-    align-items:center;
-
-    justify-content:space-between;
-
-    gap:20px;
-
-    margin-bottom:25px;
-
-}
-
-
-
-.monitor-header h2{
-
-    color:#8be9ff;
-
-}
-
-
-
-.monitor-header p{
-
-    color:#cdefff;
-
-}
-
-
-
-.ia-online{
-
-    background:#003d26;
-
-    color:#00ff99;
-
-    padding:12px 20px;
-
-    border-radius:25px;
-
-    font-weight:bold;
-
-}
-
-
-
-.vitales{
-
-    display:grid;
-
-    grid-template-columns:
-    repeat(auto-fit,minmax(220px,1fr));
-
-    gap:20px;
-
-}
-
-
-
-.vital-card{
-
-    text-align:center;
-
-    padding:25px;
-
-    border-radius:22px;
-
-    background:rgba(255,255,255,.07);
-
-    border:1px solid rgba(139,233,255,.18);
-
-}
-
-
-
-.vital-card:first-letter{
-
-    font-size:40px;
-
-}
-
-
-
-.vital-card h3{
-
-    color:#8be9ff;
-
-}
-
-
-
-.vital-card strong{
-
-    display:block;
-
-    margin:15px;
-
-    font-size:35px;
-
-    color:#00ff99;
-
-}
-
-
-
-.vital-card p{
-
-    color:#d9f5ff;
-
-}
-
-
-
-.analisis-ia{
-
-    margin-top:25px;
-
-    padding:20px;
-
-    border-radius:20px;
-
-    background:rgba(0,255,153,.08);
-
-    color:#00ff99;
-
-    font-weight:bold;
-
-}
-
-
-.analisis-ia span{
-
-    color:white;
-
-    margin-left:10px;
-
-}
-
-.pacientes-medico{
-
-    margin:35px 0;
-
-    padding:30px;
-
-    border-radius:30px;
-
-    background:rgba(255,255,255,.07);
-
-    border:1px solid rgba(139,233,255,.20);
-
-    backdrop-filter:blur(15px);
-
-}
-
-
-
-.pacientes-header{
-
-    display:flex;
-
-    justify-content:space-between;
-
-    align-items:center;
-
-    margin-bottom:25px;
-
-}
-
-
-
-.pacientes-header h2{
-
-    color:#8be9ff;
-
-}
-
-
-
-.pacientes-header span{
-
-    background:#003d26;
-
-    color:#00ff99;
-
-    padding:10px 20px;
-
-    border-radius:20px;
-
-}
-
-
-
-.tabla-pacientes{
-
-    width:100%;
-
-    border-collapse:collapse;
-
-}
-
-
-
-.tabla-pacientes th{
-
-    text-align:left;
-
-    color:#8be9ff;
-
-    padding:15px;
-
-}
-
-
-
-.tabla-pacientes td{
-
-    padding:15px;
-
-    border-top:
-
-    1px solid rgba(255,255,255,.1);
-
-    color:white;
-
-}
-
-
-
-.tabla-pacientes tr:hover{
-
-    background:rgba(139,233,255,.08);
-
-}
-/* ==========================================
-   ESTADOS PACIENTE JARVICE
-========================================== */
-
-.estado-badge {
-
-    padding: 6px 12px;
-
-    border-radius: 20px;
-
-    font-size: 14px;
-
-    font-weight: bold;
-
-    display: inline-block;
-
-}
-
-
-/* ESTABLE */
-
-.estado-badge.verde {
-
-    background: #d1fae5;
-
-    color: #047857;
-
-}
-
-
-/* SEGUIMIENTO */
-
-.estado-badge.amarillo {
-
-    background: #fef3c7;
-
-    color: #b45309;
-
-}
-
-
-/* DOLOR */
-
-.estado-badge.naranja {
-
-    background: #fed7aa;
-
-    color: #c2410c;
-
-}
-
-
-/* CRITICO */
-
-.estado-badge.rojo {
-
-    background: #fee2e2;
-
-    color: #b91c1c;
-
-}
-/* ==========================================
-   BOTÓN HISTORIA CLÍNICA
-========================================== */
-
-.btn-ficha {
-
-    background: #0ea5e9;
-
-    color: white;
-
-    padding: 8px 15px;
-
-    border-radius: 10px;
-
-    text-decoration: none;
-
-    font-weight: bold;
-
-    font-size: 14px;
-
-    display: inline-block;
-
-    transition: 0.3s;
-
-}
-
-
-.btn-ficha:hover {
-
-    background: #0284c7;
-
-    transform: translateY(-2px);
-
-}
-/* ==========================================
-   RESUMEN PANEL MÉDICO
-========================================== */
-
-.resumen-medico {
-
-    display: grid;
-
-    grid-template-columns: repeat(3, 1fr);
+    display: flex;
+    align-items: center;
 
     gap: 20px;
 
-    margin: 25px 0;
+}
+
+
+.brand-orb {
+
+    width: 70px;
+    height: 70px;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    border-radius: 22px;
+
+    font-size: 35px;
+
+    background:
+        linear-gradient(
+            145deg,
+            rgba(0,220,255,.25),
+            rgba(0,100,255,.08)
+        );
+
+    border:
+        1px solid rgba(100,220,255,.35);
+
+    box-shadow:
+        0 0 35px rgba(0,200,255,.12);
 
 }
 
 
-.card-resumen {
-
-    background: rgba(255,255,255,0.08);
-
-    border-radius: 18px;
-
-    padding: 20px;
-
-    text-align: center;
-
-    box-shadow: 0 8px 25px rgba(0,0,0,0.15);
-
-    backdrop-filter: blur(10px);
-
-}
-
-
-.card-resumen h3 {
-
-    margin: 10px 0;
-
-    font-size: 16px;
-
-}
-
-
-.card-resumen strong {
-
-    font-size: 32px;
+.eyebrow {
 
     display: block;
 
-    margin-top: 10px;
+    margin-bottom: 6px;
+
+    font-size: 11px;
+
+    letter-spacing: 2px;
+
+    font-weight: 800;
+
+    color: #55dfff;
 
 }
-/* ==========================================
-   BUSCADOR PACIENTES JARVICE
-========================================== */
 
-.buscador-pacientes {
 
-    margin: 25px 0;
+.pro-header h1 {
+
+    margin: 0;
+
+    font-size: clamp(30px, 4vw, 46px);
+
+    line-height: 1;
+
+    background:
+        linear-gradient(
+            90deg,
+            #ffffff,
+            #73e7ff
+        );
+
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
 
 }
 
 
-.buscador-contenedor {
+.pro-header p {
+
+    margin: 10px 0 0;
+
+    color: #8da9b8;
+
+}
+
+
+.system-status {
+
+    display: flex;
+    align-items: center;
+
+    gap: 12px;
+
+    padding: 14px 20px;
+
+    border-radius: 16px;
+
+    background:
+        rgba(0,255,153,.07);
+
+    border:
+        1px solid rgba(0,255,153,.20);
+
+}
+
+
+.status-dot {
+
+    width: 10px;
+    height: 10px;
+
+    border-radius: 50%;
+
+    background: #00ff99;
+
+    box-shadow:
+        0 0 15px #00ff99;
+
+}
+
+
+.system-status strong {
+
+    display: block;
+
+    color: #00ff99;
+
+    font-size: 12px;
+
+    letter-spacing: 1px;
+
+}
+
+
+.system-status small {
+
+    display: block;
+
+    margin-top: 3px;
+
+    color: #71909f;
+
+}
+
+
+/* =========================================================
+   DOCTOR
+========================================================= */
+
+.doctor-card {
 
     display: flex;
 
     align-items: center;
 
-    gap: 12px;
+    gap: 22px;
 
-    background: rgba(255,255,255,0.08);
+    padding: 25px;
 
-    padding: 12px 15px;
+    margin-bottom: 25px;
 
-    border-radius: 18px;
+    border-radius: 24px;
 
-    backdrop-filter: blur(10px);
+    background:
+        linear-gradient(
+            135deg,
+            rgba(14,165,233,.14),
+            rgba(255,255,255,.035)
+        );
 
-    box-shadow: 0 8px 25px rgba(0,0,0,0.15);
+    border:
+        1px solid rgba(90,220,255,.18);
+
+    box-shadow:
+        0 15px 45px rgba(0,0,0,.18);
 
 }
 
 
-.icono-busqueda {
+.doctor-avatar {
 
-    font-size: 22px;
+    width: 72px;
+    height: 72px;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    border-radius: 20px;
+
+    font-size: 38px;
+
+    background:
+        rgba(0,170,255,.12);
+
+    border:
+        1px solid rgba(80,210,255,.25);
 
 }
 
 
-.buscador-contenedor input {
+.doctor-info {
 
     flex: 1;
 
-    background: rgba(255,255,255,0.12);
+}
 
-    border: none;
 
-    outline: none;
+.doctor-label {
 
-    padding: 12px 15px;
+    font-size: 10px;
 
-    border-radius: 12px;
+    letter-spacing: 1.7px;
+
+    color: #55dfff;
+
+    font-weight: 800;
+
+}
+
+
+.doctor-info h2 {
+
+    margin: 4px 0;
+
+    font-size: 24px;
 
     color: white;
 
-    font-size: 15px;
+}
+
+
+.doctor-info p {
+
+    margin: 0 0 10px;
+
+    color: #819baa;
 
 }
 
 
-.buscador-contenedor input::placeholder {
+.secure-session {
 
-    color: #cbd5e1;
+    display: inline-block;
+
+    padding: 6px 11px;
+
+    border-radius: 30px;
+
+    background:
+        rgba(0,255,153,.08);
+
+    color: #00ff99;
+
+    font-size: 12px;
+
+    font-weight: 700;
 
 }
 
 
-.buscador-contenedor button {
+.medical-core {
 
-    background: #0ea5e9;
+    text-align: right;
+
+    padding-left: 25px;
+
+    border-left:
+        1px solid rgba(255,255,255,.08);
+
+}
+
+
+.medical-core span {
+
+    display: block;
+
+    color: #58dfff;
+
+    font-size: 11px;
+
+    letter-spacing: 2px;
+
+}
+
+
+.medical-core strong {
+
+    display: block;
 
     color: white;
 
-    border: none;
+    font-size: 18px;
 
-    padding: 12px 25px;
-
-    border-radius: 12px;
-
-    font-weight: bold;
-
-    cursor: pointer;
-
-    transition: .3s;
+    letter-spacing: 1px;
 
 }
 
 
-.buscador-contenedor button:hover {
+.medical-core small {
 
-    background: #0284c7;
+    color: #687f8c;
 
-    transform: translateY(-2px);
+    font-size: 10px;
 
 }
-/* ==========================================
-   CABECERA PACIENTES
-========================================== */
 
-.pacientes-header {
+
+/* =========================================================
+   KPI
+========================================================= */
+
+.kpi-grid {
+
+    display: grid;
+
+    grid-template-columns:
+        repeat(4, 1fr);
+
+    gap: 18px;
+
+    margin-bottom: 25px;
+
+}
+
+
+.kpi-card {
+
+    display: flex;
+
+    align-items: center;
+
+    gap: 16px;
+
+    min-height: 125px;
+
+    padding: 20px;
+
+    border-radius: 20px;
+
+    background:
+        rgba(255,255,255,.045);
+
+    border:
+        1px solid rgba(255,255,255,.08);
+
+    transition:
+        transform .25s ease,
+        border-color .25s ease,
+        background .25s ease;
+
+}
+
+
+.kpi-card:hover {
+
+    transform: translateY(-4px);
+
+    border-color:
+        rgba(80,210,255,.28);
+
+    background:
+        rgba(80,210,255,.07);
+
+}
+
+
+.kpi-icon {
+
+    width: 52px;
+    height: 52px;
+
+    flex-shrink: 0;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    border-radius: 16px;
+
+    font-size: 25px;
+
+}
+
+
+.kpi-icon.blue {
+
+    background:
+        rgba(14,165,233,.14);
+
+}
+
+
+.kpi-icon.cyan {
+
+    background:
+        rgba(34,211,238,.12);
+
+}
+
+
+.kpi-icon.red {
+
+    background:
+        rgba(239,68,68,.12);
+
+}
+
+
+.kpi-icon.purple {
+
+    background:
+        rgba(168,85,247,.13);
+
+}
+
+
+.kpi-content span {
+
+    display: block;
+
+    color: #7893a2;
+
+    font-size: 10px;
+
+    letter-spacing: 1px;
+
+    font-weight: 800;
+
+}
+
+
+.kpi-content strong {
+
+    display: block;
+
+    margin: 5px 0;
+
+    color: white;
+
+    font-size: 28px;
+
+}
+
+
+.kpi-content small {
+
+    color: #00d98a;
+
+    font-size: 11px;
+
+}
+
+
+.danger-card {
+
+    border-color:
+        rgba(239,68,68,.25);
+
+}
+
+
+.danger-text {
+
+    color: #ff6b6b !important;
+
+}
+
+
+/* =========================================================
+   SECTIONS
+========================================================= */
+
+.clinical-monitor,
+.patients-section,
+.modules-section {
+
+    margin-bottom: 25px;
+
+    padding: 28px;
+
+    border-radius: 26px;
+
+    background:
+        linear-gradient(
+            145deg,
+            rgba(255,255,255,.055),
+            rgba(255,255,255,.025)
+        );
+
+    border:
+        1px solid rgba(255,255,255,.08);
+
+    box-shadow:
+        0 20px 60px rgba(0,0,0,.16);
+
+}
+
+
+.section-header {
 
     display: flex;
 
@@ -1462,41 +1673,1466 @@
 
     align-items: center;
 
+    gap: 20px;
+
+    margin-bottom: 25px;
+
+}
+
+
+.section-title {
+
+    display: flex;
+
+    align-items: center;
+
+    gap: 15px;
+
+}
+
+
+.section-icon {
+
+    width: 48px;
+    height: 48px;
+
+    display: flex;
+
+    align-items: center;
+    justify-content: center;
+
+    border-radius: 15px;
+
+    background:
+        rgba(0,190,255,.10);
+
+    font-size: 22px;
+
+}
+
+
+.section-title h2 {
+
+    margin: 0;
+
+    color: white;
+
+    font-size: 23px;
+
+}
+
+
+.section-title p {
+
+    margin: 5px 0 0;
+
+    color: #748e9c;
+
+    font-size: 13px;
+
+}
+
+
+.ai-status {
+
+    display: flex;
+
+    align-items: center;
+
+    gap: 8px;
+
+    padding: 9px 15px;
+
+    border-radius: 30px;
+
+    background:
+        rgba(0,255,153,.07);
+
+    border:
+        1px solid rgba(0,255,153,.16);
+
+    color: #00ff99;
+
+    font-size: 11px;
+
+    font-weight: 800;
+
+    letter-spacing: 1px;
+
+}
+
+
+.pulse {
+
+    width: 8px;
+    height: 8px;
+
+    border-radius: 50%;
+
+    background: #00ff99;
+
+    box-shadow:
+        0 0 12px #00ff99;
+
+}
+
+
+/* =========================================================
+   VITALES
+========================================================= */
+
+.vitals-grid {
+
+    display: grid;
+
+    grid-template-columns:
+        repeat(4, 1fr);
+
+    gap: 16px;
+
+}
+
+
+.vital-card {
+
+    padding: 22px;
+
+    border-radius: 20px;
+
+    background:
+        rgba(0,0,0,.15);
+
+    border:
+        1px solid rgba(255,255,255,.07);
+
+    transition:
+        transform .25s ease;
+
+}
+
+
+.vital-card:hover {
+
+    transform: translateY(-4px);
+
+}
+
+
+.vital-top {
+
+    display: flex;
+
+    justify-content: space-between;
+
+    align-items: center;
+
+    margin-bottom: 18px;
+
+}
+
+
+.vital-symbol {
+
+    font-size: 25px;
+
+}
+
+
+.vital-status {
+
+    font-size: 9px;
+
+    font-weight: 800;
+
+    color: #00ff99;
+
+    letter-spacing: 1px;
+
+}
+
+
+.vital-label {
+
+    display: block;
+
+    color: #7893a2;
+
+    font-size: 10px;
+
+    letter-spacing: 1px;
+
+    font-weight: 800;
+
+}
+
+
+.vital-value {
+
+    display: flex;
+
+    align-items: baseline;
+
+    gap: 6px;
+
+    margin: 7px 0;
+
+}
+
+
+.vital-value strong {
+
+    font-size: 35px;
+
+    color: white;
+
+}
+
+
+.vital-value span {
+
+    color: #6c8998;
+
+    font-weight: 700;
+
+}
+
+
+.vital-card p {
+
+    margin: 0;
+
+    color: #839aa7;
+
+    font-size: 12px;
+
+}
+
+
+.vital-line {
+
+    height: 3px;
+
+    margin-top: 18px;
+
+    border-radius: 5px;
+
+    background:
+        rgba(255,255,255,.05);
+
+    overflow: hidden;
+
+}
+
+
+.vital-line span {
+
+    display: block;
+
+    width: 70%;
+
+    height: 100%;
+
+    border-radius: 5px;
+
+    background:
+        #00d9ff;
+
+}
+
+
+.ai-analysis {
+
+    display: flex;
+
+    align-items: center;
+
+    gap: 15px;
+
+    margin-top: 20px;
+
+    padding: 18px;
+
+    border-radius: 17px;
+
+    background:
+        rgba(0,255,153,.055);
+
+    border:
+        1px solid rgba(0,255,153,.13);
+
+}
+
+
+.ai-analysis-icon {
+
+    font-size: 28px;
+
+}
+
+
+.ai-analysis strong {
+
+    color: #00ff99;
+
+    font-size: 12px;
+
+    letter-spacing: 1px;
+
+}
+
+
+.ai-analysis p {
+
+    margin: 4px 0 0;
+
+    color: #b8ccd5;
+
+    font-size: 13px;
+
+}
+
+
+.analysis-ok {
+
+    margin-left: auto;
+
+    white-space: nowrap;
+
+    padding: 7px 12px;
+
+    border-radius: 20px;
+
+    background:
+        rgba(0,255,153,.08);
+
+    color: #00ff99;
+
+    font-size: 10px;
+
+    font-weight: 800;
+
+}
+
+
+/* =========================================================
+   PACIENTES
+========================================================= */
+
+.patients-header {
+
     margin-bottom: 20px;
 
 }
 
 
-.pacientes-header h2 {
+.patients-count {
+
+    display: flex;
+
+    align-items: baseline;
+
+    gap: 7px;
+
+    padding: 10px 15px;
+
+    border-radius: 14px;
+
+    background:
+        rgba(0,170,255,.07);
+
+    border:
+        1px solid rgba(0,170,255,.13);
+
+}
+
+
+.patients-count strong {
+
+    color: #5edfff;
+
+    font-size: 20px;
+
+}
+
+
+.patients-count span {
+
+    color: #7893a2;
+
+    font-size: 11px;
+
+}
+
+
+/* =========================================================
+   BUSCADOR
+========================================================= */
+
+.pro-search {
+
+    display: flex;
+
+    align-items: center;
+
+    gap: 10px;
+
+    margin-bottom: 20px;
+
+    padding: 8px;
+
+    border-radius: 16px;
+
+    background:
+        rgba(0,0,0,.15);
+
+    border:
+        1px solid rgba(255,255,255,.08);
+
+}
+
+
+.search-icon {
+
+    padding-left: 10px;
+
+    font-size: 18px;
+
+}
+
+
+.pro-search input {
+
+    flex: 1;
+
+    min-width: 0;
+
+    padding: 13px;
+
+    border: none;
+
+    outline: none;
+
+    background: transparent;
+
+    color: white;
+
+    font-size: 13px;
+
+}
+
+
+.pro-search input::placeholder {
+
+    color: #607985;
+
+}
+
+
+.pro-search button {
+
+    border: none;
+
+    border-radius: 11px;
+
+    padding: 12px 20px;
+
+    background:
+        #0ea5e9;
+
+    color: white;
+
+    font-size: 11px;
+
+    font-weight: 800;
+
+    letter-spacing: .8px;
+
+    cursor: pointer;
+
+    transition: .25s;
+
+}
+
+
+.pro-search button:hover {
+
+    background:
+        #38bdf8;
+
+    transform: translateY(-1px);
+
+}
+
+
+.clear-search {
+
+    color: #8299a6;
+
+    text-decoration: none;
+
+}
+
+
+/* =========================================================
+   TABLA
+========================================================= */
+
+.table-wrapper {
+
+    width: 100%;
+
+    overflow-x: auto;
+
+}
+
+
+.patients-table {
+
+    width: 100%;
+
+    border-collapse: collapse;
+
+    min-width: 850px;
+
+}
+
+
+.patients-table th {
+
+    padding: 14px 12px;
+
+    text-align: left;
+
+    color: #60808f;
+
+    font-size: 10px;
+
+    letter-spacing: 1px;
+
+    border-bottom:
+        1px solid rgba(255,255,255,.08);
+
+}
+
+
+.patients-table td {
+
+    padding: 17px 12px;
+
+    border-bottom:
+        1px solid rgba(255,255,255,.055);
+
+    color: #dbeaf0;
+
+    font-size: 13px;
+
+}
+
+
+.patients-table tbody tr {
+
+    transition:
+        background .2s;
+
+}
+
+
+.patients-table tbody tr:hover {
+
+    background:
+        rgba(0,180,255,.045);
+
+}
+
+
+.hc-code {
+
+    display: inline-block;
+
+    padding: 6px 9px;
+
+    border-radius: 8px;
+
+    background:
+        rgba(0,170,255,.08);
+
+    color: #5ddfff;
+
+    font-size: 11px;
+
+    font-weight: 800;
+
+}
+
+
+.patient-cell {
+
+    display: flex;
+
+    align-items: center;
+
+    gap: 10px;
+
+}
+
+
+.patient-avatar {
+
+    width: 35px;
+    height: 35px;
+
+    display: flex;
+
+    align-items: center;
+    justify-content: center;
+
+    border-radius: 10px;
+
+    background:
+        rgba(255,255,255,.07);
+
+}
+
+
+.patient-cell strong {
+
+    display: block;
+
+    color: white;
+
+    text-transform: capitalize;
+
+}
+
+
+.patient-cell small {
+
+    display: block;
+
+    margin-top: 3px;
+
+    color: #657f8d;
+
+    font-size: 10px;
+
+}
+
+
+.age {
+
+    color: #a6bbc5;
+
+}
+
+
+.status-badge {
+
+    display: inline-flex;
+
+    align-items: center;
+
+    gap: 7px;
+
+    padding: 7px 10px;
+
+    border-radius: 30px;
+
+    font-size: 10px;
+
+    font-weight: 800;
+
+}
+
+
+.status-badge i {
+
+    width: 7px;
+    height: 7px;
+
+    border-radius: 50%;
+
+}
+
+
+.status-badge.stable {
+
+    background:
+        rgba(0,255,153,.08);
+
+    color: #00ff99;
+
+}
+
+
+.status-badge.stable i {
+
+    background: #00ff99;
+
+}
+
+
+.status-badge.monitoring {
+
+    background:
+        rgba(250,204,21,.08);
+
+    color: #facc15;
+
+}
+
+
+.status-badge.monitoring i {
+
+    background: #facc15;
+
+}
+
+
+.status-badge.pain {
+
+    background:
+        rgba(251,146,60,.08);
+
+    color: #fb923c;
+
+}
+
+
+.status-badge.pain i {
+
+    background: #fb923c;
+
+}
+
+
+.status-badge.critical {
+
+    background:
+        rgba(239,68,68,.10);
+
+    color: #ff6b6b;
+
+}
+
+
+.status-badge.critical i {
+
+    background: #ff4d4d;
+
+    box-shadow:
+        0 0 8px #ff4d4d;
+
+}
+
+
+.status-badge.unknown {
+
+    background:
+        rgba(255,255,255,.05);
+
+    color: #7c929e;
+
+}
+
+
+.status-badge.unknown i {
+
+    background: #6b7c85;
+
+}
+
+
+.date-value {
+
+    color: #94aab5;
+
+    font-size: 12px;
+
+}
+
+
+.muted {
+
+    color: #536a76;
+
+}
+
+
+.history-button {
+
+    display: inline-flex;
+
+    align-items: center;
+
+    gap: 8px;
+
+    padding: 9px 13px;
+
+    border-radius: 10px;
+
+    background:
+        rgba(14,165,233,.10);
+
+    border:
+        1px solid rgba(14,165,233,.18);
+
+    color: #57dfff;
+
+    text-decoration: none;
+
+    font-size: 11px;
+
+    font-weight: 800;
+
+    transition: .25s;
+
+}
+
+
+.history-button b {
+
+    font-size: 14px;
+
+}
+
+
+.history-button:hover {
+
+    background:
+        rgba(14,165,233,.20);
+
+    transform: translateY(-2px);
+
+}
+
+
+.empty-state {
+
+    text-align: center;
+
+    padding: 50px !important;
+
+}
+
+
+.empty-state div {
+
+    font-size: 35px;
+
+    margin-bottom: 10px;
+
+}
+
+
+.empty-state strong {
+
+    display: block;
+
+    color: white;
+
+}
+
+
+.empty-state p {
+
+    color: #657d89;
+
+}
+
+
+/* =========================================================
+   MODULOS
+========================================================= */
+
+.modules-grid {
+
+    display: grid;
+
+    grid-template-columns:
+        repeat(3, 1fr);
+
+    gap: 18px;
+
+}
+
+
+.module-card {
+
+    position: relative;
+
+    padding: 23px;
+
+    min-height: 260px;
+
+    display: flex;
+
+    flex-direction: column;
+
+    border-radius: 20px;
+
+    background:
+        rgba(255,255,255,.035);
+
+    border:
+        1px solid rgba(255,255,255,.07);
+
+    transition:
+        transform .25s,
+        border-color .25s,
+        background .25s;
+
+}
+
+
+.module-card:hover {
+
+    transform: translateY(-5px);
+
+    border-color:
+        rgba(80,210,255,.25);
+
+    background:
+        rgba(80,210,255,.055);
+
+}
+
+
+.module-icon {
+
+    width: 48px;
+    height: 48px;
+
+    display: flex;
+
+    align-items: center;
+    justify-content: center;
+
+    border-radius: 14px;
+
+    font-size: 22px;
+
+    margin-bottom: 14px;
+
+}
+
+
+.module-icon.blue {
+
+    background:
+        rgba(14,165,233,.12);
+
+}
+
+
+.module-icon.cyan {
+
+    background:
+        rgba(34,211,238,.10);
+
+}
+
+
+.module-icon.purple {
+
+    background:
+        rgba(168,85,247,.12);
+
+}
+
+
+.module-icon.violet {
+
+    background:
+        rgba(139,92,246,.12);
+
+}
+
+
+.module-icon.red {
+
+    background:
+        rgba(239,68,68,.12);
+
+}
+
+
+.module-icon.ai {
+
+    background:
+        rgba(0,255,153,.09);
+
+}
+
+
+.module-tag {
+
+    position: absolute;
+
+    top: 23px;
+    right: 20px;
+
+    color: #00ff99;
+
+    font-size: 9px;
+
+    font-weight: 800;
+
+    letter-spacing: 1px;
+
+}
+
+
+.module-card h3 {
+
+    margin: 0;
+
+    color: white;
+
+    font-size: 19px;
+
+}
+
+
+.module-card strong {
+
+    display: block;
+
+    margin: 8px 0;
+
+    color: #58ddff;
+
+    font-size: 28px;
+
+}
+
+
+.module-card p {
+
+    flex: 1;
+
+    margin: 0;
+
+    color: #718995;
+
+    font-size: 12px;
+
+    line-height: 1.6;
+
+}
+
+
+.module-card a,
+.module-card button {
+
+    display: inline-flex;
+
+    align-items: center;
+
+    justify-content: space-between;
+
+    width: 100%;
+
+    margin-top: 18px;
+
+    padding: 11px 13px;
+
+    border-radius: 10px;
+
+    border: 1px solid rgba(14,165,233,.15);
+
+    background:
+        rgba(14,165,233,.07);
+
+    color: #57dfff;
+
+    text-decoration: none;
+
+    font-size: 10px;
+
+    font-weight: 800;
+
+    letter-spacing: 1px;
+
+    cursor: pointer;
+
+}
+
+
+.module-card button {
+
+    font-family: inherit;
+
+}
+
+
+.module-card a:hover,
+.module-card button:hover {
+
+    background:
+        rgba(14,165,233,.14);
+
+}
+
+
+.development {
+
+    opacity: .72;
+
+}
+
+
+.development .module-tag {
+
+    color: #a78bfa;
+
+}
+
+
+.alert-module {
+
+    border-color:
+        rgba(239,68,68,.13);
+
+}
+
+
+.alert-module .module-tag {
+
+    color: #ff8a8a;
+
+}
+
+
+.alert-module button {
+
+    color: #ff8585;
+
+    border-color:
+        rgba(239,68,68,.15);
+
+    background:
+        rgba(239,68,68,.06);
+
+}
+
+
+.ai-module {
+
+    border-color:
+        rgba(0,255,153,.13);
+
+}
+
+
+.ai-tag {
+
+    color: #00ff99 !important;
+
+}
+
+
+.ai-module button {
+
+    color: #00ff99;
+
+    border-color:
+        rgba(0,255,153,.14);
+
+    background:
+        rgba(0,255,153,.05);
+
+}
+
+
+/* =========================================================
+   FOOTER
+========================================================= */
+
+.medical-footer {
+
+    display: flex;
+
+    align-items: center;
+
+    justify-content: space-between;
+
+    gap: 20px;
+
+    padding: 22px 5px;
+
+    color: #536b77;
+
+    font-size: 11px;
+
+}
+
+
+.medical-footer strong {
+
+    color: #6edfff;
+
+    letter-spacing: 1px;
+
+}
+
+
+.medical-footer span {
+
+    margin-left: 8px;
+
+    color: #3f5965;
+
+}
+
+
+.medical-footer p {
 
     margin: 0;
 
 }
 
 
-.pacientes-header p {
+.footer-status {
 
-    margin-top: 5px;
+    display: flex;
 
-    color: #94a3b8;
+    align-items: center;
+
+    gap: 7px;
+
+    color: #00b978;
+
+    font-weight: 800;
+
+    font-size: 9px;
+
+    letter-spacing: 1px;
+
+}
+
+
+.footer-status span {
+
+    width: 6px;
+    height: 6px;
+
+    margin: 0;
+
+    border-radius: 50%;
+
+    background: #00ff99;
 
 }
 
 
-.contador-pacientes {
+/* =========================================================
+   RESPONSIVE
+========================================================= */
 
-    background: rgba(14,165,233,0.15);
+@media (max-width: 1150px) {
 
-    color: #38bdf8;
+    .kpi-grid {
 
-    padding: 10px 18px;
+        grid-template-columns:
+            repeat(2, 1fr);
 
-    border-radius: 20px;
+    }
 
-    font-weight: bold;
+
+    .vitals-grid {
+
+        grid-template-columns:
+            repeat(2, 1fr);
+
+    }
+
+
+    .modules-grid {
+
+        grid-template-columns:
+            repeat(2, 1fr);
+
+    }
 
 }
+
+
+@media (max-width: 800px) {
+
+    .jarvice-medical-pro {
+
+        padding:
+            25px 18px 40px;
+
+    }
+
+
+    .pro-header {
+
+        align-items: flex-start;
+
+        flex-direction: column;
+
+    }
+
+
+    .doctor-card {
+
+        align-items: flex-start;
+
+        flex-wrap: wrap;
+
+    }
+
+
+    .medical-core {
+
+        width: 100%;
+
+        text-align: left;
+
+        padding:
+            15px 0 0;
+
+        border-left: none;
+
+        border-top:
+            1px solid rgba(255,255,255,.08);
+
+    }
+
+
+    .kpi-grid,
+    .vitals-grid,
+    .modules-grid {
+
+        grid-template-columns:
+            1fr;
+
+    }
+
+
+    .section-header {
+
+        align-items: flex-start;
+
+        flex-direction: column;
+
+    }
+
+
+    .patients-count {
+
+        align-self: flex-start;
+
+    }
+
+
+    .ai-analysis {
+
+        align-items: flex-start;
+
+        flex-wrap: wrap;
+
+    }
+
+
+    .analysis-ok {
+
+        margin-left: 0;
+
+    }
+
+
+    .medical-footer {
+
+        align-items: flex-start;
+
+        flex-direction: column;
+
+    }
+
+}
+
+
+@media (max-width: 550px) {
+
+    .header-brand {
+
+        align-items: flex-start;
+
+    }
+
+
+    .brand-orb {
+
+        width: 55px;
+        height: 55px;
+
+        font-size: 27px;
+
+    }
+
+
+    .pro-header h1 {
+
+        font-size: 32px;
+
+    }
+
+
+    .doctor-avatar {
+
+        width: 58px;
+        height: 58px;
+
+        font-size: 30px;
+
+    }
+
+
+    .doctor-info h2 {
+
+        font-size: 20px;
+
+    }
+
+
+    .clinical-monitor,
+    .patients-section,
+    .modules-section {
+
+        padding: 20px;
+
+        border-radius: 20px;
+
+    }
+
+
+    .pro-search {
+
+        flex-wrap: wrap;
+
+    }
+
+
+    .pro-search input {
+
+        width: calc(100% - 60px);
+
+        flex: none;
+
+    }
+
+
+    .pro-search button {
+
+        width: 100%;
+
+    }
+
+}
+
 </style>
-
 
 {% endblock %}

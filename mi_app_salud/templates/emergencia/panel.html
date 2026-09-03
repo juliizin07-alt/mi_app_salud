@@ -1,0 +1,74 @@
+{% extends "mi_app_salud/base.html" %}
+
+{% block contenido %}
+
+<div style="
+    background: rgba(255,255,255,.045);
+    border: 1px solid rgba(255,77,77,.25);
+    border-radius: 20px;
+    padding: 30px;
+">
+
+    <h1 style="
+        color: #ff5c5c;
+        margin-bottom: 10px;
+    ">
+        🚑 Centro de Emergencias Jarvice
+    </h1>
+
+    <p style="
+        color: #8ba9b8;
+        margin-bottom: 25px;
+    ">
+        Panel de control del sistema de emergencias.
+    </p>
+
+    <div style="
+        padding: 20px;
+        border-radius: 15px;
+        background: rgba(22,199,132,.08);
+        border: 1px solid rgba(22,199,132,.2);
+        margin-bottom: 20px;
+    ">
+
+        <strong style="color: #7dffb5;">
+            🟢 Sistema operativo
+        </strong>
+
+        <p style="
+            color: #8ba9b8;
+            margin-top: 8px;
+        ">
+            El módulo de emergencias de Jarvice está activo.
+        </p>
+
+    </div>
+
+    <div style="
+        padding: 20px;
+        border-radius: 15px;
+        background: rgba(255,77,77,.06);
+        border: 1px solid rgba(255,77,77,.2);
+    ">
+
+        <h3 style="
+            color: #ff9090;
+            margin-bottom: 10px;
+        ">
+            🆘 Centro de atención
+        </h3>
+
+        <p style="
+            color: #b5c7d0;
+            line-height: 1.6;
+        ">
+            Desde este panel se gestionarán las alertas,
+            situaciones críticas y accesos de emergencia
+            generados por Jarvice.
+        </p>
+
+    </div>
+
+</div>
+
+{% endblock %}

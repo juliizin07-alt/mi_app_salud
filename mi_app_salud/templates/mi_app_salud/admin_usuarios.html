@@ -1,0 +1,1243 @@
+{% extends "mi_app_salud/base.html" %}
+
+{% block contenido %}
+
+<div class="jarvice-admin">
+
+
+<!-- ==================================================
+     CABECERA
+================================================== -->
+
+<div class="admin-header">
+
+    <div>
+
+        <span class="admin-badge">
+            JARVICE CORE
+        </span>
+
+        <h1>
+            👥 Usuarios JARVICE
+        </h1>
+
+        <p>
+            Administración central de cuentas, permisos y roles del sistema.
+        </p>
+
+    </div>
+
+    <div class="admin-status">
+        <span></span>
+        SISTEMA ACTIVO
+    </div>
+
+</div>
+
+
+<!-- ==================================================
+     BUSCADOR
+================================================== -->
+
+<div class="admin-search-panel">
+
+    <div class="search-title">
+        🔎 BÚSQUEDA DE USUARIOS
+    </div>
+
+    <form method="get">
+
+        <input
+            type="text"
+            name="buscar"
+            value="{{ buscar|default:'' }}"
+            placeholder="Buscar por usuario o email..."
+        >
+
+        <button type="submit">
+            BUSCAR
+        </button>
+
+        {% if buscar %}
+            <a href="{% url 'admin_usuarios' %}">
+                ✕ Limpiar
+            </a>
+        {% endif %}
+
+    </form>
+
+</div>
+
+
+<!-- ==================================================
+     RESULTADO DE BÚSQUEDA
+================================================== -->
+
+{% if buscar %}
+
+    <div class="admin-search-result">
+
+        <span>🔎</span>
+
+        <div>
+            Resultados para
+            <strong>"{{ buscar }}"</strong>
+        </div>
+
+    </div>
+
+{% endif %}
+
+
+<!-- ==================================================
+     ESTADÍSTICAS
+================================================== -->
+
+<div class="admin-stats">
+
+    <div class="admin-stat-card">
+
+        <div class="stat-icon">
+            👥
+        </div>
+
+        <div>
+            <span>USUARIOS</span>
+            <strong>{{ total_usuarios }}</strong>
+            <small>Cuentas registradas</small>
+        </div>
+
+    </div>
+
+
+    <div class="admin-stat-card">
+
+        <div class="stat-icon active">
+            🟢
+        </div>
+
+        <div>
+            <span>ACTIVOS</span>
+            <strong>{{ total_activos }}</strong>
+            <small>Usuarios habilitados</small>
+        </div>
+
+    </div>
+
+
+    <div class="admin-stat-card">
+
+        <div class="stat-icon inactive">
+            🔴
+        </div>
+
+        <div>
+            <span>INACTIVOS</span>
+            <strong>{{ total_inactivos }}</strong>
+            <small>Cuentas deshabilitadas</small>
+        </div>
+
+    </div>
+
+
+    <div class="admin-stat-card">
+
+        <div class="stat-icon admin">
+            👑
+        </div>
+
+        <div>
+            <span>ADMINISTRADORES</span>
+            <strong>{{ total_superusuarios }}</strong>
+            <small>Superusuarios del sistema</small>
+        </div>
+
+    </div>
+
+</div>
+
+
+<!-- ==================================================
+     LISTADO
+================================================== -->
+
+<div class="users-section">
+
+    <div class="section-header">
+
+        <div>
+
+            <span class="section-label">
+                DIRECTORIO CENTRAL
+            </span>
+
+            <h2>
+                Usuarios registrados
+            </h2>
+
+        </div>
+
+        <span class="section-count">
+            {{ total_usuarios }} CUENTAS
+        </span>
+
+    </div>
+
+
+    <div class="jarvice-users">
+
+        {% for usuario in usuarios %}
+
+            <div class="usuario-card">
+
+                <div class="usuario-top">
+
+                    <div class="usuario-avatar">
+                        👤
+                    </div>
+
+                    <div class="usuario-identidad">
+
+                        <h3>
+                            <a href="{% url 'ver_usuario' usuario.id %}">
+                                {{ usuario.username }}
+                            </a>
+                        </h3>
+
+                        {% if usuario.is_superuser %}
+
+                            <span class="role-badge administrator">
+                                👑 SUPERUSUARIO
+                            </span>
+
+                        {% elif usuario.perfilusuario %}
+
+                            <span class="role-badge">
+                                {{ usuario.perfilusuario.get_rol_display }}
+                            </span>
+
+                        {% else %}
+
+                            <span class="role-badge">
+                                USUARIO
+                            </span>
+
+                        {% endif %}
+
+                    </div>
+
+                    <div class="user-status">
+
+                        {% if usuario.is_active %}
+
+                            <span class="status-active">
+                                <i></i>
+                                ACTIVO
+                            </span>
+
+                        {% else %}
+
+                            <span class="status-inactive">
+                                <i></i>
+                                INACTIVO
+                            </span>
+
+                        {% endif %}
+
+                    </div>
+
+                </div>
+
+
+                <div class="usuario-divider"></div>
+
+
+                <div class="usuario-data">
+
+                    <div class="data-item">
+
+                        <span>
+                            EMAIL
+                        </span>
+
+                        <strong>
+                            {{ usuario.email|default:"Sin email" }}
+                        </strong>
+
+                    </div>
+
+
+                    <div class="data-item">
+
+                        <span>
+                            ADMINISTRADOR
+                        </span>
+
+                        <strong>
+
+                            {% if usuario.is_superuser %}
+                                👑 Superusuario
+                            {% else %}
+                                Usuario
+                            {% endif %}
+
+                        </strong>
+
+                    </div>
+
+
+                    <div class="data-item">
+
+                        <span>
+                            ROL DEL SISTEMA
+                        </span>
+
+                        <strong>
+
+                            {% if usuario.perfilusuario %}
+                                {{ usuario.perfilusuario.get_rol_display }}
+                            {% else %}
+                                Sin rol asignado
+                            {% endif %}
+
+                        </strong>
+
+                    </div>
+
+                </div>
+
+
+                <div class="usuario-footer">
+
+                    <span>
+                        ID DE CUENTA: #{{ usuario.id }}
+                    </span>
+
+                    <a href="{% url 'ver_usuario' usuario.id %}">
+                        VER PERFIL →
+                    </a>
+
+                </div>
+
+            </div>
+
+
+        {% empty %}
+
+            <div class="usuario-empty">
+
+                <div>
+                    🔎
+                </div>
+
+                <h3>
+                    Sin resultados
+                </h3>
+
+                {% if buscar %}
+
+                    <p>
+                        No encontramos usuarios que coincidan con
+                        <strong>"{{ buscar }}"</strong>.
+                    </p>
+
+                {% else %}
+
+                    <p>
+                        No hay usuarios registrados en JARVICE.
+                    </p>
+
+                {% endif %}
+
+            </div>
+
+        {% endfor %}
+
+    </div>
+
+</div>
+
+
+<!-- ==================================================
+     FOOTER
+================================================== -->
+
+<div class="admin-footer">
+
+    <strong>
+        JARVICE CORE
+    </strong>
+
+    <span>
+        Gestión central de usuarios y permisos
+    </span>
+
+    <span>
+        Sistema protegido
+    </span>
+
+</div>
+
+
+</div>
+
+<style>
+
+/* =========================================================
+   JARVICE ADMIN — USUARIOS
+   ========================================================= */
+
+.jarvice-admin {
+    width: 100%;
+    max-width: 1420px;
+    margin: 0 auto;
+    padding-bottom: 35px;
+}
+
+
+/* =========================================================
+   HEADER
+   ========================================================= */
+
+.admin-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+
+    gap: 25px;
+
+    margin-bottom: 20px;
+    padding: 28px 30px;
+
+    border-radius: 20px;
+
+    background:
+        radial-gradient(
+            circle at 95% 10%,
+            rgba(0,180,255,0.12),
+            transparent 35%
+        ),
+        linear-gradient(
+            145deg,
+            rgba(10,22,38,0.98),
+            rgba(6,14,25,0.98)
+        );
+
+    border: 1px solid rgba(70,180,255,0.18);
+
+    box-shadow:
+        0 20px 55px rgba(0,0,0,0.28),
+        inset 0 1px 0 rgba(255,255,255,0.025);
+}
+
+.admin-badge {
+    display: inline-flex;
+
+    padding: 6px 11px;
+
+    border-radius: 999px;
+
+    background: rgba(0,190,255,0.08);
+
+    border: 1px solid rgba(0,190,255,0.20);
+
+    color: #69dcff;
+
+    font-size: 9px;
+    font-weight: 700;
+
+    letter-spacing: 2px;
+}
+
+.admin-header h1 {
+    margin: 10px 0 0;
+
+    color: #eafaff;
+
+    font-size: 29px;
+    font-weight: 700;
+}
+
+.admin-header p {
+    margin: 7px 0 0;
+
+    color: #7796a5;
+
+    font-size: 12px;
+}
+
+.admin-status {
+    display: flex;
+    align-items: center;
+
+    gap: 8px;
+
+    padding: 8px 13px;
+
+    border-radius: 999px;
+
+    background: rgba(35,220,135,0.06);
+
+    border: 1px solid rgba(35,220,135,0.16);
+
+    color: #65e5a2;
+
+    font-size: 9px;
+    font-weight: 700;
+
+    letter-spacing: 1px;
+}
+
+.admin-status span {
+    width: 7px;
+    height: 7px;
+
+    border-radius: 50%;
+
+    background: #40e596;
+
+    box-shadow:
+        0 0 9px rgba(64,229,150,0.8);
+}
+
+
+/* =========================================================
+   BUSCADOR
+   ========================================================= */
+
+.admin-search-panel {
+    margin-bottom: 18px;
+
+    padding: 17px 19px;
+
+    border-radius: 15px;
+
+    background:
+        linear-gradient(
+            145deg,
+            rgba(255,255,255,0.035),
+            rgba(255,255,255,0.015)
+        );
+
+    border: 1px solid rgba(255,255,255,0.065);
+}
+
+.search-title {
+    margin-bottom: 11px;
+
+    color: #5fcce9;
+
+    font-size: 8px;
+    font-weight: 700;
+
+    letter-spacing: 1.6px;
+}
+
+.admin-search-panel form {
+    display: flex;
+
+    align-items: center;
+
+    gap: 9px;
+
+    flex-wrap: wrap;
+}
+
+.admin-search-panel input {
+    flex: 1;
+
+    min-width: 240px;
+
+    padding: 12px 14px;
+
+    border-radius: 10px;
+
+    background: rgba(0,0,0,0.25);
+
+    border: 1px solid rgba(255,255,255,0.09);
+
+    color: #e8faff;
+
+    outline: none;
+
+    font-size: 12px;
+}
+
+.admin-search-panel input::placeholder {
+    color: #55717e;
+}
+
+.admin-search-panel input:focus {
+    border-color: rgba(0,180,255,0.42);
+
+    box-shadow:
+        0 0 15px rgba(0,160,255,0.10);
+}
+
+.admin-search-panel button,
+.admin-search-panel a {
+    padding: 11px 15px;
+
+    border-radius: 10px;
+
+    font-size: 9px;
+    font-weight: 700;
+
+    letter-spacing: 0.8px;
+
+    text-decoration: none;
+}
+
+.admin-search-panel button {
+    border: 1px solid rgba(0,190,255,0.25);
+
+    background: rgba(0,170,255,0.12);
+
+    color: #6bdcff;
+
+    cursor: pointer;
+}
+
+.admin-search-panel button:hover {
+    background: rgba(0,170,255,0.20);
+}
+
+.admin-search-panel a {
+    background: rgba(255,255,255,0.055);
+
+    border: 1px solid rgba(255,255,255,0.07);
+
+    color: #8ca5b0;
+}
+
+
+/* =========================================================
+   RESULTADO
+   ========================================================= */
+
+.admin-search-result {
+    display: flex;
+
+    align-items: center;
+
+    gap: 9px;
+
+    margin-bottom: 18px;
+
+    padding: 10px 14px;
+
+    border-radius: 10px;
+
+    background: rgba(0,150,255,0.06);
+
+    border: 1px solid rgba(0,150,255,0.12);
+
+    color: #7898a6;
+
+    font-size: 10px;
+}
+
+.admin-search-result strong {
+    color: #bfeeff;
+}
+
+
+/* =========================================================
+   ESTADÍSTICAS
+   ========================================================= */
+
+.admin-stats {
+    display: grid;
+
+    grid-template-columns: repeat(4, 1fr);
+
+    gap: 12px;
+
+    margin-bottom: 22px;
+}
+
+.admin-stat-card {
+    display: flex;
+
+    align-items: center;
+
+    gap: 13px;
+
+    min-height: 95px;
+
+    padding: 16px;
+
+    box-sizing: border-box;
+
+    border-radius: 15px;
+
+    background:
+        linear-gradient(
+            145deg,
+            rgba(255,255,255,0.038),
+            rgba(255,255,255,0.015)
+        );
+
+    border: 1px solid rgba(255,255,255,0.065);
+
+    box-shadow:
+        0 10px 30px rgba(0,0,0,0.13);
+}
+
+.stat-icon {
+    width: 40px;
+    height: 40px;
+
+    flex-shrink: 0;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    border-radius: 11px;
+
+    background: rgba(0,170,255,0.07);
+
+    border: 1px solid rgba(0,170,255,0.12);
+
+    font-size: 18px;
+}
+
+.stat-icon.active {
+    background: rgba(35,220,135,0.06);
+}
+
+.stat-icon.inactive {
+    background: rgba(239,68,68,0.06);
+}
+
+.stat-icon.admin {
+    background: rgba(250,204,21,0.06);
+}
+
+.admin-stat-card span {
+    display: block;
+
+    color: #63818e;
+
+    font-size: 8px;
+    font-weight: 700;
+
+    letter-spacing: 1.2px;
+}
+
+.admin-stat-card strong {
+    display: block;
+
+    margin-top: 4px;
+
+    color: #e9faff;
+
+    font-size: 25px;
+
+    line-height: 1;
+}
+
+.admin-stat-card small {
+    display: block;
+
+    margin-top: 5px;
+
+    color: #536f7c;
+
+    font-size: 9px;
+}
+
+
+/* =========================================================
+   SECCIÓN USUARIOS
+   ========================================================= */
+
+.users-section {
+    padding: 20px;
+
+    border-radius: 18px;
+
+    background:
+        linear-gradient(
+            145deg,
+            rgba(10,20,33,0.96),
+            rgba(6,13,23,0.98)
+        );
+
+    border: 1px solid rgba(65,170,235,0.14);
+
+    box-shadow:
+        0 18px 45px rgba(0,0,0,0.22);
+}
+
+.section-header {
+    display: flex;
+
+    align-items: center;
+    justify-content: space-between;
+
+    gap: 15px;
+
+    margin-bottom: 16px;
+
+    padding-bottom: 15px;
+
+    border-bottom: 1px solid rgba(255,255,255,0.06);
+}
+
+.section-label {
+    color: #5fcce9;
+
+    font-size: 8px;
+    font-weight: 700;
+
+    letter-spacing: 1.6px;
+}
+
+.section-header h2 {
+    margin: 5px 0 0;
+
+    color: #e2f8fc;
+
+    font-size: 18px;
+}
+
+.section-count {
+    padding: 7px 10px;
+
+    border-radius: 999px;
+
+    background: rgba(0,170,255,0.06);
+
+    border: 1px solid rgba(0,170,255,0.12);
+
+    color: #6cbcd1;
+
+    font-size: 8px;
+    font-weight: 700;
+
+    letter-spacing: 1px;
+}
+
+
+/* =========================================================
+   TARJETAS DE USUARIO
+   ========================================================= */
+
+.jarvice-users {
+    display: grid;
+
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+
+    gap: 12px;
+}
+
+.usuario-card {
+    padding: 17px;
+
+    border-radius: 14px;
+
+    background:
+        linear-gradient(
+            145deg,
+            rgba(255,255,255,0.032),
+            rgba(255,255,255,0.012)
+        );
+
+    border: 1px solid rgba(255,255,255,0.065);
+
+    transition:
+        transform 0.2s ease,
+        border-color 0.2s ease,
+        box-shadow 0.2s ease;
+}
+
+.usuario-card:hover {
+    transform: translateY(-2px);
+
+    border-color: rgba(0,180,255,0.25);
+
+    box-shadow:
+        0 12px 30px rgba(0,100,255,0.08);
+}
+
+.usuario-top {
+    display: flex;
+
+    align-items: center;
+
+    gap: 11px;
+}
+
+.usuario-avatar {
+    width: 42px;
+    height: 42px;
+
+    flex-shrink: 0;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    border-radius: 11px;
+
+    background: rgba(0,170,255,0.07);
+
+    border: 1px solid rgba(0,170,255,0.13);
+
+    font-size: 19px;
+}
+
+.usuario-identidad {
+    min-width: 0;
+
+    flex: 1;
+}
+
+.usuario-identidad h3 {
+    margin: 0;
+
+    font-size: 14px;
+}
+
+.usuario-identidad h3 a {
+    color: #dff8fd;
+
+    text-decoration: none;
+}
+
+.usuario-identidad h3 a:hover {
+    color: #66d9f5;
+}
+
+.role-badge {
+    display: inline-block;
+
+    margin-top: 5px;
+
+    padding: 4px 7px;
+
+    border-radius: 5px;
+
+    background: rgba(0,170,255,0.07);
+
+    border: 1px solid rgba(0,170,255,0.12);
+
+    color: #67c8df;
+
+    font-size: 7px;
+    font-weight: 700;
+
+    letter-spacing: 0.8px;
+}
+
+.role-badge.administrator {
+    background: rgba(250,204,21,0.07);
+
+    border-color: rgba(250,204,21,0.15);
+
+    color: #f4d66f;
+}
+
+.user-status {
+    align-self: flex-start;
+}
+
+.status-active,
+.status-inactive {
+    display: inline-flex;
+
+    align-items: center;
+
+    gap: 5px;
+
+    padding: 5px 7px;
+
+    border-radius: 999px;
+
+    font-size: 7px;
+    font-weight: 700;
+
+    letter-spacing: 0.7px;
+}
+
+.status-active {
+    color: #67e2a4;
+
+    background: rgba(35,220,135,0.06);
+
+    border: 1px solid rgba(35,220,135,0.12);
+}
+
+.status-inactive {
+    color: #ef8585;
+
+    background: rgba(239,68,68,0.06);
+
+    border: 1px solid rgba(239,68,68,0.12);
+}
+
+.status-active i,
+.status-inactive i {
+    width: 5px;
+    height: 5px;
+
+    border-radius: 50%;
+
+    background: currentColor;
+}
+
+
+/* =========================================================
+   DATOS
+   ========================================================= */
+
+.usuario-divider {
+    height: 1px;
+
+    margin: 14px 0;
+
+    background: rgba(255,255,255,0.055);
+}
+
+.usuario-data {
+    display: grid;
+
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+
+    gap: 12px;
+}
+
+.data-item {
+    min-width: 0;
+}
+
+.data-item span {
+    display: block;
+
+    margin-bottom: 4px;
+
+    color: #536f7c;
+
+    font-size: 7px;
+    font-weight: 700;
+
+    letter-spacing: 1px;
+}
+
+.data-item strong {
+    display: block;
+
+    overflow: hidden;
+
+    color: #9db8c3;
+
+    font-size: 10px;
+
+    font-weight: 500;
+
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+.usuario-footer {
+    display: flex;
+
+    align-items: center;
+    justify-content: space-between;
+
+    gap: 10px;
+
+    margin-top: 14px;
+    padding-top: 11px;
+
+    border-top: 1px solid rgba(255,255,255,0.045);
+
+    color: #465f6b;
+
+    font-size: 7px;
+    letter-spacing: 0.7px;
+}
+
+.usuario-footer a {
+    color: #55bdd8;
+
+    text-decoration: none;
+
+    font-weight: 700;
+
+    letter-spacing: 0.8px;
+}
+
+.usuario-footer a:hover {
+    color: #8aeaff;
+}
+
+
+/* =========================================================
+   SIN RESULTADOS
+   ========================================================= */
+
+.usuario-empty {
+    grid-column: 1 / -1;
+
+    padding: 50px 25px;
+
+    text-align: center;
+
+    border-radius: 13px;
+
+    background: rgba(255,255,255,0.018);
+
+    border: 1px dashed rgba(255,255,255,0.08);
+}
+
+.usuario-empty > div {
+    font-size: 28px;
+}
+
+.usuario-empty h3 {
+    margin: 10px 0 5px;
+
+    color: #dff8fd;
+
+    font-size: 16px;
+}
+
+.usuario-empty p {
+    margin: 0;
+
+    color: #607b87;
+
+    font-size: 11px;
+}
+
+
+/* =========================================================
+   FOOTER
+   ========================================================= */
+
+.admin-footer {
+    display: flex;
+
+    justify-content: space-between;
+
+    gap: 15px;
+
+    margin-top: 17px;
+
+    padding: 12px 4px;
+
+    color: #486572;
+
+    font-size: 8px;
+}
+
+.admin-footer strong {
+    color: #5fb8cf;
+
+    letter-spacing: 1px;
+}
+
+
+/* =========================================================
+   RESPONSIVE
+   ========================================================= */
+
+@media (max-width: 1050px) {
+
+    .admin-stats {
+        grid-template-columns: repeat(2, 1fr);
+    }
+
+    .jarvice-users {
+        grid-template-columns: 1fr;
+    }
+
+}
+
+
+@media (max-width: 700px) {
+
+    .admin-header {
+        flex-direction: column;
+
+        align-items: flex-start;
+
+        padding: 22px;
+    }
+
+    .admin-header h1 {
+        font-size: 25px;
+    }
+
+    .admin-status {
+        align-self: flex-start;
+    }
+
+    .admin-stats {
+        grid-template-columns: 1fr;
+    }
+
+    .users-section {
+        padding: 15px;
+    }
+
+    .section-header {
+        align-items: flex-start;
+
+        flex-direction: column;
+    }
+
+    .usuario-data {
+        grid-template-columns: 1fr;
+    }
+
+}
+
+
+@media (max-width: 480px) {
+
+    .admin-search-panel form {
+        flex-direction: column;
+
+        align-items: stretch;
+    }
+
+    .admin-search-panel input {
+        min-width: 0;
+
+        width: 100%;
+
+        box-sizing: border-box;
+    }
+
+    .admin-search-panel button,
+    .admin-search-panel a {
+        width: 100%;
+
+        box-sizing: border-box;
+
+        text-align: center;
+    }
+
+    .usuario-top {
+        align-items: flex-start;
+    }
+
+    .user-status {
+        display: none;
+    }
+
+    .usuario-footer {
+        align-items: flex-start;
+
+        flex-direction: column;
+    }
+
+}
+
+</style>
+
+{% endblock %}

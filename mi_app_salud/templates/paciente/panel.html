@@ -1,0 +1,680 @@
+{% extends "mi_app_salud/base.html" %}
+
+{% block contenido %}
+
+<style>
+
+.panel-paciente {
+    padding: 30px;
+    max-width: 1400px;
+    margin: auto;
+}
+
+/* ==========================================
+   ENCABEZADO
+   ========================================== */
+
+.header-paciente {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 30px;
+    gap: 20px;
+}
+
+.header-paciente h1 {
+    color: #00c6ff;
+    font-size: 32px;
+    margin-bottom: 8px;
+}
+
+.header-paciente p {
+    color: #8fb5c7;
+    font-size: 15px;
+}
+
+.estado-online {
+    background: rgba(0, 255, 140, 0.08);
+    border: 1px solid rgba(0, 255, 140, 0.25);
+    color: #4dff9a;
+    padding: 12px 18px;
+    border-radius: 14px;
+    font-weight: bold;
+}
+
+
+/* ==========================================
+   TARJETAS RESUMEN
+   ========================================== */
+
+.tarjetas-resumen {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 18px;
+    margin-bottom: 25px;
+}
+
+.tarjeta-resumen {
+    background: rgba(5, 27, 43, 0.85);
+    border: 1px solid rgba(0, 198, 255, 0.12);
+    border-radius: 18px;
+    padding: 22px;
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    box-shadow: 0 10px 30px rgba(0,0,0,.20);
+}
+
+.tarjeta-resumen .icono {
+    font-size: 26px;
+}
+
+.tarjeta-resumen .texto {
+    color: #8fb5c7;
+    font-size: 13px;
+}
+
+.tarjeta-resumen strong {
+    font-size: 24px;
+    color: white;
+}
+
+
+/* ==========================================
+   ESTADO GENERAL
+   ========================================== */
+
+.estado-general {
+    background:
+        linear-gradient(
+            135deg,
+            rgba(0, 198, 255, 0.12),
+            rgba(3, 25, 40, 0.95)
+        );
+
+    border: 1px solid rgba(0, 198, 255, 0.22);
+    border-radius: 20px;
+    padding: 25px;
+    margin-bottom: 25px;
+}
+
+.estado-general h2 {
+    color: #00c6ff;
+    margin-bottom: 15px;
+}
+
+.estado-ok {
+    color: #4dff9a;
+    font-size: 25px;
+    font-weight: bold;
+}
+
+
+/* ==========================================
+   SIGNOS VITALES
+   ========================================== */
+
+.card-paciente {
+    background: rgba(4, 23, 38, 0.88);
+    border: 1px solid rgba(0, 198, 255, 0.12);
+    border-radius: 20px;
+    padding: 25px;
+    margin-bottom: 25px;
+    box-shadow: 0 10px 30px rgba(0,0,0,.20);
+}
+
+.card-paciente h2 {
+    color: #00c6ff;
+    margin-bottom: 20px;
+    font-size: 21px;
+}
+
+.vitales-grid {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 15px;
+}
+
+.vital {
+    background: rgba(255,255,255,.025);
+    border: 1px solid rgba(255,255,255,.06);
+    border-radius: 15px;
+    padding: 20px;
+}
+
+.vital .titulo {
+    color: #7fa5b8;
+    font-size: 13px;
+    margin-bottom: 8px;
+}
+
+.vital .valor {
+    font-size: 28px;
+    font-weight: bold;
+    color: white;
+}
+
+.vital .unidad {
+    color: #8fb5c7;
+    font-size: 12px;
+}
+
+
+/* ==========================================
+   INFORMACIÓN EXTRA
+   ========================================== */
+
+.info-vital {
+    display: flex;
+    justify-content: space-between;
+    flex-wrap: wrap;
+    gap: 15px;
+    margin-top: 20px;
+    color: #9bb8c7;
+    font-size: 13px;
+}
+
+
+/* ==========================================
+   LISTAS
+   ========================================== */
+
+.lista-paciente {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+.item-paciente {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 20px;
+    padding: 15px;
+    background: rgba(255,255,255,.025);
+    border: 1px solid rgba(255,255,255,.05);
+    border-radius: 12px;
+}
+
+.item-paciente strong {
+    color: white;
+}
+
+.item-paciente span {
+    color: #8fb5c7;
+    font-size: 13px;
+}
+
+
+/* ==========================================
+   RESPONSIVE
+   ========================================== */
+
+@media (max-width: 1000px) {
+
+    .tarjetas-resumen {
+        grid-template-columns: repeat(2, 1fr);
+    }
+
+    .vitales-grid {
+        grid-template-columns: repeat(2, 1fr);
+    }
+
+}
+
+@media (max-width: 650px) {
+
+    .panel-paciente {
+        padding: 18px;
+    }
+
+    .header-paciente {
+        flex-direction: column;
+        align-items: flex-start;
+    }
+
+    .tarjetas-resumen,
+    .vitales-grid {
+        grid-template-columns: 1fr;
+    }
+
+}
+
+
+/* ==========================================
+   RIESGO
+   ========================================== */
+
+.riesgo-ok {
+    color: #4dff9a;
+}
+
+.riesgo-alerta {
+    color: #ffd166;
+}
+
+.riesgo-critico {
+    color: #ff5c5c;
+}
+
+</style>
+
+<div class="panel-paciente">
+
+
+<!-- ==========================================
+     ENCABEZADO
+========================================== -->
+
+<header class="header-paciente">
+
+    <div>
+
+        <h1>
+            🩺 Mi Panel Jarvice
+        </h1>
+
+        <p>
+            Bienvenido/a {{ paciente.nombre|title }}
+            · Monitoreo personal de salud
+        </p>
+
+    </div>
+
+    <div class="estado-online">
+        🟢 Sistema Online
+    </div>
+
+</header>
+
+
+<!-- ==========================================
+     RESUMEN
+========================================== -->
+
+<div class="tarjetas-resumen">
+
+
+    <div class="tarjeta-resumen">
+
+        <span class="icono">❤️</span>
+
+        <span class="texto">
+            Frecuencia cardíaca
+        </span>
+
+        {% if ultimo_signo_vital %}
+
+            <strong>
+                {{ ultimo_signo_vital.frecuencia_cardiaca }}
+                BPM
+            </strong>
+
+        {% else %}
+
+            <strong>
+                Sin datos
+            </strong>
+
+        {% endif %}
+
+    </div>
+
+
+    <div class="tarjeta-resumen">
+
+        <span class="icono">🫁</span>
+
+        <span class="texto">
+            Saturación
+        </span>
+
+        {% if ultimo_signo_vital %}
+
+            <strong>
+                {{ ultimo_signo_vital.saturacion_oxigeno }}%
+            </strong>
+
+        {% else %}
+
+            <strong>
+                Sin datos
+            </strong>
+
+        {% endif %}
+
+    </div>
+
+
+    <div class="tarjeta-resumen">
+
+        <span class="icono">💊</span>
+
+        <span class="texto">
+            Medicaciones activas
+        </span>
+
+        <strong>
+            {{ medicaciones|length }}
+        </strong>
+
+    </div>
+
+
+    <div class="tarjeta-resumen">
+
+        <span class="icono">⏰</span>
+
+        <span class="texto">
+            Recordatorios
+        </span>
+
+        <strong>
+            {{ recordatorios|length }}
+        </strong>
+
+    </div>
+
+
+</div>
+
+
+<!-- ==========================================
+     ESTADO GENERAL
+========================================== -->
+
+<section class="estado-general">
+
+    <h2>
+        🤖 Estado Jarvice
+    </h2>
+
+    {% if ultimo_estado %}
+
+        <div class="estado-ok">
+
+            🟢 {{ ultimo_estado.estado }}
+
+        </div>
+
+        <p style="margin-top:10px; color:#8fb5c7;">
+
+            Último registro:
+            {{ ultimo_estado.fecha }}
+
+        </p>
+
+    {% else %}
+
+        <div style="color:#ffd166;">
+
+            🟡 Sin registros clínicos recientes.
+
+        </div>
+
+    {% endif %}
+
+</section>
+
+
+<!-- ==========================================
+     ÚLTIMOS SIGNOS VITALES
+========================================== -->
+
+<section class="card-paciente">
+
+    <h2>
+        ❤️ Últimos signos vitales
+    </h2>
+
+
+    {% if ultimo_signo_vital %}
+
+        <div class="vitales-grid">
+
+
+            <div class="vital">
+
+                <div class="titulo">
+                    ❤️ Frecuencia cardíaca
+                </div>
+
+                <div class="valor">
+                    {{ ultimo_signo_vital.frecuencia_cardiaca }}
+                </div>
+
+                <div class="unidad">
+                    BPM
+                </div>
+
+            </div>
+
+
+            <div class="vital">
+
+                <div class="titulo">
+                    🫁 Saturación de oxígeno
+                </div>
+
+                <div class="valor">
+                    {{ ultimo_signo_vital.saturacion_oxigeno }}
+                </div>
+
+                <div class="unidad">
+                    %
+                </div>
+
+            </div>
+
+
+            <div class="vital">
+
+                <div class="titulo">
+                    🌡️ Temperatura
+                </div>
+
+                <div class="valor">
+                    {{ ultimo_signo_vital.temperatura }}
+                </div>
+
+                <div class="unidad">
+                    °C
+                </div>
+
+            </div>
+
+
+            <div class="vital">
+
+                <div class="titulo">
+                    🩸 Presión arterial
+                </div>
+
+                <div class="valor">
+                    {{ ultimo_signo_vital.presion_arterial }}
+                </div>
+
+                <div class="unidad">
+                    mmHg
+                </div>
+
+            </div>
+
+
+        </div>
+
+
+        <div class="info-vital">
+
+            <span>
+                🧠 Estado emocional:
+                <strong>
+                    {{ ultimo_signo_vital.estado_emocional }}
+                </strong>
+            </span>
+
+            <span>
+                ⌚ Origen:
+                <strong>
+                    {{ ultimo_signo_vital.origen }}
+                </strong>
+            </span>
+
+            <span>
+                🕐 {{ ultimo_signo_vital.fecha }}
+            </span>
+
+        </div>
+
+
+        {% if ultimo_signo_vital.observaciones %}
+
+            <div style="margin-top:20px; color:#9bb8c7;">
+
+                📝
+                {{ ultimo_signo_vital.observaciones }}
+
+            </div>
+
+        {% endif %}
+
+
+    {% else %}
+
+        <p style="color:#8fb5c7;">
+            Todavía no hay signos vitales registrados.
+        </p>
+
+    {% endif %}
+
+</section>
+
+
+<!-- ==========================================
+     MEDICACIÓN
+========================================== -->
+
+<section class="card-paciente">
+
+    <h2>
+        💊 Mi medicación
+    </h2>
+
+    {% if medicaciones %}
+
+        <div class="lista-paciente">
+
+            {% for medicamento in medicaciones %}
+
+                <div class="item-paciente">
+
+                    <strong>
+                        {{ medicamento }}
+                    </strong>
+
+                    {% if medicamento.horario %}
+
+                        <span>
+                            ⏰ {{ medicamento.horario }}
+                        </span>
+
+                    {% endif %}
+
+                </div>
+
+            {% endfor %}
+
+        </div>
+
+    {% else %}
+
+        <p style="color:#8fb5c7;">
+            No tenés medicaciones activas registradas.
+        </p>
+
+    {% endif %}
+
+</section>
+
+
+<!-- ==========================================
+     RECORDATORIOS
+========================================== -->
+
+<section class="card-paciente">
+
+    <h2>
+        ⏰ Recordatorios
+    </h2>
+
+    {% if recordatorios %}
+
+        <div class="lista-paciente">
+
+            {% for recordatorio in recordatorios %}
+
+                <div class="item-paciente">
+
+                    <strong>
+                        {{ recordatorio }}
+                    </strong>
+
+                    {% if recordatorio.fecha %}
+
+                        <span>
+                            {{ recordatorio.fecha }}
+                        </span>
+
+                    {% endif %}
+
+                </div>
+
+            {% endfor %}
+
+        </div>
+
+    {% else %}
+
+        <p style="color:#8fb5c7;">
+            No tenés recordatorios pendientes.
+        </p>
+
+    {% endif %}
+
+</section>
+
+
+<!-- ==========================================
+     EVOLUCIÓN
+========================================== -->
+
+<section class="card-paciente">
+
+    <h2>
+        📋 Última evolución médica
+    </h2>
+
+    {% if ultima_evolucion %}
+
+        <div class="item-paciente">
+
+            <strong>
+                {{ ultima_evolucion }}
+            </strong>
+
+        </div>
+
+    {% else %}
+
+        <p style="color:#8fb5c7;">
+            Todavía no hay una evolución médica registrada.
+        </p>
+
+    {% endif %}
+
+</section>
+
+
+</div>
+
+{% endblock %}

@@ -1,8 +1,31 @@
 from django.urls import path
 from . import views
+from django.contrib.auth import views as auth_views
 
 
 urlpatterns = [
+
+# ==========================================================
+# 🆘 ACCESO QR — FICHA CLÍNICA DE EMERGENCIA
+# ==========================================================
+
+path(
+    "emergencia/qr/<str:token>/",
+    views.acceso_qr_emergencia,
+    name="acceso_qr_emergencia"
+),
+
+path(
+    "emergencia/qr/confirmar/<int:acceso_id>/",
+    views.confirmar_acceso_qr,
+    name="confirmar_acceso_qr"
+),
+
+path(
+    "emergencia/qr/ficha/<int:acceso_id>/",
+    views.ficha_emergencia_qr,
+    name="ficha_emergencia_qr"
+),
 
     # ==================================================
     # AUTENTICACIÓN
@@ -13,7 +36,11 @@ urlpatterns = [
         views.login_view,
         name="login"
     ),
-    
+    # ==================================================
+# ACCESO SECRETO ADMINISTRADOR
+# ==================================================
+
+
     path(
     "bienvenida/",
     views.bienvenida_rol,
@@ -25,6 +52,43 @@ urlpatterns = [
         views.registro,
         name="registro"
     ),
+
+    path(
+    "password-reset/",
+    auth_views.PasswordResetView.as_view(
+        template_name="mi_app_salud/password_reset.html",
+        email_template_name="mi_app_salud/password_reset_email.txt",
+        html_email_template_name="mi_app_salud/password_reset_email.html",
+        subject_template_name="mi_app_salud/password_reset_subject.txt",
+        success_url="/password-reset/done/"
+    ),
+    name="password_reset"
+),
+
+path(
+    "password-reset/done/",
+    auth_views.PasswordResetDoneView.as_view(
+        template_name="mi_app_salud/password_reset_done.html"
+    ),
+    name="password_reset_done"
+),
+
+path(
+    "password-reset/<uidb64>/<token>/",
+    auth_views.PasswordResetConfirmView.as_view(
+        template_name="mi_app_salud/password_reset_confirm.html",
+        success_url="/password-reset/complete/"
+    ),
+    name="password_reset_confirm"
+),
+
+path(
+    "password-reset/complete/",
+    auth_views.PasswordResetCompleteView.as_view(
+        template_name="mi_app_salud/password_reset_complete.html"
+    ),
+    name="password_reset_complete"
+),
 
     path(
     "logout/",
@@ -46,7 +110,7 @@ urlpatterns = [
     path(
         "dashboard/",
         views.dashboard_redirect,
-        name="dashboard"
+        name="dashboard_redirect"
     ),
 
 
@@ -71,12 +135,18 @@ urlpatterns = [
         views.historial_paciente,
         name="historial_paciente"
     ),
-    
+
     path(
     "crear-evolucion/<int:paciente_id>/",
     views.crear_evolucion,
     name="crear_evolucion"
     ),
+
+    path(
+    "crear-evolucion-enfermeria/<int:paciente_id>/",
+    views.crear_evolucion_enfermeria,
+    name="crear_evolucion_enfermeria"
+),
 
 
     # ==================================================
@@ -160,6 +230,12 @@ urlpatterns = [
     ),
 
     path(
+        "configuracion/solicitud/",
+        views.crear_solicitud_usuario,
+        name="crear_solicitud_usuario"
+    ),
+
+    path(
         "emergencia/",
         views.emergencia,
         name="emergencia"
@@ -199,18 +275,14 @@ urlpatterns = [
         views.panel_emergencia,
         name="panel_emergencia"
     ),
-    
+
     path(
     "panel/institucion/",
     views.panel_institucion,
     name="panel_institucion",
 ),
 
-path(
-    "institucion/cargar/<int:solicitud_id>/",
-    views.cargar_resultado_estudio,
-    name="cargar_resultado_estudio"
-),
+
 path(
     "cargar-resultado/<int:solicitud_id>/",
     views.cargar_resultado_estudio,
@@ -225,6 +297,12 @@ path(
         "api/pacientes/",
         views.api_pacientes,
         name="api_pacientes"
+    ),
+
+    path(
+    "api/signos-vitales/",
+    views.api_signos_vitales,
+    name="api_signos_vitales"
     ),
 
     path(
@@ -248,6 +326,61 @@ path(
     "crear-estudio/<int:paciente_id>/",
     views.crear_estudio,
     name="crear_estudio"
+),
+
+    # ==========================================================
+# 🔐 ADMINISTRACIÓN SECRETA JARVICE
+# ==========================================================
+
+path(
+    "jarvice-core-access/",
+    views.acceso_admin_jarvice,
+    name="acceso_admin_jarvice"
+),
+
+path(
+    "jarvice-core-admin/",
+    views.admin_jarvice,
+    name="admin_jarvice"
+),
+
+path(
+    "jarvice-core/",
+    views.jarvice_core,
+    name="jarvice_core"
+),
+
+path(
+    "jarvice-core-usuarios/",
+    views.admin_usuarios,
+    name="admin_usuarios"
+),
+
+path(
+    "jarvice-core-usuarios/<int:usuario_id>/",
+    views.ver_usuario,
+    name="ver_usuario"
+),
+
+path(
+    "jarvice-core-usuarios/<int:usuario_id>/rol/",
+    views.cambiar_rol_usuario,
+    name="cambiar_rol_usuario"
+),
+path(
+    "jarvice-core-usuarios/<int:usuario_id>/estado/",
+    views.cambiar_estado_usuario,
+    name="cambiar_estado_usuario"
+),
+path(
+    "jarvice-core-seguridad/",
+    views.admin_seguridad,
+    name="admin_seguridad"
+),
+path(
+    "jarvice-core-atencion/",
+    views.centro_atencion_admin,
+    name="centro_atencion_admin"
 ),
 
 ]

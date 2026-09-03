@@ -1,96 +1,288 @@
-{% extends "mi_app_salud/base.html" %}
 
+{% extends "mi_app_salud/base.html" %}
 
 {% block contenido %}
 
-<div class="contenido">
+<div class="panel-enfermeria">
+
+    <h1 class="titulo-panel">
+        🩺 Panel de Enfermería
+    </h1>
+
+    <p class="subtitulo-panel">
+        Bienvenida/o {{ user.username }} · Centro de control Jarvice
+    </p>
+
+    <!-- ========================= -->
+    <!-- RESUMEN -->
+    <!-- ========================= -->
+
+    <div class="tarjetas-resumen">
+
+        <div class="tarjeta-resumen">
+            <span class="icono">👥</span>
+            <span class="numero">{{ total_pacientes }}</span>
+            <span class="texto">Pacientes</span>
+        </div>
+
+        <div class="tarjeta-resumen">
+            <span class="icono">🚨</span>
+            <span class="numero">{{ total_alertas }}</span>
+            <span class="texto">Alertas críticas</span>
+        </div>
+
+        <div class="tarjeta-resumen">
+            <span class="icono">💊</span>
+            <span class="numero">{{ total_medicaciones }}</span>
+            <span class="texto">Medicaciones pendientes</span>
+        </div>
+
+        <div class="tarjeta-resumen">
+            <span class="icono">⏰</span>
+            <span class="numero">{{ total_recordatorios }}</span>
+            <span class="texto">Recordatorios</span>
+        </div>
+
+        <div class="tarjeta-resumen">
+            <span class="icono">🧪</span>
+            <span class="numero">{{ total_estudios }}</span>
+            <span class="texto">Estudios pendientes</span>
+        </div>
+
+    </div>
 
 
-<h1>
-🩺 Panel Enfermería
-</h1>
+    <!-- ========================= -->
+    <!-- ALERTAS -->
+    <!-- ========================= -->
+
+    <div class="seccion-enfermeria">
+
+        <h2>🚨 Alertas Jarvice</h2>
+
+        {% for alerta in alertas %}
+
+            <div class="alerta-card estado-critico">
+
+                <strong>
+                    🔴 {{ alerta.paciente }}
+                </strong>
+
+                <p>
+                    Estado físico:
+                    {{ alerta.get_estado_fisico_display }}
+                </p>
+
+                <p>
+                    Estado emocional:
+                    {{ alerta.estado_emocional }}
+                </p>
+
+                <small>
+                    {{ alerta.fecha|date:"d/m/Y H:i" }}
+                </small>
+
+            </div>
+
+        {% empty %}
+
+            <p class="sin-datos">
+                🟢 No hay alertas críticas actualmente.
+            </p>
+
+        {% endfor %}
+
+    </div>
 
 
-<p>
-Usuario conectado:
-<strong>
-{{ request.user.username }}
-</strong>
-</p>
+    <!-- ========================= -->
+    <!-- PACIENTES -->
+    <!-- ========================= -->
+
+    <div class="seccion-enfermeria">
+
+        <h2>👥 Pacientes</h2>
+
+        {% for paciente in pacientes %}
+
+            <div class="paciente-card">
+
+                <strong>
+                    {{ paciente.nombre }} {{ paciente.apellido }}
+                </strong>
+
+                <p>
+                    🪪 DNI:
+                    {{ paciente.dni|default:"No registrado" }}
+                </p>
+
+                <p>
+                    📋 Historia clínica:
+                    {{ paciente.historia_clinica|default:"No registrada" }}
+                </p>
+
+                <p>
+                    🩸 Grupo sanguíneo:
+                    {{ paciente.grupo_sanguineo|default:"No registrado" }}
+                </p>
+
+                <p>
+                    ⚠️ Alergias:
+                    {{ paciente.alergias|default:"Ninguna registrada" }}
+                </p>
+
+                <a
+                    href="{% url 'historial_paciente' paciente.id %}"
+                    class="boton-paciente"
+                >
+                    📋 Ver historial
+                </a>
+
+            </div>
+
+        {% empty %}
+
+            <p class="sin-datos">
+                No hay pacientes registrados.
+            </p>
+
+        {% endfor %}
+
+    </div>
 
 
-<div style="
-display:grid;
-grid-template-columns:repeat(auto-fit,minmax(250px,1fr));
-gap:20px;
-margin-top:30px;
-">
+    <!-- ========================= -->
+    <!-- MEDICACIÓN / RECORDATORIOS -->
+    <!-- ========================= -->
+
+    <div class="grid-doble">
+
+        <div class="seccion-enfermeria">
+
+            <h2>💊 Medicación pendiente</h2>
+
+            {% for medicamento in medicaciones_pendientes %}
+
+                <div class="medicacion-card estado-pendiente">
+
+                    <strong>
+                        {{ medicamento.nombre }}
+                    </strong>
+
+                    <p>
+                        👤 {{ medicamento.paciente }}
+                    </p>
+
+                    <p>
+                        💊 Dosis:
+                        {{ medicamento.dosis }}
+                    </p>
+
+                    <p>
+                        🕐 Horario:
+                        {{ medicamento.horario|time:"H:i" }}
+                    </p>
+
+                </div>
+
+            {% empty %}
+
+                <p class="sin-datos">
+                    🟢 No hay medicaciones pendientes.
+                </p>
+
+            {% endfor %}
+
+        </div>
 
 
-<div style="
-background:#10263d;
-padding:25px;
-border-radius:20px;
-">
+        <div class="seccion-enfermeria">
 
-<h2>👥 Pacientes</h2>
+            <h2>⏰ Recordatorios</h2>
 
-<p>
-Control y seguimiento de pacientes registrados.
-</p>
+            {% for recordatorio in recordatorios_pendientes %}
 
-<a href="{% url 'pacientes' %}">
-Ver pacientes
-</a>
+                <div class="recordatorio-card estado-pendiente">
+
+                    <strong>
+                        {{ recordatorio.texto }}
+                    </strong>
+
+                    <p>
+                        👤 {{ recordatorio.paciente }}
+                    </p>
+
+                    <small>
+                        {{ recordatorio.fecha|date:"d/m/Y H:i" }}
+                    </small>
+
+                </div>
+
+            {% empty %}
+
+                <p class="sin-datos">
+                    🟢 No hay recordatorios pendientes.
+                </p>
+
+            {% endfor %}
+
+        </div>
+
+    </div>
+
+
+    <!-- ========================= -->
+    <!-- ESTUDIOS -->
+    <!-- ========================= -->
+
+    <div class="seccion-enfermeria">
+
+        <h2>🧪 Estudios pendientes</h2>
+
+        {% for solicitud in estudios_pendientes %}
+
+            <div class="estudio-card estado-pendiente">
+
+                <strong>
+                    🧪 {{ solicitud.estudio }}
+                </strong>
+
+                <p>
+                    👤 Paciente:
+                    {{ solicitud.paciente }}
+                </p>
+
+                <p>
+                    👨‍⚕️ Médico:
+                    {{ solicitud.medico|default:"No registrado" }}
+                </p>
+
+                <p>
+                    📝 Motivo:
+                    {{ solicitud.motivo|default:"Sin motivo informado" }}
+                </p>
+
+                <p>
+                    📅 Solicitud:
+                    {{ solicitud.fecha_solicitud|date:"d/m/Y H:i" }}
+                </p>
+
+                <span>
+                    🟡 Pendiente de realización
+                </span>
+
+            </div>
+
+        {% empty %}
+
+            <p class="sin-datos">
+                🟢 No hay estudios pendientes.
+            </p>
+
+        {% endfor %}
+
+    </div>
 
 </div>
-
-
-
-<div style="
-background:#10263d;
-padding:25px;
-border-radius:20px;
-">
-
-<h2>💊 Medicación</h2>
-
-<p>
-Administración de tratamientos.
-</p>
-
-<a href="{% url 'medicacion' %}">
-Ver medicación
-</a>
-
-</div>
-
-
-
-<div style="
-background:#10263d;
-padding:25px;
-border-radius:20px;
-">
-
-<h2>🚨 Alertas</h2>
-
-<p>
-Estados críticos detectados por Jarvice.
-</p>
-
-<a href="{% url 'emergencia' %}">
-Abrir emergencia
-</a>
-
-</div>
-
-
-
-</div>
-
-
-</div>
-
 
 {% endblock %}

@@ -1,0 +1,271 @@
+{% extends "mi_app_salud/base.html" %}
+
+{% block contenido %}
+
+<style>
+
+.solicitud-wrapper {
+    max-width: 900px;
+    margin: 0 auto;
+}
+
+.solicitud-hero {
+    padding: 28px;
+    border-radius: 22px;
+    margin-bottom: 22px;
+    background: linear-gradient(
+        135deg,
+        rgba(0, 180, 255, 0.16),
+        rgba(40, 60, 120, 0.20)
+    );
+    border: 1px solid rgba(120, 190, 255, 0.20);
+}
+
+.solicitud-hero h1 {
+    margin: 0 0 10px;
+    font-size: 30px;
+}
+
+.solicitud-hero p {
+    margin: 0;
+    opacity: 0.78;
+    line-height: 1.6;
+}
+
+.solicitud-card {
+    padding: 28px;
+    border-radius: 22px;
+    background: rgba(255, 255, 255, 0.04);
+    border: 1px solid rgba(255, 255, 255, 0.08);
+    box-shadow: 0 12px 35px rgba(0, 0, 0, 0.18);
+}
+
+.campo-grupo {
+    margin-bottom: 22px;
+}
+
+.campo-grupo label {
+    display: block;
+    margin-bottom: 8px;
+    font-weight: 600;
+}
+
+.campo,
+.solicitud-card select,
+.solicitud-card input,
+.solicitud-card textarea {
+    width: 100%;
+    box-sizing: border-box;
+    padding: 13px 15px;
+    border-radius: 12px;
+    border: 1px solid rgba(255, 255, 255, 0.12);
+    background: rgba(0, 0, 0, 0.22);
+    color: inherit;
+    font-size: 15px;
+    outline: none;
+}
+
+.solicitud-card textarea {
+    min-height: 150px;
+    resize: vertical;
+}
+
+.campo:focus,
+.solicitud-card select:focus,
+.solicitud-card input:focus,
+.solicitud-card textarea:focus {
+    border-color: rgba(80, 190, 255, 0.65);
+    box-shadow: 0 0 0 3px rgba(50, 170, 255, 0.10);
+}
+
+.ayuda {
+    margin-top: 7px;
+    font-size: 13px;
+    opacity: 0.60;
+}
+
+.errorlist {
+    margin: 7px 0 0;
+    padding: 0;
+    list-style: none;
+    color: #ff8585;
+    font-size: 13px;
+}
+
+.solicitud-acciones {
+    display: flex;
+    gap: 12px;
+    flex-wrap: wrap;
+    margin-top: 28px;
+}
+
+.btn-jarvice {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    padding: 13px 22px;
+    border-radius: 12px;
+    border: 0;
+    cursor: pointer;
+    text-decoration: none;
+    font-weight: 700;
+    color: white;
+    background: linear-gradient(
+        135deg,
+        #008cff,
+        #0066cc
+    );
+}
+
+.btn-secundario {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    padding: 13px 22px;
+    border-radius: 12px;
+    text-decoration: none;
+    font-weight: 600;
+    border: 1px solid rgba(255, 255, 255, 0.12);
+    background: rgba(255, 255, 255, 0.05);
+    color: inherit;
+}
+
+.privacidad-nota {
+    margin-top: 22px;
+    padding: 15px 18px;
+    border-radius: 14px;
+    background: rgba(0, 150, 255, 0.07);
+    border: 1px solid rgba(0, 150, 255, 0.12);
+    font-size: 13px;
+    line-height: 1.6;
+    opacity: 0.82;
+}
+
+@media (max-width: 700px) {
+
+    .solicitud-hero,
+    .solicitud-card {
+        padding: 20px;
+    }
+
+    .solicitud-hero h1 {
+        font-size: 24px;
+    }
+
+    .solicitud-acciones {
+        flex-direction: column;
+    }
+
+    .btn-jarvice,
+    .btn-secundario {
+        width: 100%;
+        box-sizing: border-box;
+    }
+}
+
+</style>
+
+
+<div class="solicitud-wrapper">
+
+    <section class="solicitud-hero">
+
+        <h1>💬 Centro de Atención Jarvice</h1>
+
+        <p>
+            Tu opinión ayuda a mejorar Jarvice Health AI.
+            Podés enviarnos una sugerencia, opinión, problema,
+            queja, reclamo o consulta.
+        </p>
+
+    </section>
+
+
+    <section class="solicitud-card">
+
+        <form method="post">
+
+            {% csrf_token %}
+
+            <div class="campo-grupo">
+
+                <label for="{{ formulario.tipo.id_for_label }}">
+                    Tipo de comunicación
+                </label>
+
+                {{ formulario.tipo }}
+
+                {{ formulario.tipo.errors }}
+
+            </div>
+
+
+            <div class="campo-grupo">
+
+                <label for="{{ formulario.asunto.id_for_label }}">
+                    Asunto
+                </label>
+
+                {{ formulario.asunto }}
+
+                <div class="ayuda">
+                    Escribí brevemente de qué querés hablar.
+                </div>
+
+                {{ formulario.asunto.errors }}
+
+            </div>
+
+
+            <div class="campo-grupo">
+
+                <label for="{{ formulario.mensaje.id_for_label }}">
+                    Mensaje
+                </label>
+
+                {{ formulario.mensaje }}
+
+                <div class="ayuda">
+                    Cuanto más clara sea la información,
+                    mejor podremos ayudarte.
+                </div>
+
+                {{ formulario.mensaje.errors }}
+
+            </div>
+
+
+            <div class="privacidad-nota">
+
+                🔒 Tu solicitud quedará registrada en Jarvice
+                junto con tu usuario para poder realizar el
+                seguimiento correspondiente.
+
+            </div>
+
+
+            <div class="solicitud-acciones">
+
+                <button
+                    type="submit"
+                    class="btn-jarvice"
+                >
+                    📤 Enviar solicitud
+                </button>
+
+                <a
+                    href="{% url 'configuracion' %}"
+                    class="btn-secundario"
+                >
+                    ← Volver a configuración
+                </a>
+
+            </div>
+
+        </form>
+
+    </section>
+
+</div>
+
+{% endblock %}

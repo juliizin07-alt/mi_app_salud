@@ -1,3 +1,10 @@
 from mi_app_salud.alerts import enviar_whatsapp
 
-enviar_whatsapp("🔥 Test de WhatsApp desde Jarvis funcionando")
+
+if __name__ == "__main__":
+
+    resultado = enviar_whatsapp(
+        "🔥 Test de WhatsApp desde Jarvice funcionando"
+    )
+
+    print("RESULTADO:", resultado)

@@ -2,166 +2,198 @@
 
 {% block contenido %}
 
-<h1>🏥 Panel de Institución</h1>
+<div class="panel-institucion">
 
-<p class="contador">
-    Total de solicitudes: {{ solicitudes|length }}
-</p>
+```
+<div class="panel-header">
+
+    <div>
+        <h1>🏥 Panel de Institución</h1>
+        <p>Solicitudes de estudios médicos pendientes</p>
+    </div>
+
+    <div class="contador">
+        <span>Total de solicitudes</span>
+        <strong>{{ solicitudes|length }}</strong>
+    </div>
+
+</div>
 
 
 {% for solicitud in solicitudes %}
 
+<div class="solicitud-card">
 
-<div class="tarjeta-estudio">
+    <!-- CABECERA -->
+    <div class="solicitud-header">
 
+        <div>
+            <span class="tipo-label">🧪 ESTUDIO SOLICITADO</span>
 
-    <div class="cabecera">
-
-        <h3>
-            🧪 {{ solicitud.estudio }}
-        </h3>
-
-
-        {% if solicitud.estado == "PENDIENTE" %}
+            <h2>
+                {{ solicitud.estudio }}
+            </h2>
+        </div>
 
         <span class="estado pendiente">
             🟡 Pendiente
         </span>
 
-
-        {% elif solicitud.estado == "REALIZADO" %}
-
-        <span class="estado realizado">
-            🟢 Realizado
-        </span>
+    </div>
 
 
-        {% else %}
+    <!-- DATOS DEL PACIENTE -->
+    <div class="datos-grid">
 
-        <span class="estado cancelado">
-            🔴 Cancelado
-        </span>
+        <div class="dato">
 
-        {% endif %}
+            <span class="dato-icono">👤</span>
 
+            <div>
+                <small>Paciente</small>
+
+                <strong>
+                    {{ solicitud.paciente.nombre }}
+                    {{ solicitud.paciente.apellido }}
+                </strong>
+            </div>
+
+        </div>
+
+
+        <div class="dato">
+
+            <span class="dato-icono">🪪</span>
+
+            <div>
+                <small>DNI</small>
+
+                <strong>
+                    {{ solicitud.paciente.dni }}
+                </strong>
+            </div>
+
+        </div>
+
+
+        <div class="dato">
+
+            <span class="dato-icono">👨‍⚕️</span>
+
+            <div>
+                <small>Médico solicitante</small>
+
+                <strong>
+                    {{ solicitud.medico }}
+                </strong>
+            </div>
+
+        </div>
+
+
+        <div class="dato">
+
+            <span class="dato-icono">📅</span>
+
+            <div>
+                <small>Fecha de solicitud</small>
+
+                <strong>
+                    {{ solicitud.fecha_solicitud|date:"d/m/Y H:i" }}
+                </strong>
+            </div>
+
+        </div>
 
     </div>
 
 
+    <!-- MOTIVO -->
+    {% if solicitud.motivo %}
 
-    <div class="datos">
+    <div class="motivo">
 
-
-        <p>
-            👤 <strong>Paciente:</strong>
-            {{ solicitud.paciente }}
-        </p>
-
+        <span>📝 <strong>Motivo de la solicitud</strong></span>
 
         <p>
-            📝 <strong>Motivo:</strong>
             {{ solicitud.motivo }}
         </p>
 
-
-        <p>
-            📅 <strong>Fecha solicitud:</strong>
-            {{ solicitud.fecha_solicitud|date:"d/m/Y H:i" }}
-        </p>
-
-
     </div>
 
-
-
-    {% if solicitud.estado == "PENDIENTE" %}
-
-    <a 
-    href="{% url 'cargar_resultado_estudio' solicitud.id %}"
-    class="btn-resultado">
-
-        📤 Cargar informe
-
-    </a>
-
-
-    {% else %}
-
-    <div class="resultado">
-
-    ✅ Resultado cargado
-
-    {% if solicitud.archivo_informe %}
-
-    <br><br>
-
-    <a 
-    href="{{ solicitud.archivo_informe.url }}"
-    target="_blank"
-    style="color:#8be9ff;"
-    >
-        📄 Ver informe adjunto
-    </a>
-
     {% endif %}
 
 
-    {% if solicitud.informe %}
+    <!-- ACCIÓN -->
+    <div class="solicitud-footer">
 
-    <p>
-        📝 {{ solicitud.informe }}
-    </p>
+        <div class="estado-info">
 
-    {% endif %}
+            <span>
+                📋 Estado:
+            </span>
 
-</div>
+            <strong>
+                Pendiente de realización
+            </strong>
 
-    {% endif %}
+        </div>
 
 
+        <a
+            href="{% url 'cargar_resultado_estudio' solicitud.id %}"
+            class="btn-resultado"
+        >
+            📤 Cargar resultado
+        </a>
+
+    </div>
 
 </div>
 
 
 {% empty %}
 
+<div class="sin-solicitudes">
 
-<div class="sin-estudios">
+    <div class="sin-icono">
+        💤
+    </div>
 
     <h2>
-        💤 No hay solicitudes pendientes.
+        No hay solicitudes pendientes
     </h2>
+
+    <p>
+        Cuando un médico solicite un estudio,
+        aparecerá aquí para que la institución pueda gestionarlo.
+    </p>
 
 </div>
 
-
 {% endfor %}
+```
 
-
+</div>
 
 <style>
 
+.panel-institucion{
 
-.tarjeta-estudio{
+    max-width:1200px;
 
-    background:rgba(255,255,255,.06);
+    margin:0 auto;
 
-    border:1px solid rgba(255,255,255,.12);
-
-    padding:25px;
-
-    border-radius:20px;
-
-    margin-top:20px;
-
-    box-shadow:
-    0 10px 30px rgba(0,0,0,.25);
+    padding:30px;
 
 }
 
 
+/* ==========================
+   CABECERA
+========================== */
 
-.cabecera{
+.panel-header{
 
     display:flex;
 
@@ -169,81 +201,318 @@
 
     align-items:center;
 
+    margin-bottom:35px;
+
+    padding:25px;
+
+    border-radius:22px;
+
+    background:rgba(255,255,255,.07);
+
+    border:1px solid rgba(139,233,255,.20);
+
+    backdrop-filter:blur(15px);
+
 }
 
-
-
-.cabecera h3{
-
-    color:white;
+.panel-header h1{
 
     margin:0;
 
+    color:#8be9ff;
+
+}
+
+.panel-header p{
+
+    margin-top:8px;
+
+    color:#bfe9ff;
+
 }
 
 
+.contador{
+
+    text-align:center;
+
+    padding:15px 25px;
+
+    border-radius:16px;
+
+    background:rgba(0,198,255,.10);
+
+    border:1px solid rgba(139,233,255,.25);
+
+}
+
+.contador span{
+
+    display:block;
+
+    color:#bfe9ff;
+
+    font-size:13px;
+
+}
+
+.contador strong{
+
+    display:block;
+
+    margin-top:5px;
+
+    font-size:32px;
+
+    color:#00ff99;
+
+}
+
+
+/* ==========================
+   SOLICITUD
+========================== */
+
+.solicitud-card{
+
+    margin-bottom:25px;
+
+    padding:28px;
+
+    border-radius:24px;
+
+    background:rgba(255,255,255,.06);
+
+    border:1px solid rgba(139,233,255,.20);
+
+    border-left:5px solid #00c6ff;
+
+    backdrop-filter:blur(15px);
+
+    transition:.3s;
+
+}
+
+.solicitud-card:hover{
+
+    transform:translateY(-4px);
+
+    box-shadow:0 10px 35px rgba(0,198,255,.12);
+
+}
+
+
+/* ==========================
+   CABECERA SOLICITUD
+========================== */
+
+.solicitud-header{
+
+    display:flex;
+
+    justify-content:space-between;
+
+    align-items:center;
+
+    gap:20px;
+
+    margin-bottom:25px;
+
+}
+
+.tipo-label{
+
+    font-size:12px;
+
+    font-weight:bold;
+
+    color:#8be9ff;
+
+    letter-spacing:1px;
+
+}
+
+.solicitud-header h2{
+
+    margin:8px 0 0;
+
+    color:white;
+
+}
+
+
+/* ==========================
+   ESTADO
+========================== */
 
 .estado{
 
-    padding:8px 15px;
+    padding:8px 16px;
 
     border-radius:20px;
 
     font-weight:bold;
 
+    white-space:nowrap;
+
 }
-
-
 
 .pendiente{
 
-    background:#ffd54a33;
+    background:rgba(255,213,74,.15);
 
     color:#ffd54a;
 
-}
-
-
-
-.realizado{
-
-    background:#16c78433;
-
-    color:#7dffb5;
+    border:1px solid rgba(255,213,74,.35);
 
 }
 
 
+/* ==========================
+   DATOS
+========================== */
 
-.cancelado{
+.datos-grid{
 
-    background:#ff4d4d33;
+    display:grid;
 
-    color:#ff9090;
+    grid-template-columns:
+        repeat(auto-fit,minmax(230px,1fr));
+
+    gap:15px;
 
 }
 
 
+.dato{
 
-.datos p{
+    display:flex;
+
+    align-items:center;
+
+    gap:15px;
+
+    padding:18px;
+
+    border-radius:17px;
+
+    background:rgba(0,0,0,.18);
+
+}
+
+
+.dato-icono{
+
+    font-size:28px;
+
+}
+
+
+.dato small{
+
+    display:block;
+
+    color:#8be9ff;
+
+    margin-bottom:5px;
+
+}
+
+
+.dato strong{
+
+    display:block;
+
+    color:white;
+
+    font-size:16px;
+
+}
+
+
+/* ==========================
+   MOTIVO
+========================== */
+
+.motivo{
+
+    margin-top:20px;
+
+    padding:20px;
+
+    border-radius:17px;
+
+    background:rgba(0,198,255,.07);
+
+    border:1px solid rgba(139,233,255,.12);
+
+}
+
+
+.motivo span{
+
+    color:#8be9ff;
+
+}
+
+
+.motivo p{
+
+    margin:10px 0 0;
 
     color:#d8f3ff;
 
+    line-height:1.6;
+
 }
 
+
+/* ==========================
+   FOOTER
+========================== */
+
+.solicitud-footer{
+
+    display:flex;
+
+    justify-content:space-between;
+
+    align-items:center;
+
+    gap:20px;
+
+    margin-top:25px;
+
+    padding-top:20px;
+
+    border-top:1px solid rgba(255,255,255,.08);
+
+}
+
+
+.estado-info{
+
+    color:#bfe9ff;
+
+}
+
+
+.estado-info strong{
+
+    color:#ffd54a;
+
+    margin-left:5px;
+
+}
 
 
 .btn-resultado{
 
-    display:inline-flex;
+    display:inline-block;
 
-    align-items:center;
+    padding:13px 22px;
 
-    gap:8px;
-
-    margin-top:15px;
-
-    padding:12px 22px;
+    border-radius:14px;
 
     background:linear-gradient(
         135deg,
@@ -255,38 +524,114 @@
 
     text-decoration:none;
 
-    font-weight:700;
-
-    border-radius:14px;
+    font-weight:bold;
 
     transition:.3s;
 
 }
 
 
-
 .btn-resultado:hover{
 
-    transform:translateY(-3px);
+    transform:translateY(-2px);
+
+    box-shadow:0 8px 25px rgba(0,198,255,.30);
 
 }
 
 
+/* ==========================
+   SIN SOLICITUDES
+========================== */
 
-.resultado{
+.sin-solicitudes{
 
-    margin-top:15px;
+    text-align:center;
 
-    color:#7dffb5;
+    padding:70px 30px;
 
-    font-weight:bold;
+    border-radius:25px;
+
+    background:rgba(255,255,255,.05);
+
+    border:1px solid rgba(139,233,255,.15);
 
 }
 
 
+.sin-icono{
+
+    font-size:60px;
+
+    margin-bottom:15px;
+
+}
+
+
+.sin-solicitudes h2{
+
+    color:#8be9ff;
+
+}
+
+
+.sin-solicitudes p{
+
+    max-width:600px;
+
+    margin:10px auto;
+
+    color:#bfe9ff;
+
+}
+
+
+/* ==========================
+   RESPONSIVE
+========================== */
+
+@media(max-width:700px){
+
+    .panel-institucion{
+
+        padding:15px;
+
+    }
+
+    .panel-header{
+
+        flex-direction:column;
+
+        align-items:flex-start;
+
+    }
+
+    .solicitud-header{
+
+        flex-direction:column;
+
+        align-items:flex-start;
+
+    }
+
+    .solicitud-footer{
+
+        flex-direction:column;
+
+        align-items:flex-start;
+
+    }
+
+    .btn-resultado{
+
+        width:100%;
+
+        text-align:center;
+
+    }
+
+}
 
 </style>
-
-
 
 {% endblock %}

@@ -4,204 +4,1516 @@
 
 <style>
 
-body{
-background:
-radial-gradient(circle at top,#123f72,#040b16);
-color:white;
-}
+/* =========================================================
+   JARVICE - PACIENTES
+========================================================= */
 
-.titulo{
-font-size:32px;
-font-weight:800;
-color:#8be9ff;
-margin-bottom:30px;
+.pacientes-page {
+    width: 100%;
+    max-width: 1400px;
+    margin: 0 auto;
 }
 
 
-.grid{
+/* =========================================================
+   ENCABEZADO
+========================================================= */
 
-display:grid;
-grid-template-columns:
-repeat(auto-fit,minmax(280px,1fr));
+.pacientes-header {
 
-gap:20px;
+    display: flex;
 
-}
+    justify-content: space-between;
 
+    align-items: center;
 
-.card-paciente{
+    gap: 20px;
 
-background:
-rgba(255,255,255,.08);
-
-border-radius:25px;
-
-padding:25px;
-
-border:
-1px solid rgba(139,233,255,.2);
-
-backdrop-filter:blur(15px);
+    margin-bottom: 30px;
 
 }
 
+.pacientes-titulo h1 {
 
-.nombre{
+    margin: 0;
 
-font-size:24px;
-font-weight:800;
+    color: #8be9ff;
+
+    font-size: 32px;
+
+    font-weight: 800;
 
 }
 
+.pacientes-titulo p {
 
-.estado{
+    margin-top: 8px;
 
-margin-top:20px;
+    color: #7fa6b5;
 
-padding:12px;
-
-border-radius:20px;
-
-text-align:center;
-
-font-weight:bold;
+    font-size: 14px;
 
 }
 
 
+.btn-nuevo {
 
-.ok{
-background:#00c853;
-}
+    display: inline-flex;
 
+    align-items: center;
 
-.alerta{
-background:#ffd600;
-color:black;
-}
+    justify-content: center;
 
+    gap: 8px;
 
-.critico{
-background:#ff1744;
-}
+    padding: 13px 20px;
 
+    border-radius: 15px;
 
-.btn{
+    background:
+        linear-gradient(
+            135deg,
+            #00c6ff,
+            #0072ff
+        );
 
-display:block;
+    color: white;
 
-margin-top:20px;
+    text-decoration: none;
 
-padding:12px;
+    font-weight: 800;
 
-border-radius:20px;
+    font-size: 13px;
 
-background:#00bfff;
+    border: 1px solid rgba(139,233,255,.25);
 
-color:white;
-
-text-decoration:none;
-
-text-align:center;
-
-font-weight:bold;
+    transition: .25s;
 
 }
 
+.btn-nuevo:hover {
+
+    transform: translateY(-2px);
+
+    box-shadow:
+        0 0 25px rgba(0,198,255,.25);
+
+}
+
+
+/* =========================================================
+   ESTADÍSTICAS
+========================================================= */
+
+.stats-grid {
+
+    display: grid;
+
+    grid-template-columns:
+        repeat(4, 1fr);
+
+    gap: 18px;
+
+    margin-bottom: 25px;
+
+}
+
+.stat-card {
+
+    background:
+        rgba(255,255,255,.055);
+
+    border:
+        1px solid rgba(139,233,255,.15);
+
+    border-radius: 20px;
+
+    padding: 20px;
+
+    backdrop-filter: blur(14px);
+
+    transition: .25s;
+
+}
+
+.stat-card:hover {
+
+    transform: translateY(-4px);
+
+    border-color:
+        rgba(139,233,255,.3);
+
+}
+
+.stat-icon {
+
+    font-size: 28px;
+
+    margin-bottom: 10px;
+
+}
+
+.stat-label {
+
+    color: #6f95a4;
+
+    font-size: 11px;
+
+    text-transform: uppercase;
+
+    letter-spacing: .7px;
+
+}
+
+.stat-number {
+
+    margin-top: 7px;
+
+    color: #8be9ff;
+
+    font-size: 28px;
+
+    font-weight: 800;
+
+}
+
+
+/* =========================================================
+   BUSCADOR
+========================================================= */
+
+.toolbar {
+
+    display: flex;
+
+    align-items: center;
+
+    justify-content: space-between;
+
+    gap: 20px;
+
+    margin-bottom: 25px;
+
+}
+
+.busqueda {
+
+    flex: 1;
+
+    display: flex;
+
+    align-items: center;
+
+    gap: 10px;
+
+    padding: 13px 16px;
+
+    border-radius: 15px;
+
+    background:
+        rgba(255,255,255,.045);
+
+    border:
+        1px solid rgba(139,233,255,.12);
+
+}
+
+.busqueda-icono {
+
+    font-size: 18px;
+
+}
+
+.busqueda input {
+
+    width: 100%;
+
+    background: transparent;
+
+    border: none;
+
+    outline: none;
+
+    color: white;
+
+    font-size: 13px;
+
+}
+
+.busqueda input::placeholder {
+
+    color: #638491;
+
+}
+
+.resultado-info {
+
+    color: #6e9aaa;
+
+    font-size: 11px;
+
+    white-space: nowrap;
+
+}
+
+
+/* =========================================================
+   GRID DE PACIENTES
+========================================================= */
+
+.pacientes-grid {
+
+    display: grid;
+
+    grid-template-columns:
+        repeat(
+            auto-fit,
+            minmax(330px, 1fr)
+        );
+
+    gap: 20px;
+
+}
+
+
+/* =========================================================
+   TARJETA PACIENTE
+========================================================= */
+
+.paciente-card {
+
+    background:
+        rgba(255,255,255,.055);
+
+    border:
+        1px solid rgba(139,233,255,.13);
+
+    border-radius: 22px;
+
+    padding: 22px;
+
+    backdrop-filter: blur(15px);
+
+    transition: .25s;
+
+}
+
+.paciente-card:hover {
+
+    transform: translateY(-5px);
+
+    border-color:
+        rgba(139,233,255,.30);
+
+    box-shadow:
+        0 10px 35px rgba(0,0,0,.20);
+
+}
+
+
+/* =========================================================
+   CABECERA PACIENTE
+========================================================= */
+
+.paciente-top {
+
+    display: flex;
+
+    justify-content: space-between;
+
+    align-items: center;
+
+    gap: 15px;
+
+    margin-bottom: 20px;
+
+}
+
+.paciente-identidad {
+
+    display: flex;
+
+    align-items: center;
+
+    gap: 12px;
+
+}
+
+.avatar {
+
+    width: 48px;
+
+    height: 48px;
+
+    border-radius: 15px;
+
+    display: flex;
+
+    align-items: center;
+
+    justify-content: center;
+
+    background:
+        linear-gradient(
+            135deg,
+            rgba(0,198,255,.25),
+            rgba(0,114,255,.12)
+        );
+
+    border:
+        1px solid rgba(139,233,255,.20);
+
+    font-size: 22px;
+
+}
+
+.paciente-nombre {
+
+    font-size: 18px;
+
+    font-weight: 800;
+
+    color: #e8fbff;
+
+    line-height: 1.2;
+
+}
+
+.paciente-id {
+
+    margin-top: 5px;
+
+    color: #6e9aaa;
+
+    font-size: 10px;
+
+    letter-spacing: .7px;
+
+}
+
+
+/* =========================================================
+   ESTADO
+========================================================= */
+
+.estado-badge {
+
+    padding: 7px 11px;
+
+    border-radius: 20px;
+
+    font-size: 10px;
+
+    font-weight: 800;
+
+    white-space: nowrap;
+
+    letter-spacing: .5px;
+
+}
+
+.estado-ok {
+
+    color: #7dffb5;
+
+    background:
+        rgba(22,199,132,.12);
+
+    border:
+        1px solid rgba(22,199,132,.18);
+
+}
+
+.estado-alerta {
+
+    color: #ffd86b;
+
+    background:
+        rgba(255,213,74,.12);
+
+    border:
+        1px solid rgba(255,213,74,.18);
+
+}
+
+.estado-critico {
+
+    color: #ff9292;
+
+    background:
+        rgba(255,77,77,.13);
+
+    border:
+        1px solid rgba(255,77,77,.22);
+
+    animation:
+        pulsoCritico 2s infinite;
+
+}
+
+@keyframes pulsoCritico {
+
+    0%, 100% {
+
+        box-shadow:
+            0 0 0 rgba(255,77,77,0);
+
+    }
+
+    50% {
+
+        box-shadow:
+            0 0 15px rgba(255,77,77,.15);
+
+    }
+
+}
+
+
+/* =========================================================
+   INFORMACIÓN
+========================================================= */
+
+.info-grid {
+
+    display: grid;
+
+    grid-template-columns:
+        repeat(2, 1fr);
+
+    gap: 10px;
+
+    margin-bottom: 18px;
+
+}
+
+.info-item {
+
+    padding: 11px;
+
+    border-radius: 12px;
+
+    background:
+        rgba(255,255,255,.035);
+
+    border:
+        1px solid rgba(255,255,255,.045);
+
+}
+
+.info-label {
+
+    display: block;
+
+    color: #638491;
+
+    font-size: 9px;
+
+    text-transform: uppercase;
+
+    letter-spacing: .6px;
+
+    margin-bottom: 4px;
+
+}
+
+.info-value {
+
+    color: #dff8ff;
+
+    font-size: 12px;
+
+    font-weight: 600;
+
+    word-break: break-word;
+
+}
+
+
+/* =========================================================
+   ESTADO CLÍNICO
+========================================================= */
+
+.estado-panel {
+
+    padding: 13px;
+
+    border-radius: 15px;
+
+    margin-bottom: 17px;
+
+    background:
+        rgba(255,255,255,.035);
+
+    border:
+        1px solid rgba(255,255,255,.05);
+
+}
+
+.estado-panel-titulo {
+
+    color: #6f95a4;
+
+    font-size: 9px;
+
+    text-transform: uppercase;
+
+    letter-spacing: .8px;
+
+    margin-bottom: 6px;
+
+}
+
+.estado-panel-texto {
+
+    color: #dff8ff;
+
+    font-size: 12px;
+
+    font-weight: 600;
+
+}
+
+
+/* =========================================================
+   ACCIONES
+========================================================= */
+
+.acciones {
+
+    display: grid;
+
+    grid-template-columns:
+        1fr 1fr;
+
+    gap: 9px;
+
+}
+
+.btn {
+
+    display: flex;
+
+    align-items: center;
+
+    justify-content: center;
+
+    gap: 7px;
+
+    padding: 11px;
+
+    border-radius: 13px;
+
+    text-decoration: none;
+
+    font-size: 11px;
+
+    font-weight: 700;
+
+    transition: .2s;
+
+}
+
+.btn:hover {
+
+    transform: translateY(-1px);
+
+}
+
+.btn-principal {
+
+    grid-column: span 2;
+
+    background:
+        linear-gradient(
+            135deg,
+            #00bfff,
+            #0072ff
+        );
+
+    color: white;
+
+    border:
+        1px solid rgba(139,233,255,.25);
+
+}
+
+.btn-secundario {
+
+    background:
+        rgba(255,255,255,.055);
+
+    color: #a9ddea;
+
+    border:
+        1px solid rgba(139,233,255,.10);
+
+}
+
+.btn-secundario:hover {
+
+    background:
+        rgba(0,198,255,.10);
+
+    border-color:
+        rgba(0,198,255,.25);
+
+}
+
+
+/* =========================================================
+   SIN PACIENTES
+========================================================= */
+
+.sin-pacientes {
+
+    grid-column: 1 / -1;
+
+    text-align: center;
+
+    padding: 70px 20px;
+
+    border-radius: 22px;
+
+    background:
+        rgba(255,255,255,.035);
+
+    border:
+        1px dashed rgba(139,233,255,.15);
+
+}
+
+.sin-pacientes-icon {
+
+    font-size: 50px;
+
+    margin-bottom: 15px;
+
+    opacity: .7;
+
+}
+
+.sin-pacientes h2 {
+
+    color: #dff8ff;
+
+    font-size: 20px;
+
+    margin-bottom: 8px;
+
+}
+
+.sin-pacientes p {
+
+    color: #688996;
+
+    font-size: 12px;
+
+}
+
+
+/* =========================================================
+   RESPONSIVE
+========================================================= */
+
+@media (max-width: 1000px) {
+
+    .stats-grid {
+
+        grid-template-columns:
+            repeat(2, 1fr);
+
+    }
+
+}
+
+@media (max-width: 700px) {
+
+    .pacientes-header {
+
+        flex-direction: column;
+
+        align-items: stretch;
+
+    }
+
+    .pacientes-titulo h1 {
+
+        font-size: 25px;
+
+    }
+
+    .pacientes-grid {
+
+        grid-template-columns: 1fr;
+
+    }
+
+    .info-grid {
+
+        grid-template-columns: 1fr;
+
+    }
+
+    .paciente-top {
+
+        flex-direction: column;
+
+        align-items: flex-start;
+
+    }
+
+    .estado-badge {
+
+        align-self: flex-start;
+
+    }
+
+    .toolbar {
+
+        flex-direction: column;
+
+        align-items: stretch;
+
+    }
+
+    .resultado-info {
+
+        text-align: right;
+
+    }
+
+}
 
 </style>
 
 
-<h1 class="titulo">
-👥 Pacientes Jarvice
-</h1>
+<div class="pacientes-page">
 
 
-<div class="grid">
+    <!-- =====================================================
+         ENCABEZADO
+    ===================================================== -->
+
+    <div class="pacientes-header">
+
+        <div class="pacientes-titulo">
+
+            <h1>
+                &#128100; Pacientes Jarvice
+            </h1>
+
+            <p>
+                Gesti&oacute;n y monitoreo de la base cl&iacute;nica
+            </p>
+
+        </div>
 
 
-{% for item in datos %}
+        <a
+            href="{% url 'crear_paciente' %}"
+            class="btn-nuevo"
+        >
+            &#10133; Nuevo paciente
+        </a>
 
-<div class="card-paciente">
+    </div>
 
 
-<div class="nombre">
+    <!-- =====================================================
+         ESTADÍSTICAS
+    ===================================================== -->
 
-{{item.paciente.nombre}}
-{{item.paciente.apellido}}
+    <div class="stats-grid">
+
+
+        <div class="stat-card">
+
+            <div class="stat-icon">
+                &#128100;
+            </div>
+
+            <div class="stat-label">
+                Pacientes registrados
+            </div>
+
+            <div
+                class="stat-number"
+                id="totalPacientes"
+            >
+                {{ datos|length }}
+            </div>
+
+        </div>
+
+
+        <div class="stat-card">
+
+            <div class="stat-icon">
+                &#128994;
+            </div>
+
+            <div class="stat-label">
+                Estado estable
+            </div>
+
+            <div
+                class="stat-number"
+                id="totalEstables"
+            >
+                0
+            </div>
+
+        </div>
+
+
+        <div class="stat-card">
+
+            <div class="stat-icon">
+                &#128993;
+            </div>
+
+            <div class="stat-label">
+                En observaci&oacute;n
+            </div>
+
+            <div
+                class="stat-number"
+                id="totalAlertas"
+            >
+                0
+            </div>
+
+        </div>
+
+
+        <div class="stat-card">
+
+            <div class="stat-icon">
+                &#128308;
+            </div>
+
+            <div class="stat-label">
+                Cr&iacute;ticos
+            </div>
+
+            <div
+                class="stat-number"
+                id="totalCriticos"
+            >
+                0
+            </div>
+
+        </div>
+
+
+    </div>
+
+
+    <!-- =====================================================
+         BUSCADOR
+    ===================================================== -->
+
+    <div class="toolbar">
+
+        <div class="busqueda">
+
+            <span class="busqueda-icono">
+                &#128269;
+            </span>
+
+            <input
+                type="text"
+                id="buscadorPacientes"
+                placeholder="Buscar por nombre, apellido, DNI o historia cl&iacute;nica..."
+                autocomplete="off"
+            >
+
+        </div>
+
+
+        <div
+            class="resultado-info"
+            id="resultadoInfo"
+        >
+            Mostrando {{ datos|length }} pacientes
+        </div>
+
+    </div>
+
+
+    <!-- =====================================================
+         LISTADO DE PACIENTES
+    ===================================================== -->
+
+    <div
+        class="pacientes-grid"
+        id="pacientesGrid"
+    >
+
+
+        {% for item in datos %}
+
+        <div
+            class="paciente-card"
+
+            data-nombre="
+                {{ item.paciente.nombre|default:''|lower }}
+                {{ item.paciente.apellido|default:''|lower }}
+            "
+
+            data-dni="
+                {{ item.paciente.dni|default:''|lower }}
+            "
+
+            data-historia="
+                {{ item.paciente.historia_clinica|default:''|lower }}
+            "
+        >
+
+
+            <!-- =================================================
+                 CABECERA
+            ================================================= -->
+
+            <div class="paciente-top">
+
+
+                <div class="paciente-identidad">
+
+                    <div class="avatar">
+                        &#128100;
+                    </div>
+
+
+                    <div>
+
+                        <div class="paciente-nombre">
+
+                            {{ item.paciente.nombre }}
+                            {{ item.paciente.apellido }}
+
+                        </div>
+
+
+                        <div class="paciente-id">
+
+                            HC:
+                            {{ item.paciente.historia_clinica|default:"Pendiente" }}
+
+                        </div>
+
+                    </div>
+
+                </div>
+
+
+                <!-- =================================================
+                     ESTADO
+                ================================================= -->
+
+                {% if item.ultimo %}
+
+
+                    {% if item.ultimo.estado == "CRITICO" %}
+
+                    <div class="estado-badge estado-critico">
+
+                        &#128308; CR&Iacute;TICO
+
+                    </div>
+
+
+                    {% elif item.ultimo.estado == "DOLOR" or item.ultimo.estado == "CANSADO" %}
+
+                    <div class="estado-badge estado-alerta">
+
+                        &#128993; OBSERVACI&Oacute;N
+
+                    </div>
+
+
+                    {% else %}
+
+                    <div class="estado-badge estado-ok">
+
+                        &#128994; ESTABLE
+
+                    </div>
+
+
+                    {% endif %}
+
+
+                {% else %}
+
+                <div class="estado-badge estado-ok">
+
+                    &#128994; SIN REGISTROS
+
+                </div>
+
+                {% endif %}
+
+
+            </div>
+
+
+            <!-- =================================================
+                 INFORMACIÓN PRINCIPAL
+            ================================================= -->
+
+            <div class="info-grid">
+
+
+                <div class="info-item">
+
+                    <span class="info-label">
+                        &#128100; DNI
+                    </span>
+
+                    <span class="info-value">
+
+                        {{ item.paciente.dni|default:"No registrado" }}
+
+                    </span>
+
+                </div>
+
+
+                <div class="info-item">
+
+                    <span class="info-label">
+                        &#127874; Edad
+                    </span>
+
+                    <span class="info-value">
+
+                        {{ item.paciente.edad }}
+                        a&ntilde;os
+
+                    </span>
+
+                </div>
+
+
+                <div class="info-item">
+
+                    <span class="info-label">
+                        &#9895; Sexo
+                    </span>
+
+                    <span class="info-value">
+
+                        {% if item.paciente.get_sexo_display %}
+
+                            {{ item.paciente.get_sexo_display }}
+
+                        {% else %}
+
+                            No registrado
+
+                        {% endif %}
+
+                    </span>
+
+                </div>
+
+
+                <div class="info-item">
+
+                    <span class="info-label">
+                        &#129656; Grupo sangu&iacute;neo
+                    </span>
+
+                    <span class="info-value">
+
+                        {{ item.paciente.grupo_sanguineo|default:"No registrado" }}
+
+                    </span>
+
+                </div>
+
+
+            </div>
+
+
+            <!-- =================================================
+                 ESTADO CLÍNICO
+            ================================================= -->
+
+            <div class="estado-panel">
+
+                <div class="estado-panel-titulo">
+
+                    Estado cl&iacute;nico actual
+
+                </div>
+
+
+                <div class="estado-panel-texto">
+
+
+                    {% if item.ultimo %}
+
+
+                        {% if item.ultimo.estado == "CRITICO" %}
+
+                            &#128308;
+                            Paciente requiere atenci&oacute;n prioritaria.
+
+
+                        {% elif item.ultimo.estado == "DOLOR" %}
+
+                            &#128993;
+                            Se registr&oacute; estado de dolor.
+
+
+                        {% elif item.ultimo.estado == "CANSADO" %}
+
+                            &#128993;
+                            Se registr&oacute; estado de cansancio.
+
+
+                        {% else %}
+
+                            &#128994;
+                            Sin alertas cl&iacute;nicas actuales.
+
+                        {% endif %}
+
+
+                    {% else %}
+
+                        &#9898;
+                        Todav&iacute;a no existen registros de estado.
+
+                    {% endif %}
+
+
+                </div>
+
+            </div>
+
+
+            <!-- =================================================
+                 ACCIONES
+            ================================================= -->
+
+            <div class="acciones">
+
+
+                <a
+                    href="{% url 'historial_paciente' item.paciente.id %}"
+                    class="btn btn-principal"
+                >
+
+                    &#127973;
+                    Ver ficha cl&iacute;nica
+
+                </a>
+
+
+                <a
+                    href="{% url 'crear_evolucion' item.paciente.id %}"
+                    class="btn btn-secundario"
+                >
+
+                    &#128221;
+                    Evoluci&oacute;n
+
+                </a>
+
+
+                <a
+                    href="{% url 'crear_recordatorio' item.paciente.id %}"
+                    class="btn btn-secundario"
+                >
+
+                    &#128276;
+                    Recordatorio
+
+                </a>
+
+
+            </div>
+
+
+        </div>
+
+
+        {% empty %}
+
+
+        <!-- =================================================
+             SIN PACIENTES
+        ================================================= -->
+
+        <div class="sin-pacientes">
+
+            <div class="sin-pacientes-icon">
+
+                &#128100;
+
+            </div>
+
+            <h2>
+
+                No hay pacientes registrados
+
+            </h2>
+
+            <p>
+
+                La base cl&iacute;nica de Jarvice todav&iacute;a
+                no contiene pacientes.
+
+            </p>
+
+            <br>
+
+            <a
+                href="{% url 'crear_paciente' %}"
+                class="btn btn-principal"
+                style="max-width:260px;margin:auto;"
+            >
+
+                &#10133;
+                Registrar primer paciente
+
+            </a>
+
+        </div>
+
+
+        {% endfor %}
+
+
+    </div>
+
 
 </div>
 
 
-<p>
-Edad:
-{{item.paciente.edad}}
-años
-</p>
+<!-- =========================================================
+     JAVASCRIPT
+========================================================= -->
+
+<script>
+
+document.addEventListener(
+    "DOMContentLoaded",
+    function () {
 
 
-
-{% if item.ultimo %}
-
-
-{% if item.ultimo.estado == "CRITICO" %}
-
-<div class="estado critico">
-🔴 CRÍTICO
-</div>
+        const buscador =
+            document.getElementById(
+                "buscadorPacientes"
+            );
 
 
-{% elif item.ultimo.estado == "DOLOR" %}
-
-<div class="estado alerta">
-🟡 ATENCIÓN
-</div>
-
-
-{% else %}
-
-<div class="estado ok">
-🟢 ESTABLE
-</div>
+        const tarjetas =
+            document.querySelectorAll(
+                ".paciente-card"
+            );
 
 
-{% endif %}
+        const resultadoInfo =
+            document.getElementById(
+                "resultadoInfo"
+            );
 
 
-
-{% else %}
-
-
-<div class="estado ok">
-🟢 SIN REGISTROS
-</div>
+        const totalEstables =
+            document.getElementById(
+                "totalEstables"
+            );
 
 
-{% endif %}
+        const totalAlertas =
+            document.getElementById(
+                "totalAlertas"
+            );
 
 
-
-<a class="btn"
-href="{% url 'historial_paciente' item.paciente.id %}">
-Ver historial
-</a>
-
-
-</div>
+        const totalCriticos =
+            document.getElementById(
+                "totalCriticos"
+            );
 
 
-{% empty %}
+        /*
+        ======================================================
+        CONTADORES
+        ======================================================
+        */
+
+        let estables = 0;
+
+        let alertas = 0;
+
+        let criticos = 0;
 
 
-<h2>
-No hay pacientes registrados
-</h2>
+        tarjetas.forEach(
+            function (tarjeta) {
 
 
-{% endfor %}
+                if (
+                    tarjeta.querySelector(
+                        ".estado-ok"
+                    )
+                ) {
+
+                    estables++;
+
+                }
 
 
-</div>
+                if (
+                    tarjeta.querySelector(
+                        ".estado-alerta"
+                    )
+                ) {
+
+                    alertas++;
+
+                }
+
+
+                if (
+                    tarjeta.querySelector(
+                        ".estado-critico"
+                    )
+                ) {
+
+                    criticos++;
+
+                }
+
+            }
+        );
+
+
+        totalEstables.textContent =
+            estables;
+
+
+        totalAlertas.textContent =
+            alertas;
+
+
+        totalCriticos.textContent =
+            criticos;
+
+
+        /*
+        ======================================================
+        BUSCADOR
+        ======================================================
+        */
+
+        buscador.addEventListener(
+            "input",
+            function () {
+
+
+                const texto =
+                    this.value
+                        .toLowerCase()
+                        .trim();
+
+
+                let visibles = 0;
+
+
+                tarjetas.forEach(
+                    function (tarjeta) {
+
+
+                        const nombre =
+                            (
+                                tarjeta.dataset.nombre ||
+                                ""
+                            )
+                            .toLowerCase();
+
+
+                        const dni =
+                            (
+                                tarjeta.dataset.dni ||
+                                ""
+                            )
+                            .toLowerCase();
+
+
+                        const historia =
+                            (
+                                tarjeta.dataset.historia ||
+                                ""
+                            )
+                            .toLowerCase();
+
+
+                        const coincide =
+
+                            nombre.includes(texto) ||
+
+                            dni.includes(texto) ||
+
+                            historia.includes(texto);
+
+
+                        if (coincide) {
+
+                            tarjeta.style.display =
+                                "";
+
+                            visibles++;
+
+                        }
+
+                        else {
+
+                            tarjeta.style.display =
+                                "none";
+
+                        }
+
+                    }
+                );
+
+
+                if (texto === "") {
+
+                    resultadoInfo.textContent =
+                        "Mostrando " +
+                        tarjetas.length +
+                        " pacientes";
+
+                }
+
+                else {
+
+                    resultadoInfo.textContent =
+                        "Mostrando " +
+                        visibles +
+                        " de " +
+                        tarjetas.length +
+                        " pacientes";
+
+                }
+
+
+            }
+        );
+
+
+    }
+
+);
+
+</script>
 
 
 {% endblock %}

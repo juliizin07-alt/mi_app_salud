@@ -1,0 +1,860 @@
+﻿/* =========================================================
+   JARVICE CORE
+   SISTEMA CENTRAL DE SUPERVISIÓN
+   ========================================================= */
+
+.core-page {
+    width: 100%;
+    max-width: 1420px;
+    margin: 0 auto;
+    padding-bottom: 30px;
+}
+
+
+/* =========================================================
+   HEADER
+   ========================================================= */
+
+.core-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 30px;
+    margin-bottom: 22px;
+    padding: 30px 32px;
+    border-radius: 20px;
+
+    background:
+        radial-gradient(
+            circle at top right,
+            rgba(0, 180, 255, 0.13),
+            transparent 38%
+        ),
+        linear-gradient(
+            135deg,
+            rgba(10, 22, 38, 0.98),
+            rgba(7, 15, 27, 0.98)
+        );
+
+    border: 1px solid rgba(70, 180, 255, 0.18);
+
+    box-shadow:
+        0 20px 55px rgba(0, 0, 0, 0.28),
+        inset 0 1px 0 rgba(255,255,255,0.025);
+}
+
+.core-badge {
+    display: inline-flex;
+    align-items: center;
+
+    padding: 6px 11px;
+    border-radius: 999px;
+
+    background: rgba(0, 190, 255, 0.08);
+    border: 1px solid rgba(0, 190, 255, 0.20);
+
+    color: #69dcff;
+
+    font-size: 10px;
+    font-weight: 700;
+    letter-spacing: 2px;
+}
+
+.core-header h1 {
+    margin: 11px 0 0;
+
+    color: #ecfbff;
+
+    font-size: 31px;
+    font-weight: 700;
+    letter-spacing: -0.5px;
+}
+
+.core-header p {
+    margin: 7px 0 0;
+
+    color: #7e9eae;
+
+    font-size: 13px;
+    line-height: 1.5;
+}
+
+.core-online {
+    display: flex;
+    align-items: center;
+    gap: 9px;
+
+    padding: 9px 14px;
+
+    border-radius: 999px;
+
+    background: rgba(35, 220, 135, 0.07);
+    border: 1px solid rgba(35, 220, 135, 0.18);
+
+    color: #72eaaa;
+
+    font-size: 10px;
+    font-weight: 700;
+    letter-spacing: 1px;
+}
+
+.core-online span {
+    width: 7px;
+    height: 7px;
+
+    border-radius: 50%;
+
+    background: #35e68c;
+
+    box-shadow:
+        0 0 8px rgba(53, 230, 140, 0.8);
+}
+
+
+/* =========================================================
+   ESTADÍSTICAS
+   ========================================================= */
+
+.core-stats {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+
+    gap: 14px;
+
+    margin-bottom: 22px;
+}
+
+.core-card {
+    position: relative;
+
+    min-height: 115px;
+
+    padding: 20px;
+
+    border-radius: 16px;
+
+    background:
+        linear-gradient(
+            145deg,
+            rgba(255,255,255,0.045),
+            rgba(255,255,255,0.018)
+        );
+
+    border: 1px solid rgba(255,255,255,0.07);
+
+    box-shadow:
+        0 12px 35px rgba(0,0,0,0.16);
+
+    overflow: hidden;
+}
+
+.core-card::after {
+    content: "";
+
+    position: absolute;
+
+    top: 0;
+    left: 0;
+
+    width: 45%;
+    height: 1px;
+
+    background: linear-gradient(
+        90deg,
+        rgba(0,200,255,0.45),
+        transparent
+    );
+}
+
+.core-card span {
+    display: block;
+
+    color: #7093a2;
+
+    font-size: 9px;
+    font-weight: 700;
+    letter-spacing: 1.5px;
+}
+
+.core-card strong {
+    display: block;
+
+    margin-top: 8px;
+
+    color: #e7faff;
+
+    font-size: 30px;
+    font-weight: 700;
+
+    line-height: 1;
+}
+
+.core-card small {
+    display: block;
+
+    margin-top: 7px;
+
+    color: #587684;
+
+    font-size: 10px;
+}
+
+
+/* =========================================================
+   MÓDULOS
+   ========================================================= */
+
+.core-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+
+    gap: 14px;
+
+    margin-bottom: 22px;
+}
+
+.core-module {
+    display: flex;
+    align-items: flex-start;
+
+    gap: 15px;
+
+    min-height: 125px;
+
+    padding: 20px;
+
+    border-radius: 16px;
+
+    background:
+        linear-gradient(
+            145deg,
+            rgba(255,255,255,0.038),
+            rgba(255,255,255,0.015)
+        );
+
+    border: 1px solid rgba(255,255,255,0.07);
+
+    transition:
+        transform 0.2s ease,
+        border-color 0.2s ease,
+        background 0.2s ease,
+        box-shadow 0.2s ease;
+}
+
+.core-module:hover {
+    transform: translateY(-3px);
+
+    border-color: rgba(0,180,255,0.28);
+
+    background:
+        linear-gradient(
+            145deg,
+            rgba(0,150,255,0.07),
+            rgba(255,255,255,0.018)
+        );
+
+    box-shadow:
+        0 15px 35px rgba(0,0,0,0.20);
+}
+
+.module-icon {
+    width: 44px;
+    height: 44px;
+
+    flex-shrink: 0;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    border-radius: 12px;
+
+    background: rgba(0,180,255,0.07);
+
+    border: 1px solid rgba(0,180,255,0.15);
+
+    font-size: 21px;
+}
+
+.core-module h2 {
+    margin: 1px 0 0;
+
+    color: #ddf6fc;
+
+    font-size: 16px;
+    font-weight: 650;
+}
+
+.core-module p {
+    margin: 6px 0 0;
+
+    color: #6d8d9b;
+
+    font-size: 11px;
+    line-height: 1.55;
+}
+
+
+/* =========================================================
+   MONITOR CLÍNICO JARVICE
+   ========================================================= */
+
+.clinical-monitor {
+    width: 100%;
+
+    margin: 22px 0;
+
+    padding: 24px;
+
+    box-sizing: border-box;
+
+    border-radius: 19px;
+
+    background:
+        radial-gradient(
+            circle at 95% 5%,
+            rgba(0,175,255,0.08),
+            transparent 30%
+        ),
+        linear-gradient(
+            145deg,
+            rgba(10,20,33,0.99),
+            rgba(6,13,23,0.99)
+        );
+
+    border: 1px solid rgba(65,170,235,0.18);
+
+    box-shadow:
+        0 20px 50px rgba(0,0,0,0.25),
+        inset 0 1px 0 rgba(255,255,255,0.025);
+}
+
+
+/* HEADER DEL MONITOR */
+
+.clinical-monitor-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+
+    gap: 20px;
+
+    padding-bottom: 18px;
+    margin-bottom: 18px;
+
+    border-bottom: 1px solid rgba(255,255,255,0.07);
+}
+
+.clinical-monitor-title {
+    display: flex;
+    align-items: center;
+
+    gap: 13px;
+}
+
+.clinical-monitor-icon {
+    width: 45px;
+    height: 45px;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    border-radius: 12px;
+
+    background: rgba(0,170,255,0.08);
+
+    border: 1px solid rgba(0,170,255,0.17);
+
+    font-size: 22px;
+}
+
+.clinical-monitor h2 {
+    margin: 0;
+
+    color: #e5faff;
+
+    font-size: 19px;
+    font-weight: 700;
+}
+
+.clinical-monitor-header p {
+    margin: 4px 0 0;
+
+    color: #718c99;
+
+    font-size: 11px;
+}
+
+.clinical-status {
+    display: inline-flex;
+    align-items: center;
+
+    padding: 7px 11px;
+
+    border-radius: 999px;
+
+    color: #65e5a2;
+
+    background: rgba(35,220,135,0.06);
+
+    border: 1px solid rgba(35,220,135,0.15);
+
+    font-size: 9px;
+    font-weight: 700;
+    letter-spacing: 1px;
+}
+
+.status-dot {
+    display: inline-block;
+
+    width: 6px;
+    height: 6px;
+
+    margin-right: 6px;
+
+    border-radius: 50%;
+
+    background: #40e596;
+
+    box-shadow:
+        0 0 8px rgba(64,229,150,0.75);
+}
+
+
+/* PACIENTE MONITORIZADO */
+
+.clinical-patient {
+    display: flex;
+    align-items: center;
+
+    gap: 12px;
+
+    padding: 13px 16px;
+
+    margin-bottom: 14px;
+
+    border-radius: 12px;
+
+    background: rgba(255,255,255,0.025);
+
+    border: 1px solid rgba(255,255,255,0.055);
+}
+
+.patient-label {
+    color: #6d8997;
+
+    font-size: 8px;
+    font-weight: 700;
+    letter-spacing: 1px;
+}
+
+.clinical-patient strong {
+    color: #dff8fd;
+
+    font-size: 14px;
+}
+
+.patient-source {
+    margin-left: auto;
+
+    color: #66818e;
+
+    font-size: 10px;
+}
+
+
+/* =========================================================
+   VITALES
+   ========================================================= */
+
+.clinical-vitals {
+    display: grid;
+
+    grid-template-columns:
+        repeat(5, minmax(0, 1fr));
+
+    gap: 10px;
+}
+
+.vital-card {
+    min-height: 132px;
+
+    padding: 15px;
+
+    box-sizing: border-box;
+
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+
+    border-radius: 13px;
+
+    background:
+        linear-gradient(
+            145deg,
+            rgba(255,255,255,0.035),
+            rgba(255,255,255,0.015)
+        );
+
+    border: 1px solid rgba(255,255,255,0.065);
+
+    transition:
+        transform 0.2s ease,
+        border-color 0.2s ease,
+        box-shadow 0.2s ease;
+}
+
+.vital-card:hover {
+    transform: translateY(-2px);
+
+    border-color: rgba(0,180,255,0.28);
+
+    box-shadow:
+        0 10px 28px rgba(0,100,255,0.10);
+}
+
+.vital-icon {
+    margin-bottom: 9px;
+
+    font-size: 20px;
+}
+
+.vital-label {
+    color: #6d8b99;
+
+    font-size: 8px;
+    font-weight: 700;
+    letter-spacing: 0.8px;
+}
+
+.vital-card strong {
+    margin-top: 7px;
+
+    color: #edfaff;
+
+    font-size: 22px;
+    font-weight: 700;
+
+    line-height: 1.1;
+}
+
+.vital-card strong small {
+    color: #607b88;
+
+    font-size: 10px;
+    font-weight: 400;
+}
+
+.vital-state {
+    margin-top: 9px;
+
+    color: #63dfa0;
+
+    font-size: 9px;
+    font-weight: 700;
+    letter-spacing: 0.3px;
+}
+
+
+/* =========================================================
+   ANÁLISIS JARVICE
+   ========================================================= */
+
+.clinical-analysis {
+    display: grid;
+
+    grid-template-columns: 0.65fr 1.35fr;
+
+    gap: 10px;
+
+    margin-top: 12px;
+}
+
+.risk-panel,
+.ia-panel {
+    padding: 17px;
+
+    border-radius: 13px;
+
+    background: rgba(255,255,255,0.025);
+
+    border: 1px solid rgba(255,255,255,0.065);
+}
+
+.risk-panel {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+}
+
+.risk-panel span,
+.ia-panel span {
+    color: #6d8997;
+
+    font-size: 8px;
+    font-weight: 700;
+    letter-spacing: 1px;
+}
+
+.risk-panel strong {
+    margin-top: 7px;
+
+    color: #ffd166;
+
+    font-size: 21px;
+    font-weight: 700;
+}
+
+.ia-panel strong {
+    display: block;
+
+    margin-top: 7px;
+
+    color: #e8faff;
+
+    font-size: 16px;
+    font-weight: 700;
+}
+
+.ia-panel p {
+    margin: 6px 0 0;
+
+    color: #718c98;
+
+    font-size: 11px;
+    line-height: 1.5;
+}
+
+
+/* =========================================================
+   FOOTER DEL MONITOR
+   ========================================================= */
+
+.clinical-footer {
+    display: flex;
+    justify-content: space-between;
+
+    gap: 15px;
+
+    margin-top: 12px;
+
+    color: #526c79;
+
+    font-size: 9px;
+}
+
+.clinical-empty {
+    padding: 35px;
+
+    text-align: center;
+
+    color: #647f8c;
+
+    font-size: 12px;
+}
+
+
+/* =========================================================
+   TERMINAL / INFORMACIÓN DEL SISTEMA
+   ========================================================= */
+
+.core-terminal {
+    padding: 19px 21px;
+
+    margin-top: 14px;
+
+    border-radius: 15px;
+
+    background:
+        linear-gradient(
+            145deg,
+            rgba(3,9,16,0.70),
+            rgba(4,10,17,0.90)
+        );
+
+    border: 1px solid rgba(0,180,255,0.09);
+
+    box-shadow:
+        inset 0 1px 0 rgba(255,255,255,0.015);
+}
+
+.terminal-title {
+    margin-bottom: 12px;
+
+    color: #5fcce9;
+
+    font-size: 9px;
+    font-weight: 700;
+    letter-spacing: 1.7px;
+}
+
+.terminal-line {
+    display: flex;
+    align-items: center;
+
+    min-height: 24px;
+
+    padding: 3px 0;
+
+    color: #7896a2;
+
+    font-family: Consolas, "Courier New", monospace;
+
+    font-size: 10px;
+}
+
+.terminal-line span {
+    margin-right: 7px;
+
+    color: #3ce394;
+}
+
+
+/* =========================================================
+   MÓDULOS INTERACTIVOS
+   ========================================================= */
+
+.core-module-link {
+    text-decoration: none;
+
+    color: inherit;
+
+    cursor: pointer;
+}
+
+.core-module-link:hover {
+    transform: translateY(-3px);
+
+    border-color: rgba(0,175,255,0.32);
+
+    box-shadow:
+        0 15px 35px rgba(0,0,0,0.20);
+}
+
+.core-module-link h2,
+.core-module-link p {
+    color: inherit;
+}
+
+
+/* =========================================================
+   FOOTER
+   ========================================================= */
+
+.core-footer {
+    display: flex;
+    justify-content: space-between;
+
+    gap: 15px;
+
+    margin-top: 18px;
+
+    padding: 13px 4px;
+
+    color: #496774;
+
+    font-size: 9px;
+}
+
+.core-footer strong {
+    color: #62b8d0;
+
+    font-weight: 700;
+
+    letter-spacing: 1px;
+}
+
+
+/* =========================================================
+   RESPONSIVE
+   ========================================================= */
+
+@media (max-width: 1150px) {
+
+    .core-stats {
+        grid-template-columns: repeat(2, 1fr);
+    }
+
+    .core-grid {
+        grid-template-columns: repeat(2, 1fr);
+    }
+
+    .clinical-vitals {
+        grid-template-columns: repeat(3, 1fr);
+    }
+}
+
+
+@media (max-width: 750px) {
+
+    .core-page {
+        padding-bottom: 20px;
+    }
+
+    .core-header {
+        flex-direction: column;
+        align-items: flex-start;
+
+        padding: 23px;
+    }
+
+    .core-header h1 {
+        font-size: 26px;
+    }
+
+    .core-stats {
+        grid-template-columns: 1fr;
+    }
+
+    .core-grid {
+        grid-template-columns: 1fr;
+    }
+
+    .clinical-monitor {
+        padding: 18px;
+    }
+
+    .clinical-monitor-header {
+        align-items: flex-start;
+        flex-direction: column;
+    }
+
+    .clinical-patient {
+        align-items: flex-start;
+        flex-direction: column;
+    }
+
+    .patient-source {
+        margin-left: 0;
+    }
+
+    .clinical-vitals {
+        grid-template-columns: repeat(2, 1fr);
+    }
+
+    .clinical-analysis {
+        grid-template-columns: 1fr;
+    }
+
+    .clinical-footer {
+        flex-direction: column;
+        gap: 5px;
+    }
+}
+
+
+@media (max-width: 450px) {
+
+    .clinical-vitals {
+        grid-template-columns: 1fr;
+    }
+
+    .core-header {
+        padding: 19px;
+    }
+
+    .core-card {
+        min-height: 100px;
+    }
+}

@@ -1,0 +1,494 @@
+{% extends "mi_app_salud/base.html" %}
+
+{% block contenido %}
+
+<div class="jarvice-page">
+
+<div class="jarvice-header">
+    <div>
+        <h1>👤 Detalle de usuario</h1>
+        <p>Información y administración de la cuenta JARVICE CORE.</p>
+    </div>
+
+    <a href="{% url 'admin_usuarios' %}" class="jarvice-button">
+        ← Volver a usuarios
+    </a>
+</div>
+
+
+<!-- IDENTIDAD -->
+
+<div class="usuario-detail-card">
+
+    <div class="usuario-avatar">
+        👤
+    </div>
+
+    <div class="usuario-identidad">
+
+        <h2>{{ usuario.username }}</h2>
+
+        {% if usuario.email %}
+            <p>{{ usuario.email }}</p>
+        {% else %}
+            <p>Sin email registrado</p>
+        {% endif %}
+
+    </div>
+
+</div>
+
+
+<!-- ESTADO -->
+
+<div class="usuario-detail-grid">
+
+    <div class="usuario-detail-item">
+        <span>Estado</span>
+
+        {% if usuario.is_active %}
+            <strong>🟢 Activo</strong>
+        {% else %}
+            <strong>🔴 Inactivo</strong>
+        {% endif %}
+    </div>
+
+
+    <div class="usuario-detail-item">
+        <span>Administrador</span>
+
+        {% if usuario.is_superuser %}
+            <strong>👑 Superusuario</strong>
+        {% else %}
+            <strong>Usuario</strong>
+        {% endif %}
+    </div>
+
+
+    <div class="usuario-detail-item">
+        <span>Acceso al sistema</span>
+
+        {% if usuario.is_staff %}
+            <strong>🛡️ Staff</strong>
+        {% else %}
+            <strong>Usuario estándar</strong>
+        {% endif %}
+    </div>
+
+
+    <div class="usuario-detail-item">
+        <span>Usuario creado</span>
+        <strong>{{ usuario.date_joined|date:"d/m/Y H:i" }}</strong>
+    </div>
+
+</div>
+
+
+<!-- PERFIL -->
+
+<div class="usuario-section">
+
+    <h2>🏥 Perfil JARVICE</h2>
+
+    {% if usuario.perfilusuario %}
+
+        <div class="usuario-detail-grid">
+
+            <div class="usuario-detail-item">
+                <span>Nombre</span>
+                <strong>
+                    {{ usuario.perfilusuario.nombre|default:"No registrado" }}
+                </strong>
+            </div>
+
+            <div class="usuario-detail-item">
+                <span>Apellido</span>
+                <strong>
+                    {{ usuario.perfilusuario.apellido|default:"No registrado" }}
+                </strong>
+            </div>
+
+            <div class="usuario-detail-item">
+                <span>Rol</span>
+                <strong>
+                    {{ usuario.perfilusuario.get_rol_display }}
+                </strong>
+            </div>
+
+            <div class="usuario-detail-item">
+                <span>Matrícula</span>
+                <strong>
+                    {{ usuario.perfilusuario.matricula|default:"No registrada" }}
+                </strong>
+            </div>
+
+            <div class="usuario-detail-item">
+                <span>Especialidad</span>
+                <strong>
+                    {{ usuario.perfilusuario.especialidad|default:"No registrada" }}
+                </strong>
+            </div>
+
+            <div class="usuario-detail-item">
+                <span>Teléfono</span>
+                <strong>
+                    {{ usuario.perfilusuario.telefono|default:"No registrado" }}
+                </strong>
+            </div>
+
+        </div>
+
+    {% else %}
+
+        <div class="usuario-empty">
+            <p>Este usuario todavía no tiene un perfil JARVICE asociado.</p>
+        </div>
+
+    {% endif %}
+
+</div>
+
+<!-- ========================================== -->
+<!-- ADMINISTRACIÓN DEL ROL -->
+<!-- ========================================== -->
+
+<div class="usuario-section">
+
+    <h2>⚙️ Administración de permisos</h2>
+
+    {% if usuario.is_superuser %}
+
+        <div class="usuario-empty">
+            <p>
+                🔐 Este usuario es un superusuario.
+                Su rol no puede modificarse desde este panel.
+            </p>
+        </div>
+
+    {% else %}
+
+        <div class="usuario-detail-card">
+
+            <form
+                method="post"
+                action="{% url 'cambiar_rol_usuario' usuario.id %}"
+                style="width: 100%;"
+            >
+
+                {% csrf_token %}
+
+                <label
+                    for="rol"
+                    style="display:block; margin-bottom:8px;"
+                >
+                    <strong>Rol JARVICE</strong>
+                </label>
+
+                <select
+                    name="rol"
+                    id="rol"
+                    style="
+                        width:100%;
+                        padding:12px;
+                        border-radius:10px;
+                        margin-bottom:15px;
+                        background:#101a28;
+                        color:white;
+                        border:1px solid rgba(255,255,255,.15);
+                    "
+                >
+
+                    <option
+                        value="ADMIN"
+                        {% if usuario.perfilusuario.rol == "ADMIN" %}
+                            selected
+                        {% endif %}
+                    >
+                        Administrador
+                    </option>
+
+                    <option
+                        value="MEDICO"
+                        {% if usuario.perfilusuario.rol == "MEDICO" %}
+                            selected
+                        {% endif %}
+                    >
+                        Médico
+                    </option>
+
+                    <option
+                        value="ENFERMERIA"
+                        {% if usuario.perfilusuario.rol == "ENFERMERIA" %}
+                            selected
+                        {% endif %}
+                    >
+                        Enfermería
+                    </option>
+
+                    <option
+                        value="PACIENTE"
+                        {% if usuario.perfilusuario.rol == "PACIENTE" %}
+                            selected
+                        {% endif %}
+                    >
+                        Paciente
+                    </option>
+
+                    <option
+                        value="FAMILIAR"
+                        {% if usuario.perfilusuario.rol == "FAMILIAR" %}
+                            selected
+                        {% endif %}
+                    >
+                        Familiar
+                    </option>
+
+                    <option
+                        value="EMERGENCIA"
+                        {% if usuario.perfilusuario.rol == "EMERGENCIA" %}
+                            selected
+                        {% endif %}
+                    >
+                        Emergencias
+                    </option>
+
+                    <option
+                        value="INSTITUCION"
+                        {% if usuario.perfilusuario.rol == "INSTITUCION" %}
+                            selected
+                        {% endif %}
+                    >
+                        Institución
+                    </option>
+
+                </select>
+
+                <button
+                    type="submit"
+                    class="jarvice-button"
+                >
+                    💾 Guardar rol
+                </button>
+
+            </form>
+
+        </div>
+
+    {% endif %}
+
+</div>
+<!-- ========================================== -->
+<!-- ESTADO DE CUENTA -->
+<!-- ========================================== -->
+
+<div class="usuario-section">
+
+    <h2>🔐 Estado de cuenta</h2>
+
+    {% if usuario.is_superuser %}
+
+        <div class="usuario-empty">
+            <p>
+                🛡️ Este usuario es un superusuario.
+                Su estado no puede modificarse desde este panel.
+            </p>
+        </div>
+
+    {% else %}
+
+        <div class="usuario-detail-card">
+
+            <div style="width:100%;">
+
+                {% if usuario.is_active %}
+
+                    <h3 style="margin-top:0;">
+                        🟢 Usuario activo
+                    </h3>
+
+                    <p style="opacity:.7;">
+                        Este usuario puede acceder actualmente al sistema JARVICE.
+                    </p>
+
+                    <form
+                        method="post"
+                        action="{% url 'cambiar_estado_usuario' usuario.id %}"
+                    >
+
+                        {% csrf_token %}
+
+                        <button
+                            type="submit"
+                            class="jarvice-button"
+                        >
+                            🔴 Desactivar usuario
+                        </button>
+
+                    </form>
+
+                {% else %}
+
+                    <h3 style="margin-top:0;">
+                        🔴 Usuario inactivo
+                    </h3>
+
+                    <p style="opacity:.7;">
+                        Este usuario no puede acceder actualmente al sistema JARVICE.
+                    </p>
+
+                    <form
+                        method="post"
+                        action="{% url 'cambiar_estado_usuario' usuario.id %}"
+                    >
+
+                        {% csrf_token %}
+
+                        <button
+                            type="submit"
+                            class="jarvice-button"
+                        >
+                            🟢 Activar usuario
+                        </button>
+
+                    </form>
+
+                {% endif %}
+
+            </div>
+
+        </div>
+
+    {% endif %}
+
+</div>
+
+<!-- CUENTA DJANGO -->
+
+<div class="usuario-section">
+
+    <h2>⚙️ Información de cuenta</h2>
+
+    <div class="usuario-detail-grid">
+
+        <div class="usuario-detail-item">
+            <span>ID interno</span>
+            <strong>{{ usuario.id }}</strong>
+        </div>
+
+        <div class="usuario-detail-item">
+            <span>Último acceso</span>
+
+            {% if usuario.last_login %}
+                <strong>
+                    {{ usuario.last_login|date:"d/m/Y H:i" }}
+                </strong>
+            {% else %}
+                <strong>Sin acceso registrado</strong>
+            {% endif %}
+        </div>
+
+    </div>
+
+</div>
+
+</div>
+
+<style>
+
+.jarvice-page {
+    width: 100%;
+}
+
+.jarvice-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 20px;
+    margin-bottom: 25px;
+}
+
+.jarvice-header h1 {
+    margin: 0;
+}
+
+.jarvice-header p {
+    margin-top: 6px;
+    opacity: .7;
+}
+
+.jarvice-button {
+    display: inline-block;
+    padding: 10px 18px;
+    border-radius: 10px;
+    text-decoration: none;
+    color: white;
+    background: #1976d2;
+}
+
+.usuario-detail-card {
+    display: flex;
+    align-items: center;
+    gap: 20px;
+    padding: 25px;
+    margin-bottom: 20px;
+    border-radius: 18px;
+    background: rgba(20, 30, 45, .8);
+}
+
+.usuario-avatar {
+    width: 70px;
+    height: 70px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 32px;
+    background: rgba(25,118,210,.2);
+}
+
+.usuario-identidad h2 {
+    margin: 0;
+}
+
+.usuario-identidad p {
+    margin: 6px 0 0;
+    opacity: .7;
+}
+
+.usuario-detail-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+    gap: 15px;
+    margin-bottom: 25px;
+}
+
+.usuario-detail-item {
+    padding: 18px;
+    border-radius: 14px;
+    background: rgba(20, 30, 45, .7);
+}
+
+.usuario-detail-item span {
+    display: block;
+    font-size: 13px;
+    opacity: .65;
+    margin-bottom: 7px;
+}
+
+.usuario-section {
+    margin-top: 25px;
+}
+
+.usuario-section h2 {
+    margin-bottom: 15px;
+}
+
+.usuario-empty {
+    padding: 20px;
+    border-radius: 14px;
+    background: rgba(20, 30, 45, .7);
+}
+
+</style>
+
+{% endblock %}

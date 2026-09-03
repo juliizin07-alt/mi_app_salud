@@ -1,4 +1,4 @@
-from django.db import models
+﻿from django.db import models
 from django.contrib.auth.models import User
 from django.utils import timezone
 
@@ -22,12 +22,12 @@ class PerfilUsuario(models.Model):
     ("FAMILIAR", "Familiar"),
 
     ("EMERGENCIA", "Emergencias"),
-    
+
     ("INSTITUCION", "Institución"),
 
 
 )
-    
+
 
     usuario = models.OneToOneField(
         User,
@@ -84,7 +84,6 @@ class PerfilUsuario(models.Model):
 # ============================
 # PACIENTES
 # ============================
-
 class Paciente(models.Model):
 
     SEXOS = [
@@ -93,16 +92,32 @@ class Paciente(models.Model):
         ("O", "Otro"),
     ]
 
+    usuario = models.OneToOneField(
+        User,
+        on_delete=models.SET_NULL,
+        null=True,
+        blank=True,
+        related_name="paciente"
+    )
+    enfermera_asignada = models.ForeignKey(
+        PerfilUsuario,
+        on_delete=models.SET_NULL,
+        null=True,
+        blank=True,
+        related_name="pacientes_asignados",
+        limit_choices_to={"rol": "ENFERMERIA"},
+    )
+
     nombre = models.CharField(max_length=100)
 
     apellido = models.CharField(max_length=100)
-    
+
     historia_clinica = models.CharField(
-    max_length=20,
-    unique=True,
-    blank=True,
-    null=True
-)
+        max_length=20,
+        unique=True,
+        blank=True,
+        null=True
+    )
 
     dni = models.CharField(
         max_length=20,
@@ -170,6 +185,26 @@ class Paciente(models.Model):
         blank=True
     )
 
+    contacto_emergencia_2 = models.CharField(
+        max_length=150,
+        blank=True
+    )
+
+    telefono_emergencia_2 = models.CharField(
+        max_length=30,
+        blank=True
+    )
+
+    contacto_emergencia_3 = models.CharField(
+        max_length=150,
+        blank=True
+    )
+
+    telefono_emergencia_3 = models.CharField(
+        max_length=30,
+        blank=True
+    )
+
     medico_cabecera = models.CharField(
         max_length=150,
         blank=True
@@ -186,7 +221,61 @@ class Paciente(models.Model):
     def __str__(self):
         return f"{self.nombre} {self.apellido}"
 
+# ============================
+# DISPOSITIVOS JARVICE
+# ============================
 
+class Dispositivo(models.Model):
+
+    TIPOS = [
+        ("SMARTWATCH", "Smartwatch"),
+        ("SENSOR", "Sensor"),
+    ]
+
+    paciente = models.ForeignKey(
+        Paciente,
+        on_delete=models.CASCADE,
+        related_name="dispositivos"
+    )
+
+    nombre = models.CharField(
+        max_length=100
+    )
+
+    tipo = models.CharField(
+        max_length=20,
+        choices=TIPOS,
+        default="SMARTWATCH"
+    )
+
+    identificador = models.CharField(
+        max_length=100,
+        unique=True
+    )
+
+    activo = models.BooleanField(
+        default=True
+    )
+
+    conectado = models.BooleanField(
+        default=False
+    )
+
+    bateria = models.PositiveIntegerField(
+        default=100
+    )
+
+    ultima_conexion = models.DateTimeField(
+        null=True,
+        blank=True
+    )
+
+    fecha_alta = models.DateTimeField(
+        auto_now_add=True
+    )
+
+    def __str__(self):
+        return f"{self.nombre} - {self.paciente.nombre} {self.paciente.apellido}"
 
 # ============================
 # REGISTROS DE SALUD
@@ -312,7 +401,9 @@ class Medicacion(models.Model):
 
 
 # ==================================================
+
 # EVOLUCIÓN MÉDICA
+
 # ==================================================
 
 class EvolucionMedica(models.Model):
@@ -331,7 +422,9 @@ class EvolucionMedica(models.Model):
         related_name="evoluciones_creadas"
     )
 
-    fecha = models.DateTimeField(auto_now_add=True)
+    fecha = models.DateTimeField(
+        auto_now_add=True
+    )
 
     descripcion = models.TextField()
 
@@ -347,9 +440,8 @@ class EvolucionMedica(models.Model):
 
     def __str__(self):
         return f"Evolución de {self.paciente.nombre} - {self.fecha.date()}"
-
 # ==================================================
-# ESTUDIO MÉDICO
+# ESTUDIOS MÉDICOS REALIZADOS
 # ==================================================
 
 class EstudioMedico(models.Model):
@@ -362,9 +454,13 @@ class EstudioMedico(models.Model):
 
     fecha = models.DateField()
 
-    tipo = models.CharField(max_length=100)
+    tipo = models.CharField(
+        max_length=100
+    )
 
-    nombre = models.CharField(max_length=200)
+    nombre = models.CharField(
+        max_length=200
+    )
 
     institucion = models.CharField(
         max_length=150,
@@ -389,8 +485,12 @@ class EstudioMedico(models.Model):
 
     def __str__(self):
         return f"{self.tipo} - {self.paciente.nombre}"
-  # ==================================================
+
+
+# ==================================================
+
 # SOLICITUDES DE ESTUDIOS
+
 # ==================================================
 
 class SolicitudEstudio(models.Model):
@@ -401,13 +501,11 @@ class SolicitudEstudio(models.Model):
         ("CANCELADO", "Cancelado"),
     ]
 
-
     paciente = models.ForeignKey(
         Paciente,
         on_delete=models.CASCADE,
         related_name="solicitudes_estudios"
     )
-
 
     medico = models.ForeignKey(
         User,
@@ -416,44 +514,362 @@ class SolicitudEstudio(models.Model):
         blank=True
     )
 
-
     estudio = models.CharField(
         max_length=150
     )
-
 
     motivo = models.TextField(
         blank=True
     )
 
+    fecha_solicitud = models.DateTimeField(
+        auto_now_add=True
+    )
+
+    archivo_informe = models.FileField(
+        upload_to="estudios/",
+        null=True,
+        blank=True
+    )
+
+    informe = models.TextField(
+        blank=True,
+        null=True
+    )
+
+    fecha_realizacion = models.DateTimeField(
+        null=True,
+        blank=True
+    )
+
+    estado = models.CharField(
+        max_length=20,
+        choices=ESTADOS,
+        default="PENDIENTE"
+    )
+
+    def __str__(self):
+        return f"{self.estudio} - {self.paciente.nombre}"
+    # ==================================================
+# AUDITORÍA JARVICE CORE
+# ==================================================
+
+class AuditoriaJarvice(models.Model):
+
+    TIPOS_ACCION = [
+        ("LOGIN", "Inicio de sesión"),
+        ("LOGOUT", "Cierre de sesión"),
+        ("CREAR", "Creación"),
+        ("MODIFICAR", "Modificación"),
+        ("ELIMINAR", "Eliminación"),
+        ("ACTIVAR", "Activación"),
+        ("DESACTIVAR", "Desactivación"),
+        ("EMERGENCIA", "Emergencia"),
+        ("SEGURIDAD", "Seguridad"),
+        ("SISTEMA", "Sistema"),
+    ]
+
+    usuario = models.ForeignKey(
+        User,
+        on_delete=models.SET_NULL,
+        null=True,
+        blank=True,
+        related_name="auditorias_jarvice"
+    )
+
+    accion = models.CharField(
+        max_length=20,
+        choices=TIPOS_ACCION
+    )
+
+    modulo = models.CharField(
+        max_length=100,
+        blank=True
+    )
+
+    descripcion = models.TextField()
+
+    fecha = models.DateTimeField(
+        auto_now_add=True
+    )
+
+    ip = models.GenericIPAddressField(
+        null=True,
+        blank=True
+    )
+
+    datos_extra = models.JSONField(
+        null=True,
+        blank=True
+    )
+
+    def __str__(self):
+        usuario = (
+            self.usuario.username
+            if self.usuario
+            else "Sistema"
+        )
+
+        return f"{usuario} - {self.accion} - {self.fecha}"
+    # ==================================================
+# SIGNOS VITALES JARVICE
+# ==================================================
+
+class SignoVital(models.Model):
+
+    ORIGENES = [
+        ("MANUAL", "Carga manual"),
+        ("SMARTWATCH", "Smartwatch"),
+        ("SENSOR", "Sensor"),
+        ("SISTEMA", "Sistema"),
+    ]
+
+    paciente = models.ForeignKey(
+        Paciente,
+        on_delete=models.CASCADE,
+        related_name="signos_vitales"
+    )
+
+    frecuencia_cardiaca = models.PositiveIntegerField(
+        null=True,
+        blank=True
+    )
+
+    saturacion_oxigeno = models.DecimalField(
+        max_digits=5,
+        decimal_places=2,
+        null=True,
+        blank=True
+    )
+
+    temperatura = models.DecimalField(
+        max_digits=4,
+        decimal_places=1,
+        null=True,
+        blank=True
+    )
+
+    presion_arterial = models.CharField(
+        max_length=20,
+        blank=True
+    )
+
+    estado_emocional = models.CharField(
+        max_length=50,
+        blank=True
+    )
+
+    origen = models.CharField(
+        max_length=20,
+        choices=ORIGENES,
+        default="MANUAL"
+    )
+
+    observaciones = models.TextField(
+        blank=True
+    )
+
+    fecha = models.DateTimeField(
+        auto_now_add=True
+    )
+
+    def __str__(self):
+        return f"Signos vitales - {self.paciente.nombre} {self.paciente.apellido} - {self.fecha}"
+    # ==================================================
+# QR DINÁMICO JARVICE
+# ==================================================
+
+class QRToken(models.Model):
+
+    paciente = models.ForeignKey(
+        Paciente,
+        on_delete=models.CASCADE,
+        related_name="qr_tokens"
+    )
+
+    token = models.CharField(
+        max_length=128,
+        unique=True
+    )
+
+    creado = models.DateTimeField(
+        auto_now_add=True
+    )
+
+    expira = models.DateTimeField()
+
+    activo = models.BooleanField(
+        default=True
+    )
+
+    def __str__(self):
+        return f"QR {self.paciente} - {self.token[:12]}"
+
+    def esta_vigente(self):
+
+        return (
+            self.activo
+            and timezone.now() < self.expira
+        )
+
+
+# ==================================================
+# ACCESO A HISTORIA CLÍNICA MEDIANTE QR
+# ==================================================
+
+class AccesoClinico(models.Model):
+
+    TIPOS_ACCESO = [
+        ("ENFERMERIA", "Enfermería"),
+        ("MEDICO", "Médico"),
+        ("EMERGENCIA", "Emergencia"),
+        ("ADMIN", "Administrador"),
+    ]
+
+    paciente = models.ForeignKey(
+        Paciente,
+        on_delete=models.CASCADE,
+        related_name="accesos_clinicos"
+    )
+
+    usuario = models.ForeignKey(
+        User,
+        on_delete=models.SET_NULL,
+        null=True,
+        blank=True,
+        related_name="accesos_clinicos"
+    )
+
+    tipo_acceso = models.CharField(
+        max_length=20,
+        choices=TIPOS_ACCESO
+    )
+
+    autorizado = models.BooleanField(
+        default=False
+    )
 
     fecha_solicitud = models.DateTimeField(
         auto_now_add=True
     )
 
-
-    # ==========================================
-    # RESULTADO DEL ESTUDIO
-    # ==========================================
-
-    archivo_informe = models.FileField(
-        upload_to="estudios/",
+    fecha_autorizacion = models.DateTimeField(
         null=True,
         blank=True
     )
 
+    motivo = models.TextField(
+        blank=True
+    )
 
-    informe = models.TextField(
+    ip = models.GenericIPAddressField(
+        null=True,
+        blank=True
+    )
+
+    def __str__(self):
+
+        usuario = (
+            self.usuario.username
+            if self.usuario
+            else "Sin usuario"
+        )
+
+        return (
+            f"{usuario} †’ "
+            f"{self.paciente} †’ "
+            f"{self.tipo_acceso}"
+        )
+
+
+class EvolucionEnfermeria(models.Model):
+    ESTADOS = [
+        ("ESTABLE", "Estable"),
+        ("OBSERVACION", "En observación"),
+        ("DOLOR", "Dolor"),
+        ("CRITICO", "Crítico"),
+    ]
+
+    paciente = models.ForeignKey(
+        Paciente,
+        on_delete=models.CASCADE,
+        related_name="evoluciones_enfermeria"
+    )
+
+    usuario = models.ForeignKey(
+        User,
+        on_delete=models.SET_NULL,
+        null=True,
         blank=True,
-        null=True
+        related_name="evoluciones_enfermeria_creadas"
     )
 
+    fecha = models.DateTimeField(auto_now_add=True)
 
-    fecha_realizacion = models.DateTimeField(
-        null=True,
+    estado = models.CharField(
+        max_length=20,
+        choices=ESTADOS,
+        default="ESTABLE"
+    )
+
+    observaciones = models.TextField()
+
+    intervenciones = models.TextField(
         blank=True
     )
 
+    incidentes = models.TextField(
+        blank=True
+    )
+
+    def __str__(self):
+        usuario = self.usuario.username if self.usuario else "Sin usuario"
+
+        return (
+            f"Evolución de enfermería - "
+            f"{self.paciente.nombre} {self.paciente.apellido} - "
+            f"{usuario} - {self.fecha}"
+        )
+
+
+
+# ==================================================
+# CENTRO DE ATENCION JARVICE
+# ==================================================
+
+class SolicitudUsuario(models.Model):
+
+    TIPOS = [
+        ("SUGERENCIA", "Sugerencia"),
+        ("OPINION", "Opinión"),
+        ("PROBLEMA", "Problema técnico"),
+        ("RECLAMO", "Queja / Reclamo"),
+        ("ATENCION", "Atención al usuario"),
+    ]
+
+    ESTADOS = [
+        ("PENDIENTE", "Pendiente"),
+        ("REVISION", "En revisión"),
+        ("RESPONDIDO", "Respondido"),
+        ("CERRADO", "Cerrado"),
+    ]
+
+    usuario = models.ForeignKey(
+        User,
+        on_delete=models.CASCADE,
+        related_name="solicitudes_jarvice"
+    )
+
+    tipo = models.CharField(
+        max_length=20,
+        choices=TIPOS
+    )
+
+    asunto = models.CharField(
+        max_length=200
+    )
+
+    mensaje = models.TextField()
 
     estado = models.CharField(
         max_length=20,
@@ -461,41 +877,21 @@ class SolicitudEstudio(models.Model):
         default="PENDIENTE"
     )
 
-
-    def __str__(self):
-
-        return f"{self.estudio} - {self.paciente.nombre}"
-
-    # ==========================================
-    # RESULTADO DEL ESTUDIO
-    # ==========================================
-
-    archivo_informe = models.FileField(
-        upload_to="estudios/",
-        null=True,
+    respuesta_admin = models.TextField(
         blank=True
     )
 
-
-    informe = models.TextField(
-        blank=True,
-        null=True
+    fecha_creacion = models.DateTimeField(
+        auto_now_add=True
     )
 
-
-    fecha_realizacion = models.DateTimeField(
-        null=True,
-        blank=True
+    fecha_actualizacion = models.DateTimeField(
+        auto_now=True
     )
-
-
-    estado = models.CharField(
-        max_length=20,
-        choices=ESTADOS,
-        default="PENDIENTE"
-    )
-
 
     def __str__(self):
-
-        return f"{self.estudio} - {self.paciente.nombre}"
+        return (
+            f"{self.get_tipo_display()} - "
+            f"{self.asunto} - "
+            f"{self.usuario.username}"
+        )

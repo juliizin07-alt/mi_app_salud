@@ -105,195 +105,346 @@ dibujarECG();
 
 }
 
-
-
-
-
-
-
 // ==========================
-// SIGNOS SIMULADOS
+// SIGNOS VITALES REALES
 // ==========================
 
+function actualizarSignos() {
 
-function actualizarSignos(){
-
-
-let pulso=Math.floor(Math.random()*35)+65;
-
-let temp=(36+Math.random()*1.5).toFixed(1);
-
-let oxi=Math.floor(Math.random()*4)+96;
-
-let resp=Math.floor(Math.random()*8)+14;
+    const pulso = document.getElementById("pulso");
+    const temp = document.getElementById("temp");
+    const oxi = document.getElementById("oxi");
+    const resp = document.getElementById("resp");
+    const presion = document.getElementById("presion");
+    const scoreIA = document.getElementById("scoreIA");
+    const iaEstado = document.getElementById("iaEstado");
 
 
+    // ==========================================
+    // OBTENER DATOS ENTREGADOS POR DJANGO
+    // ==========================================
 
-document.getElementById("pulso").innerHTML=pulso+" BPM";
+    const frecuencia = pulso
+        ? pulso.dataset.valor
+        : "";
 
-document.getElementById("temp").innerHTML=temp+" °C";
+    const temperatura = temp
+        ? temp.dataset.valor
+        : "";
 
-document.getElementById("oxi").innerHTML=oxi+" %";
+    const oxigeno = oxi
+        ? oxi.dataset.valor
+        : "";
 
-document.getElementById("resp").innerHTML=resp+" rpm";
+    const respiracion = resp
+        ? resp.dataset.valor
+        : "";
 
-
-
-let score=0;
-
-
-
-if(pulso>110)
-score++;
-
-
-if(temp>38)
-score++;
-
-
-if(oxi<94)
-score+=2;
+    const presionArterial = presion
+        ? presion.dataset.valor
+        : "";
 
 
-if(resp>22)
-score++;
+    // ==========================================
+    // PULSO
+    // ==========================================
+
+    if (pulso) {
+
+        if (frecuencia) {
+            pulso.innerHTML = frecuencia + " BPM";
+        } else {
+            pulso.innerHTML = "Sin datos";
+        }
+
+    }
 
 
+    // ==========================================
+    // TEMPERATURA
+    // ==========================================
+
+    if (temp) {
+
+        if (temperatura) {
+            temp.innerHTML = temperatura + " °C";
+        } else {
+            temp.innerHTML = "Sin datos";
+        }
+
+    }
 
 
-let estado="ESTABLE";
+    // ==========================================
+    // OXÍGENO
+    // ==========================================
 
-let color="#00ff99";
+    if (oxi) {
+
+        if (oxigeno) {
+            oxi.innerHTML = oxigeno + " %";
+        } else {
+            oxi.innerHTML = "Sin datos";
+        }
+
+    }
 
 
+    // ==========================================
+    // RESPIRACIÓN
+    // ==========================================
 
-if(score>=4){
+    if (resp) {
 
-estado="CRÍTICO";
+        if (respiracion) {
+            resp.innerHTML = respiracion + " rpm";
+        } else {
+            resp.innerHTML = "Sin datos";
+        }
 
-color="#ff4444";
+    }
+
+
+    // ==========================================
+    // PRESIÓN
+    // ==========================================
+
+    if (presion) {
+
+        if (presionArterial) {
+            presion.innerHTML = presionArterial;
+        } else {
+            presion.innerHTML = "Sin datos";
+        }
+
+    }
+
+
+    // ==========================================
+    // CONVERSIÓN NUMÉRICA
+    // ==========================================
+
+    const pulsoNumero = frecuencia
+        ? Number(frecuencia)
+        : null;
+
+    const temperaturaNumero = temperatura
+        ? Number(temperatura)
+        : null;
+
+    const oxigenoNumero = oxigeno
+        ? Number(oxigeno)
+        : null;
+
+
+    // ==========================================
+    // EVALUACIÓN CLÍNICA BÁSICA
+    // ==========================================
+
+    let score = 0;
+
+
+    if (
+        pulsoNumero !== null &&
+        (pulsoNumero < 50 || pulsoNumero > 110)
+    ) {
+        score++;
+    }
+
+
+    if (
+        temperaturaNumero !== null &&
+        temperaturaNumero > 38
+    ) {
+        score++;
+    }
+
+
+    if (
+        oxigenoNumero !== null &&
+        oxigenoNumero < 94
+    ) {
+        score += 2;
+    }
+
+
+    // ==========================================
+    // ESTADO IA
+    // ==========================================
+
+    let estado = "ESTABLE";
+    let color = "#00ff99";
+
+
+    if (score >= 3) {
+
+        estado = "CRÍTICO";
+        color = "#ff4444";
+
+    }
+
+    else if (score >= 1) {
+
+        estado = "ATENCIÓN";
+        color = "#ffd54a";
+
+    }
+
+
+    if (iaEstado) {
+
+        iaEstado.innerHTML = estado;
+        iaEstado.style.color = color;
+
+    }
+
+
+    if (scoreIA) {
+
+        scoreIA.innerHTML = score;
+
+    }
 
 }
 
-else if(score>=2){
 
-estado="ALERTA";
-
-color="#ffd54a";
-
-}
-
-
-
-
-
-document.getElementById("iaEstado").innerHTML=estado;
-
-document.getElementById("iaEstado").style.color=color;
-
-
-document.getElementById("scoreIA").innerHTML=score;
-
-
-
-}
-
-
-
+// ==========================================
+// EJECUTAR AL CARGAR
+// ==========================================
 
 actualizarSignos();
 
-setInterval(actualizarSignos,3000);
+function cambiarEstado(estado) {
 
+    const texto = document.getElementById("estadoTexto");
+    const dx = document.getElementById("dxIA");
 
+    // ==========================================
+    // TRADUCIR ESTADO VISUAL → ESTADO DEL MODELO
+    // ==========================================
 
+    let estadoBackend;
 
+    if (estado === "ESTABLE") {
+        estadoBackend = "OK";
+    }
+    else if (estado === "ATENCIÓN") {
+        estadoBackend = "CANSADO";
+    }
+    else if (estado === "CRÍTICO") {
+        estadoBackend = "CRITICO";
+    }
+    else {
+        console.error("Estado no reconocido:", estado);
+        return;
+    }
 
+    // ==========================================
+    // ACTUALIZAR INTERFAZ
+    // ==========================================
 
+    if (estado === "ESTABLE") {
 
+        if (texto) {
+            texto.innerHTML = "🟢 SISTEMA ESTABLE";
+            texto.style.color = "#00ff99";
+        }
 
-// ==========================
-// BOTONES
-// ==========================
+        if (dx) {
+            dx.innerHTML = "Paciente estable";
+        }
 
+    }
 
-function cambiarEstado(estado){
+    else if (estado === "ATENCIÓN") {
 
+        if (texto) {
+            texto.innerHTML = "🟡 REQUIERE CONTROL";
+            texto.style.color = "#ffd54a";
+        }
 
-let texto=document.getElementById("estadoTexto");
+        if (dx) {
+            dx.innerHTML = "Monitorización aumentada";
+        }
 
-let dx=document.getElementById("dxIA");
+    }
 
+    else if (estado === "CRÍTICO") {
 
+        if (texto) {
+            texto.innerHTML = "🔴 ALERTA CRÍTICA";
+            texto.style.color = "#ff4444";
+        }
 
-if(estado==="ESTABLE"){
+        if (dx) {
+            dx.innerHTML = "Activar protocolo médico";
+        }
 
+    }
 
-texto.innerHTML="🟢 SISTEMA ESTABLE";
+    // ==========================================
+    // VERIFICAR PACIENTE ACTIVO
+    // ==========================================
 
-texto.style.color="#00ff99";
+    const pacienteId = window.JARVICE_PACIENTE_ID;
 
-dx.innerHTML="Paciente estable";
+    if (!pacienteId) {
 
+        console.warn(
+            "Jarvice: no hay paciente activo asociado al usuario."
+        );
+
+        return;
+    }
+
+    // ==========================================
+    // ENVIAR ESTADO A DJANGO
+    // ==========================================
+
+    fetch(`/api/cambiar-estado/${pacienteId}/?estado=${estadoBackend}`, {
+        method: "GET",
+        headers: {
+            "X-Requested-With": "XMLHttpRequest"
+        }
+    })
+
+    .then(response => {
+
+        if (!response.ok) {
+            throw new Error(
+                `Error HTTP ${response.status}`
+            );
+        }
+
+        return response.json();
+    })
+
+    .then(data => {
+
+        if (!data.ok) {
+
+            console.error(
+                "Jarvice: Django rechazó el cambio de estado.",
+                data
+            );
+
+            return;
+        }
+
+        console.log(
+            "Jarvice: estado actualizado correctamente.",
+            data
+        );
+
+    })
+
+    .catch(error => {
+
+        console.error(
+            "Jarvice: error comunicando con Django:",
+            error
+        );
+
+    });
 
 }
-
-
-
-if(estado==="ATENCIÓN"){
-
-
-texto.innerHTML="🟡 REQUIERE CONTROL";
-
-texto.style.color="#ffd54a";
-
-dx.innerHTML="Monitorización aumentada";
-
-
-}
-
-
-
-if(estado==="CRÍTICO"){
-
-
-texto.innerHTML="🔴 ALERTA CRÍTICA";
-
-texto.style.color="#ff4444";
-
-dx.innerHTML="Activar protocolo médico";
-
-
-}
-
-
-
-}
-
-
-function activarSOS(){
-
-
-let confirmar=confirm(
-"¿Activar protocolo de emergencia Jarvice?"
-);
-
-
-
-if(confirmar){
-
-
-alert(
-"🆘 ALERTA ENVIADA\n\n"+
-"Paciente notificado\n"+
-"Familia avisada\n"+
-"Ubicación compartida"
-);
-
-
-}
-
-
-
-}
-

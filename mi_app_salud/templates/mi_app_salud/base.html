@@ -1,420 +1,714 @@
 {% load static %}
+
 <!DOCTYPE html>
 <html lang="es">
-
 <head>
 
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
+    <title>Jarvice Health AI</title>
+      <style>
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            min-height: 100vh;
+            font-family: Arial, Helvetica, sans-serif;
+            background:
+                radial-gradient(circle at top right, #063c63 0%, transparent 35%),
+                radial-gradient(circle at bottom left, #021b2d 0%, transparent 40%),
+                #020b14;
+            color: white;
+        }
+
+        a {
+            text-decoration: none;
+        }
+
+        .app {
+            min-height: 100vh;
+            display: flex;
+        }
+
+        /* SIDEBAR */
+
+        .sidebar {
+            width: 250px;
+            min-height: 100vh;
+            padding: 25px 18px;
+            background: rgba(3, 18, 31, 0.96);
+            border-right: 1px solid rgba(0, 198, 255, 0.15);
+            box-shadow: 10px 0 40px rgba(0, 0, 0, 0.35);
+        }
+
+        .logo {
+            padding: 10px 12px 25px;
+            border-bottom: 1px solid rgba(255,255,255,.08);
+            margin-bottom: 20px;
+        }
+
+        .logo h1 {
+            font-size: 21px;
+            color: #00c6ff;
+        }
+
+        .logo span {
+            display: block;
+            margin-top: 5px;
+            font-size: 11px;
+            color: #7fa5b8;
+            letter-spacing: 1px;
+        }
+
+        .menu {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+
+        .menu-item {
+            display: flex;
+            align-items: center;
+            gap: 14px;
+            color: #dff8ff;
+            padding: 14px;
+            border-radius: 14px;
+            transition: .25s;
+            background: rgba(255,255,255,.025);
+            border: 1px solid transparent;
+        }
+
+        .menu-item span {
+            width: 32px;
+            text-align: center;
+            font-size: 22px;
+        }
+
+        .menu-item div {
+            display: flex;
+            flex-direction: column;
+        }
+
+        .menu-item strong {
+            font-size: 14px;
+        }
+
+        .menu-item small {
+            font-size: 10px;
+            color: #79bdd2;
+            margin-top: 3px;
+        }
+
+        .menu-item:hover {
+            background: rgba(0, 140, 255, .16);
+            border-color: rgba(0, 198, 255, .2);
+            transform: translateX(4px);
+        }
+
+        /* MAIN */
+
+        .main {
+            flex: 1;
+            min-width: 0;
+            display: flex;
+            flex-direction: column;
+        }
+
+        /* TOPBAR */
+
+        .topbar {
+            min-height: 72px;
+            background: rgba(255,255,255,.035);
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 12px 28px;
+            border-bottom: 1px solid rgba(255,255,255,.08);
+        }
+
+        .top-title h2 {
+            font-size: 18px;
+            color: #dff9ff;
+        }
+
+        .top-title small {
+            display: block;
+            margin-top: 4px;
+            color: #7194a3;
+            font-size: 11px;
+        }
+
+        .usuario {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .server,
+        .pulso,
+        .alerta {
+            padding: 7px 11px;
+            border-radius: 20px;
+            font-size: 12px;
+            font-weight: bold;
+        }
+
+        .server {
+            background: rgba(22,199,132,.12);
+            color: #7dffb5;
+        }
+
+        .pulso {
+            background: rgba(255,77,77,.12);
+            color: #ff9090;
+        }
+
+        .alerta {
+            background: rgba(255,213,74,.12);
+            color: #ffd54a;
+        }
+
+        .reloj {
+            font-size: 14px;
+            color: #8be9ff;
+            min-width: 70px;
+            text-align: center;
+        }
+
+        .avatar {
+            width: 38px;
+            height: 38px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, #00c6ff, #0072ff);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+            color: white;
+        }
+
+        /* CONTENIDO */
+
+        .contenido {
+            flex: 1;
+            padding: 30px;
+        }
+
+        /* TARJETAS */
+
+        .card {
+            background: rgba(255,255,255,.045);
+            border: 1px solid rgba(255,255,255,.08);
+            border-radius: 18px;
+            padding: 22px;
+            box-shadow: 0 15px 40px rgba(0,0,0,.2);
+        }
+
+        /* RESPONSIVE */
+
+        @media (max-width: 900px) {
+
+            .sidebar {
+                width: 210px;
+            }
+
+            .topbar {
+                padding: 12px 18px;
+            }
+
+            .contenido {
+                padding: 20px;
+            }
+
+            .pulso,
+            .alerta {
+                display: none;
+            }
+        }
+
+        @media (max-width: 650px) {
+
+            .sidebar {
+                display: none;
+            }
+
+            .topbar {
+                padding: 12px;
+            }
+
+            .top-title {
+                display: none;
+            }
+
+            .contenido {
+                padding: 15px;
+            }
+        }
+
+        </style>
 <title>Jarvice Health AI</title>
 
-<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700;800&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="{% static 'mi_app_salud/css/base.css' %}">
-<style>
-
-
-/*=========================
-MENU
-=========================*/
-
-.menu{
-
-    display:flex;
-
-    flex-direction:column;
-
-    gap:12px;
-
-}
-
-.menu a{
-
-    text-decoration:none;
-
-    color:white;
-
-    padding:15px;
-
-    border-radius:14px;
-
-    transition:.3s;
-
-    font-weight:600;
-
-}
-
-.menu a:hover{
-
-    background:#0d8eff;
-
-    transform:translateX(5px);
-
-}
-
-.menu a.active{
-
-    background:#00b3ff;
-
-}
-
-/*=========================
-MAIN
-=========================*/
-
-.main{
-
-    flex:1;
-
-    display:flex;
-
-    flex-direction:column;
-
-}
-
-/*=========================
-TOPBAR
-=========================*/
-
-.topbar{
-
-    height:70px;
-
-    background:rgba(255,255,255,.05);
-
-    display:flex;
-
-    align-items:center;
-
-    justify-content:space-between;
-
-    padding:0 30px;
-
-    border-bottom:1px solid rgba(255,255,255,.08);
-
-}
-.server{
-
-    background:#16c78433;
-
-    color:#7dffb5;
-
-    padding:8px 14px;
-
-    border-radius:30px;
-
-    font-weight:bold;
-
-}
-
-.pulso{
-
-    background:#ff4d4d22;
-
-    color:#ff9090;
-
-    padding:8px 14px;
-
-    border-radius:30px;
-
-    font-weight:bold;
-
-}
-
-.alerta{
-
-    background:#ffd54a22;
-
-    color:#ffd54a;
-
-    padding:8px 14px;
-
-    border-radius:30px;
-
-    font-weight:bold;
-
-}
-.usuario{
-
-    display:flex;
-
-    align-items:center;
-
-    gap:12px;
-
-}
-
-.avatar{
-
-    width:42px;
-
-    height:42px;
-
-    border-radius:50%;
-
-    background:#00c6ff;
-
-    display:flex;
-
-    align-items:center;
-
-    justify-content:center;
-
-    font-weight:bold;
-
-}
-
-.reloj{
-
-    font-size:18px;
-
-    color:#8be9ff;
-
-}
-
-/*=========================
-CONTENIDO
-=========================*/
-
-.contenido{
-
-    padding:30px;
-
-}
-.menu-item{
-
-    display:flex;
-
-    align-items:center;
-
-    gap:15px;
-
-    color:white;
-
-    padding:15px;
-
-    border-radius:16px;
-
-    text-decoration:none;
-
-    transition:.3s;
-
-    background:rgba(255,255,255,.03);
-
-}
-
-
-.menu-item span{
-
-    font-size:25px;
-
-}
-
-
-.menu-item div{
-
-    display:flex;
-
-    flex-direction:column;
-
-}
-
-
-.menu-item small{
-
-    font-size:11px;
-
-    color:#8be9ff;
-
-    margin-top:3px;
-
-}
-
-
-.menu-item:hover{
-
-    background:#008cff55;
-
-    transform:translateX(6px);
-
-}
-</style>
+{% block extra_css %}
+{% endblock %}
 
 </head>
 
 <body>
 
-<div class="sidebar">
+<div class="app">
 
-<div class="logo">
+    <!-- SIDEBAR -->
 
-<h1>🧬 JARVICE</h1>
+    <aside class="sidebar">
 
-<p>Health AI</p>
-
-</div>
-
-<div class="menu">
-
-<a href="/" class="menu-item">
-    <span>🏠</span>
-    <div>
-        Dashboard
-        <small>🟢 Activo</small>
-    </div>
-</a>
-
-
-<a href="/pacientes/" class="menu-item">
-    <span>👤</span>
-    <div>
-        Pacientes
-        <small>Base clínica</small>
-    </div>
-</a>
-
-
-<a href="/medicacion/" class="menu-item">
-    <span>💊</span>
-    <div>
-        Medicación
-        <small id="med-alerta">Sin alertas</small>
-    </div>
-</a>
-
-
-<a href="/seguridad/" class="menu-item">
-    <span>🛡️</span>
-    <div>
-        Seguridad
-        <small>Protección activa</small>
-    </div>
-</a>
-
-
-<a href="/sueno/" class="menu-item">
-    <span>😴</span>
-    <div>
-        Sueño
-        <small>Monitoreo</small>
-    </div>
-</a>
-
-
-<a href="/reportes/" class="menu-item">
-    <span>📊</span>
-    <div>
-        Reportes
-        <small>Historial IA</small>
-    </div>
-</a>
-
-
-<a href="/configuracion/" class="menu-item">
-    <span>⚙️</span>
-    <div>
-        Configuración
-        <small>Sistema</small>
-    </div>
-</a>
-
-
-</div>
-</div>
-
-<div class="main">
-
-<div class="topbar">
-
-    <div>
-
-        <h2>🧬 Jarvice Health AI</h2>
-
-        <small id="fecha"></small>
-
-    </div>
-
-    <div class="usuario">
-
-        <div class="server">
-
-            🟢 Online
-
+        <div class="logo">
+            <h1>🧬 JARVICE</h1>
+            <span>HEALTH AI · CORE SYSTEM</span>
         </div>
 
-        <div class="pulso">
 
-            ❤️ <span id="pulsoTop">78</span>
+<nav class="menu">
 
-        </div>
+    {% if request.user.is_authenticated %}
 
-        <div class="alerta">
+        {% if request.user.perfilusuario.rol == "ADMIN" %}
 
-            🔔 <span id="contadorAlertas">0</span>
+            <!-- ADMIN -->
+            <a href="{% url 'dashboard_redirect' %}" class="menu-item">
+                <span>📊</span>
+                <div>
+                    <strong>Dashboard</strong>
+                    <small>Centro de control</small>
+                </div>
+            </a>
 
-        </div>
+            <a href="{% url 'pacientes' %}" class="menu-item">
+                <span>👤</span>
+                <div>
+                    <strong>Pacientes</strong>
+                    <small>Base clínica</small>
+                </div>
+            </a>
 
-        <div class="reloj" id="reloj"></div>
+            <a href="{% url 'medicacion' %}" class="menu-item">
+                <span>💊</span>
+                <div>
+                    <strong>Medicación</strong>
+                    <small>Control y alertas</small>
+                </div>
+            </a>
 
-        <div class="avatar">
+            <a href="{% url 'seguridad' %}" class="menu-item">
+                <span>🛡️</span>
+                <div>
+                    <strong>Seguridad</strong>
+                    <small>Auditoría Jarvice</small>
+                </div>
+            </a>
 
-            {{ request.user.username|first|upper }}
+            <a href="{% url 'reportes' %}" class="menu-item">
+                <span>📊</span>
+                <div>
+                    <strong>Reportes</strong>
+                    <small>Historial de IA</small>
+                </div>
+            </a>
 
-        </div>
+            <a href="{% url 'configuracion' %}" class="menu-item">
+                <span>⚙️</span>
+                <div>
+                    <strong>Configuración</strong>
+                    <small>Sistema</small>
+                </div>
+            </a>
 
-        <strong>
+        {% elif request.user.perfilusuario.rol == "MEDICO" %}
 
-            {{ request.user.username }}
+            <!-- MEDICO -->
+            <a href="{% url 'dashboard_redirect' %}" class="menu-item">
+                <span>📊</span>
+                <div>
+                    <strong>Dashboard Médico</strong>
+                    <small>Centro clínico</small>
+                </div>
+            </a>
 
-        </strong>
+            <a href="{% url 'pacientes' %}" class="menu-item">
+                <span>👤</span>
+                <div>
+                    <strong>Pacientes</strong>
+                    <small>Base clínica</small>
+                </div>
+            </a>
 
-    </div>
+            <a href="{% url 'medicacion' %}" class="menu-item">
+                <span>💊</span>
+                <div>
+                    <strong>Medicación</strong>
+                    <small>Tratamientos</small>
+                </div>
+            </a>
+
+            <a href="{% url 'seguridad' %}" class="menu-item">
+                <span>🛡️</span>
+                <div>
+                    <strong>Seguridad</strong>
+                    <small>Protección clínica</small>
+                </div>
+            </a>
+
+            <a href="{% url 'reportes' %}" class="menu-item">
+                <span>📊</span>
+                <div>
+                    <strong>Reportes</strong>
+                    <small>Historial clínico</small>
+                </div>
+            </a>
+
+        {% elif request.user.perfilusuario.rol == "ENFERMERIA" %}
+
+            <!-- ENFERMERIA -->
+            <a href="{% url 'dashboard_redirect' %}" class="menu-item">
+                <span>📊</span>
+                <div>
+                    <strong>Dashboard Enfermería</strong>
+                    <small>Centro asistencial</small>
+                </div>
+            </a>
+
+            <a href="{% url 'pacientes' %}" class="menu-item">
+                <span>👤</span>
+                <div>
+                    <strong>Pacientes</strong>
+                    <small>Pacientes asignados</small>
+                </div>
+            </a>
+
+            <a href="{% url 'medicacion' %}" class="menu-item">
+                <span>💊</span>
+                <div>
+                    <strong>Medicación</strong>
+                    <small>Control y administración</small>
+                </div>
+            </a>
+
+            <a href="{% url 'seguridad' %}" class="menu-item">
+                <span>🛡️</span>
+                <div>
+                    <strong>Seguridad</strong>
+                    <small>Protección asistencial</small>
+                </div>
+            </a>
+
+            <a href="{% url 'reportes' %}" class="menu-item">
+                <span>📊</span>
+                <div>
+                    <strong>Reportes</strong>
+                    <small>Seguimiento clínico</small>
+                </div>
+            </a>
+
+        {% elif request.user.perfilusuario.rol == "PACIENTE" %}
+
+            <!-- PACIENTE -->
+            <a href="{% url 'dashboard_redirect' %}" class="menu-item">
+                <span>🏠</span>
+                <div>
+                    <strong>Mi Dashboard</strong>
+                    <small>Mi estado de salud</small>
+                </div>
+            </a>
+
+            <a href="{% url 'medicacion' %}" class="menu-item">
+                <span>💊</span>
+                <div>
+                    <strong>Mi medicación</strong>
+                    <small>Tratamientos activos</small>
+                </div>
+            </a>
+
+            <a href="{% url 'sueno' %}" class="menu-item">
+                <span>😴</span>
+                <div>
+                    <strong>Mi sueño</strong>
+                    <small>Monitoreo personal</small>
+                </div>
+            </a>
+
+            <a href="{% url 'reportes' %}" class="menu-item">
+                <span>📊</span>
+                <div>
+                    <strong>Mis reportes</strong>
+                    <small>Historial de salud</small>
+                </div>
+            </a>
+
+            <a href="{% url 'configuracion' %}" class="menu-item">
+                <span>⚙️</span>
+                <div>
+                    <strong>Configuración</strong>
+                    <small>Mi cuenta</small>
+                </div>
+            </a>
+
+        {% elif request.user.perfilusuario.rol == "FAMILIAR" %}
+
+            <!-- FAMILIAR -->
+            <a href="{% url 'dashboard_redirect' %}" class="menu-item">
+                <span>🏠</span>
+                <div>
+                    <strong>Dashboard Familiar</strong>
+                    <small>Seguimiento</small>
+                </div>
+            </a>
+
+            <a href="{% url 'reportes' %}" class="menu-item">
+                <span>📊</span>
+                <div>
+                    <strong>Reportes</strong>
+                    <small>Información del paciente</small>
+                </div>
+            </a>
+
+        {% elif request.user.perfilusuario.rol == "EMERGENCIA" %}
+
+            <!-- EMERGENCIA -->
+            <a href="{% url 'dashboard_redirect' %}" class="menu-item">
+                <span>🚨</span>
+                <div>
+                    <strong>Centro de Emergencias</strong>
+                    <small>Respuesta inmediata</small>
+                </div>
+            </a>
+
+        {% elif request.user.perfilusuario.rol == "INSTITUCION" %}
+
+            <!-- INSTITUCION -->
+            <a href="{% url 'dashboard_redirect' %}" class="menu-item">
+                <span>🏥</span>
+                <div>
+                    <strong>Dashboard Institucional</strong>
+                    <small>Gestión sanitaria</small>
+                </div>
+            </a>
+
+            <a href="{% url 'reportes' %}" class="menu-item">
+                <span>📊</span>
+                <div>
+                    <strong>Reportes</strong>
+                    <small>Información institucional</small>
+                </div>
+            </a>
+
+        {% endif %}
+
+        <!-- CERRAR SESIÓN — TODOS LOS ROLES -->
+        <a href="{% url 'logout' %}" class="menu-item">
+            <span>🚪</span>
+            <div>
+                <strong>Cerrar sesión</strong>
+                <small>Salir de Jarvice</small>
+            </div>
+        </a>
+
+    {% endif %}
+
+</nav>
+
+</aside>
+
+
+    <!-- MAIN -->
+
+    <main class="main">
+
+        <!-- TOPBAR -->
+
+        <header class="topbar">
+
+            <div class="top-title">
+
+                <h2>🧬 Jarvice Health AI</h2>
+
+                <small id="fecha"></small>
+
+            </div>
+
+
+            <div class="usuario">
+
+                <div class="server">
+                    🟢 Online
+                </div>
+
+                <div class="pulso">
+                    ❤️ <span id="pulsoTop">78</span>
+                </div>
+
+                <div class="alerta">
+                    🔔 <span id="contadorAlertas">0</span>
+                </div>
+
+                <div class="reloj" id="reloj"></div>
+
+                <div class="avatar">
+                    {{ request.user.username|first|upper }}
+                </div>
+
+                <strong>
+                    {{ request.user.username }}
+                </strong>
+
+            </div>
+
+        </header>
+
+
+        <!-- CONTENIDO DE CADA PÁGINA -->
+
+        <section class="contenido">
+
+            {% block contenido %}
+            {% endblock %}
+
+        </section>
+
+    </main>
 
 </div>
 
-<div class="contenido">
-
-{% block contenido %}
-
-{% endblock %}
-
-</div>
-
-</div>
 
 <script>
 
-function reloj(){
+function reloj() {
 
-    let ahora=new Date();
+    const ahora = new Date();
 
-    document.getElementById("reloj").innerHTML=
-    ahora.toLocaleTimeString();
+    const elemento = document.getElementById("reloj");
 
+    if (elemento) {
+        elemento.innerHTML = ahora.toLocaleTimeString("es-AR");
+    }
 }
+
+
+function actualizarBarra() {
+
+    const fecha = document.getElementById("fecha");
+    const pulso = document.getElementById("pulsoTop");
+    const alertas = document.getElementById("contadorAlertas");
+
+    if (fecha) {
+        fecha.innerHTML = new Date().toLocaleDateString("es-AR");
+    }
+
+    /*
+       Estos valores son solamente de demostración
+       mientras conectamos los datos reales de Jarvice.
+    */
+
+   if (pulso) {
+    {% if ultimo_signo_vital and ultimo_signo_vital.frecuencia_cardiaca %}
+        pulso.innerHTML = "{{ ultimo_signo_vital.frecuencia_cardiaca }}";
+    {% else %}
+        pulso.innerHTML = "--";
+    {% endif %}
+}
+
+    if (alertas) {
+        alertas.innerHTML = Math.floor(Math.random() * 3);
+    }
+}
+
 
 reloj();
-setInterval(reloj,1000);
-
-
-function actualizarBarra(){
-
-    document.getElementById("fecha").innerHTML =
-        new Date().toLocaleDateString();
-
-    document.getElementById("pulsoTop").innerHTML =
-        Math.floor(Math.random()*30)+65;
-
-    document.getElementById("contadorAlertas").innerHTML =
-        Math.floor(Math.random()*3);
-
-}
-
-setInterval(actualizarBarra,3000);
+setInterval(reloj, 1000);
 
 actualizarBarra();
+setInterval(actualizarBarra, 3000);
 
 </script>
-   
+<script>
+
+document.addEventListener("DOMContentLoaded", function () {
+
+    // ==========================================
+    // PRESENCIA JARVICE EN TIEMPO REAL
+    // ==========================================
+
+    const protocolo = window.location.protocol === "https:"
+        ? "wss://"
+        : "ws://";
+
+    const socket = new WebSocket(
+        protocolo +
+        window.location.host +
+        "/ws/presencia/"
+    );
+
+
+    // ==========================================
+    // CONEXIÓN ESTABLECIDA
+    // ==========================================
+
+    socket.onopen = function () {
+
+        console.log(
+            "🟢 JARVICE: presencia conectada"
+        );
+
+    };
+
+
+    // ==========================================
+    // MENSAJES DEL SERVIDOR
+    // ==========================================
+
+    socket.onmessage = function (event) {
+
+        const datos = JSON.parse(event.data);
+
+        console.log(
+            "👤 JARVICE PRESENCIA:",
+            datos
+        );
+
+    };
+
+
+    // ==========================================
+    // DESCONEXIÓN
+    // ==========================================
+
+    socket.onclose = function () {
+
+        console.log(
+            "🔴 JARVICE: presencia desconectada"
+        );
+
+    };
+
+
+    // ==========================================
+    // ERROR
+    // ==========================================
+
+    socket.onerror = function (error) {
+
+        console.error(
+            "⚠️ JARVICE: error de presencia",
+            error
+        );
+
+    };
+
+});
+
+</script>
 </body>
 </html>

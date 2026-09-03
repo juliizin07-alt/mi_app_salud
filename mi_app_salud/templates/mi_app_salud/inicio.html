@@ -176,6 +176,15 @@ body{
 {% include "mi_app_salud/componentes/navbar.html" %}
 
 
+<script>
+    window.JARVICE_PACIENTE_ID = {% if paciente %}{{ paciente.id }}{% else %}null{% endif %};
+</script>
+
+<script src="{% static 'mi_app_salud/js/inicio.js' %}"></script>
+
+
+
+
 <script src="{% static 'mi_app_salud/js/inicio.js' %}"></script>
 
 {% endblock %}

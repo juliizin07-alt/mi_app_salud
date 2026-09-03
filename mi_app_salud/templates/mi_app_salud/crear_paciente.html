@@ -1,28 +1,609 @@
 {% extends "mi_app_salud/base.html" %}
 
-<h1>Pacientes</h1>
+{% block extra_css %}
 
-{% if pacientes %}
+<style>
 
-    {% for p in pacientes %}
-    <div>
-        <h3>{{ p.nombre }}</h3>
+    .crear-paciente {
+        max-width: 1100px;
+        margin: 0 auto;
+        padding: 30px;
+    }
 
-        <button onclick="setEstado({{ p.id }}, 'OK')">OK</button>
-        <button onclick="setEstado({{ p.id }}, 'DOLOR')">Dolor</button>
-        <button onclick="setEstado({{ p.id }}, 'CRITICO')">Crítico</button>
+    .cabecera-paciente {
+        margin-bottom: 25px;
+    }
 
-        <p>Estado actual: {{ p.estado }}</p>
+    .cabecera-paciente h1 {
+        color: #00c6ff;
+        font-size: 28px;
+        margin-bottom: 8px;
+    }
+
+    .cabecera-paciente p {
+        color: #8ba9b8;
+        font-size: 14px;
+    }
+
+    .card-paciente {
+        background: rgba(5, 24, 39, 0.88);
+        border: 1px solid rgba(0, 198, 255, 0.16);
+        border-radius: 20px;
+        padding: 28px;
+        box-shadow: 0 15px 45px rgba(0, 0, 0, 0.25);
+    }
+
+    .seccion {
+        margin-bottom: 30px;
+    }
+
+    .seccion:last-child {
+        margin-bottom: 0;
+    }
+
+    .seccion-titulo {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        margin-bottom: 18px;
+        padding-bottom: 10px;
+        border-bottom: 1px solid rgba(255,255,255,.08);
+    }
+
+    .seccion-titulo h2 {
+        font-size: 16px;
+        color: #dff8ff;
+    }
+
+    .seccion-titulo span {
+        font-size: 20px;
+    }
+
+    .grid {
+        display: grid;
+        grid-template-columns: repeat(2, 1fr);
+        gap: 18px;
+    }
+
+    .campo-grupo {
+        display: flex;
+        flex-direction: column;
+        gap: 7px;
+    }
+
+    .campo-grupo.full {
+        grid-column: 1 / -1;
+    }
+
+    .campo-grupo label {
+        font-size: 12px;
+        color: #8bb5c7;
+        font-weight: bold;
+    }
+
+    .campo,
+    .campo-grupo input,
+    .campo-grupo select,
+    .campo-grupo textarea {
+        width: 100%;
+        padding: 12px 14px;
+        border-radius: 10px;
+        border: 1px solid rgba(0, 198, 255, .14);
+        background: rgba(0, 0, 0, .22);
+        color: white;
+        outline: none;
+        font-family: inherit;
+        font-size: 14px;
+    }
+
+    .campo-grupo textarea {
+        resize: vertical;
+    }
+
+    .campo:focus,
+    .campo-grupo input:focus,
+    .campo-grupo select:focus,
+    .campo-grupo textarea:focus {
+        border-color: #00c6ff;
+        box-shadow: 0 0 0 2px rgba(0, 198, 255, .08);
+    }
+
+    .ayuda {
+        font-size: 11px;
+        color: #648595;
+    }
+
+    .errores {
+        background: rgba(255, 70, 70, .10);
+        border: 1px solid rgba(255, 70, 70, .25);
+        color: #ff9a9a;
+        border-radius: 10px;
+        padding: 12px 15px;
+        margin-bottom: 20px;
+    }
+
+    .acciones {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        gap: 15px;
+        margin-top: 30px;
+        padding-top: 20px;
+        border-top: 1px solid rgba(255,255,255,.08);
+    }
+
+    .btn {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        gap: 8px;
+        padding: 12px 20px;
+        border-radius: 10px;
+        border: none;
+        cursor: pointer;
+        font-weight: bold;
+        text-decoration: none;
+        font-size: 14px;
+    }
+
+    .btn-cancelar {
+        background: rgba(255,255,255,.06);
+        color: #b9d2dc;
+        border: 1px solid rgba(255,255,255,.08);
+    }
+
+    .btn-guardar {
+        background: linear-gradient(
+            135deg,
+            #008dcc,
+            #00c6ff
+        );
+        color: white;
+        box-shadow: 0 8px 25px rgba(0, 198, 255, .18);
+    }
+
+    .btn:hover {
+        transform: translateY(-1px);
+    }
+
+    .info-hc {
+        background: rgba(0, 198, 255, .06);
+        border: 1px solid rgba(0, 198, 255, .12);
+        padding: 14px 16px;
+        border-radius: 12px;
+        color: #8edfff;
+        font-size: 13px;
+        margin-bottom: 25px;
+    }
+
+    .required {
+        color: #00c6ff;
+    }
+
+    @media (max-width: 800px) {
+
+        .crear-paciente {
+            padding: 20px;
+        }
+
+        .grid {
+            grid-template-columns: 1fr;
+        }
+
+        .campo-grupo.full {
+            grid-column: auto;
+        }
+
+        .acciones {
+            flex-direction: column-reverse;
+            align-items: stretch;
+        }
+
+    }
+
+</style>
+
+{% endblock %}
+
+
+{% block contenido %}
+
+<div class="crear-paciente">
+
+    <div class="cabecera-paciente">
+
+        <h1>👤 Nuevo paciente</h1>
+
+        <p>
+            Incorporar un nuevo paciente a la base clínica de Jarvice.
+        </p>
+
     </div>
-    <hr>
-    {% endfor %}
 
-{% else %}
-    <p>No hay pacientes cargados</p>
-{% endif %}
 
-<script>
-function setEstado(id, estado) {
-    window.location.href = `/estado/${id}/${estado}/`;
-}
-</script>
+    <div class="card-paciente">
+
+        {% if form.non_field_errors %}
+
+            <div class="errores">
+
+                {{ form.non_field_errors }}
+
+            </div>
+
+        {% endif %}
+
+
+        <div class="info-hc">
+
+            🏥 <strong>Historia clínica</strong><br>
+
+            Jarvice generará automáticamente el número de historia clínica
+            al registrar al paciente.
+
+        </div>
+
+
+        <form method="POST">
+
+            {% csrf_token %}
+
+
+            <!-- ========================================= -->
+            <!-- DATOS PERSONALES -->
+            <!-- ========================================= -->
+
+            <div class="seccion">
+
+                <div class="seccion-titulo">
+
+                    <span>🧬</span>
+
+                    <h2>
+                        Información personal
+                    </h2>
+
+                </div>
+
+
+                <div class="grid">
+
+
+                    <div class="campo-grupo">
+
+                        <label>
+                            Nombre <span class="required">*</span>
+                        </label>
+
+                        {{ form.nombre }}
+
+                        {% if form.nombre.errors %}
+                            <div class="errores">
+                                {{ form.nombre.errors }}
+                            </div>
+                        {% endif %}
+
+                    </div>
+
+
+                    <div class="campo-grupo">
+
+                        <label>
+                            Apellido <span class="required">*</span>
+                        </label>
+
+                        {{ form.apellido }}
+
+                        {% if form.apellido.errors %}
+                            <div class="errores">
+                                {{ form.apellido.errors }}
+                            </div>
+                        {% endif %}
+
+                    </div>
+
+
+                    <div class="campo-grupo">
+
+                        <label>
+                            DNI
+                        </label>
+
+                        {{ form.dni }}
+
+                        {% if form.dni.errors %}
+                            <div class="errores">
+                                {{ form.dni.errors }}
+                            </div>
+                        {% endif %}
+
+                    </div>
+
+
+                    <div class="campo-grupo">
+
+                        <label>
+                            Fecha de nacimiento
+                        </label>
+
+                        {{ form.fecha_nacimiento }}
+
+                    </div>
+
+
+                    <div class="campo-grupo">
+
+                        <label>
+                            Sexo
+                        </label>
+
+                        {{ form.sexo }}
+
+                    </div>
+
+
+                    <div class="campo-grupo">
+
+                        <label>
+                            Grupo sanguíneo
+                        </label>
+
+                        {{ form.grupo_sanguineo }}
+
+                    </div>
+
+
+                </div>
+
+            </div>
+
+
+            <!-- ========================================= -->
+            <!-- DATOS FISICOS -->
+            <!-- ========================================= -->
+
+            <div class="seccion">
+
+                <div class="seccion-titulo">
+
+                    <span>❤️</span>
+
+                    <h2>
+                        Datos clínicos básicos
+                    </h2>
+
+                </div>
+
+
+                <div class="grid">
+
+
+                    <div class="campo-grupo">
+
+                        <label>
+                            Peso
+                        </label>
+
+                        {{ form.peso }}
+
+                        <span class="ayuda">
+                            Kilogramos
+                        </span>
+
+                    </div>
+
+
+                    <div class="campo-grupo">
+
+                        <label>
+                            Altura
+                        </label>
+
+                        {{ form.altura }}
+
+                        <span class="ayuda">
+                            Metros
+                        </span>
+
+                    </div>
+
+
+                    <div class="campo-grupo full">
+
+                        <label>
+                            Alergias
+                        </label>
+
+                        {{ form.alergias }}
+
+                    </div>
+
+
+                    <div class="campo-grupo full">
+
+                        <label>
+                            Enfermedades / antecedentes
+                        </label>
+
+                        {{ form.enfermedades }}
+
+                    </div>
+
+
+                </div>
+
+            </div>
+
+
+            <!-- ========================================= -->
+            <!-- CONTACTO -->
+            <!-- ========================================= -->
+
+            <div class="seccion">
+
+                <div class="seccion-titulo">
+
+                    <span>📞</span>
+
+                    <h2>
+                        Información de contacto
+                    </h2>
+
+                </div>
+
+
+                <div class="grid">
+
+
+                    <div class="campo-grupo">
+
+                        <label>
+                            Teléfono
+                        </label>
+
+                        {{ form.telefono }}
+
+                    </div>
+
+
+                    <div class="campo-grupo">
+
+                        <label>
+                            Dirección
+                        </label>
+
+                        {{ form.direccion }}
+
+                    </div>
+
+
+                </div>
+
+            </div>
+
+
+            <!-- ========================================= -->
+            <!-- EMERGENCIA -->
+            <!-- ========================================= -->
+
+            <div class="seccion">
+
+                <div class="seccion-titulo">
+
+                    <span>🚨</span>
+
+                    <h2>
+                        Contacto de emergencia
+                    </h2>
+
+                </div>
+
+
+                <div class="grid">
+
+
+                    <div class="campo-grupo">
+
+                        <label>
+                            Nombre del contacto
+                        </label>
+
+                        {{ form.contacto_emergencia }}
+
+                    </div>
+
+
+                    <div class="campo-grupo">
+
+                        <label>
+                            Teléfono de emergencia
+                        </label>
+
+                        {{ form.telefono_emergencia }}
+
+                    </div>
+
+
+                </div>
+
+            </div>
+
+
+            <!-- ========================================= -->
+            <!-- INFORMACIÓN PROFESIONAL -->
+            <!-- ========================================= -->
+
+            <div class="seccion">
+
+                <div class="seccion-titulo">
+
+                    <span>🩺</span>
+
+                    <h2>
+                        Atención médica
+                    </h2>
+
+                </div>
+
+
+                <div class="grid">
+
+
+                    <div class="campo-grupo full">
+
+                        <label>
+                            Médico de cabecera
+                        </label>
+
+                        {{ form.medico_cabecera }}
+
+                    </div>
+
+
+                    <div class="campo-grupo full">
+
+                        <label>
+                            Observaciones clínicas
+                        </label>
+
+                        {{ form.observaciones }}
+
+                    </div>
+
+
+                </div>
+
+            </div>
+
+
+            <!-- ========================================= -->
+            <!-- ACCIONES -->
+            <!-- ========================================= -->
+
+            <div class="acciones">
+
+                <a
+                    href="{% url 'pacientes' %}"
+                    class="btn btn-cancelar"
+                >
+                    ← Cancelar
+                </a>
+
+
+                <button
+                    type="submit"
+                    class="btn btn-guardar"
+                >
+                    💾 Crear paciente
+                </button>
+
+            </div>
+
+
+        </form>
+
+    </div>
+
+</div>
+
+{% endblock %}

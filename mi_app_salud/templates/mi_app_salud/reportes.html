@@ -1,25 +1,1038 @@
 {% extends "mi_app_salud/base.html" %}
 
+{% block extra_css %}
+
+<style>
+
+.reportes-header {
+    margin-bottom: 25px;
+}
+
+.reportes-header h1 {
+    font-size: 30px;
+    color: #00c6ff;
+    margin-bottom: 8px;
+}
+
+.reportes-header p {
+    color: #8aa9b8;
+}
+
+
+/* ==============================
+   RESUMEN
+   ============================== */
+
+.resumen-grid {
+    display: grid;
+    grid-template-columns:
+        repeat(5, minmax(150px, 1fr));
+
+    gap: 15px;
+
+    margin-bottom: 25px;
+}
+
+.resumen-card {
+
+    background:
+        linear-gradient(
+            145deg,
+            rgba(0,198,255,.10),
+            rgba(255,255,255,.035)
+        );
+
+    border:
+        1px solid rgba(0,198,255,.15);
+
+    border-radius: 18px;
+
+    padding: 20px;
+
+    box-shadow:
+        0 15px 35px rgba(0,0,0,.20);
+}
+
+.resumen-card span {
+
+    display: block;
+
+    font-size: 12px;
+
+    color: #789aaa;
+
+    margin-bottom: 8px;
+}
+
+.resumen-card strong {
+
+    display: block;
+
+    font-size: 28px;
+
+    color: #ffffff;
+}
+
+.resumen-card small {
+
+    display: block;
+
+    margin-top: 6px;
+
+    color: #00c6ff;
+
+}
+
+
+/* ==============================
+   SIGNOS ACTUALES
+   ============================== */
+
+.vitales-grid {
+
+    display: grid;
+
+    grid-template-columns:
+        repeat(3, 1fr);
+
+    gap: 15px;
+
+    margin-bottom: 25px;
+}
+
+.vital-card {
+
+    background:
+        rgba(255,255,255,.045);
+
+    border:
+        1px solid rgba(255,255,255,.08);
+
+    border-radius: 18px;
+
+    padding: 20px;
+
+}
+
+.vital-card .icono {
+
+    font-size: 25px;
+
+    margin-bottom: 10px;
+}
+
+.vital-card span {
+
+    color: #789aaa;
+
+    font-size: 12px;
+}
+
+.vital-card strong {
+
+    display: block;
+
+    font-size: 30px;
+
+    margin-top: 6px;
+
+    color: #ffffff;
+}
+
+.vital-card small {
+
+    color: #6d8d9d;
+}
+
+
+/* ==============================
+   GRÁFICOS
+   ============================== */
+
+.graficos-grid {
+
+    display: grid;
+
+    grid-template-columns:
+        repeat(2, 1fr);
+
+    gap: 20px;
+
+}
+
+.grafico-card {
+
+    background:
+        rgba(255,255,255,.045);
+
+    border:
+        1px solid rgba(255,255,255,.08);
+
+    border-radius: 20px;
+
+    padding: 22px;
+
+    min-height: 350px;
+
+    box-shadow:
+        0 15px 40px rgba(0,0,0,.18);
+}
+
+.grafico-card.grande {
+
+    grid-column:
+        span 2;
+}
+
+.grafico-card h2 {
+
+    font-size: 17px;
+
+    color: #dff9ff;
+
+    margin-bottom: 5px;
+}
+
+.grafico-card p {
+
+    font-size: 11px;
+
+    color: #7194a3;
+
+    margin-bottom: 20px;
+}
+
+.grafico-container {
+
+    position: relative;
+
+    height: 270px;
+}
+
+
+/* ==============================
+   ESTADO CRÍTICO
+   ============================== */
+
+.alerta-critica {
+
+    margin-top: 25px;
+
+    padding: 18px;
+
+    border-radius: 16px;
+
+    border:
+        1px solid rgba(255,70,70,.25);
+
+    background:
+        rgba(255,70,70,.08);
+
+    color: #ff9a9a;
+}
+
+.alerta-critica strong {
+
+    color: #ff6868;
+
+}
+
+
+/* ==============================
+   RESPONSIVE
+   ============================== */
+
+@media (max-width: 1100px) {
+
+    .resumen-grid {
+
+        grid-template-columns:
+            repeat(3, 1fr);
+
+    }
+
+}
+
+@media (max-width: 850px) {
+
+    .graficos-grid {
+
+        grid-template-columns:
+            1fr;
+
+    }
+
+    .grafico-card.grande {
+
+        grid-column:
+            span 1;
+
+    }
+
+    .vitales-grid {
+
+        grid-template-columns:
+            1fr;
+
+    }
+
+}
+
+@media (max-width: 600px) {
+
+    .resumen-grid {
+
+        grid-template-columns:
+            1fr 1fr;
+
+    }
+
+}
+
+</style>
+
+{% endblock %}
+
 
 {% block contenido %}
 
-<h1>📊 Reportes Jarvice</h1>
+<!-- ==================================================
+     ENCABEZADO
+     ================================================== -->
 
+<div class="reportes-header">
 
-<div class="card">
+    <h1>
+        📊 Reportes Jarvice
+    </h1>
 
-<p>
-Informes inteligentes generados por Jarvice AI.
-</p>
-
-<ul>
-<li>Estado físico</li>
-<li>Estado emocional</li>
-<li>Alertas</li>
-<li>Evolución semanal</li>
-</ul>
+    <p>
+        Centro de análisis clínico e inteligencia de salud.
+    </p>
 
 </div>
+
+
+<!-- ==================================================
+     RESUMEN GENERAL
+     ================================================== -->
+
+<div class="resumen-grid">
+
+    <div class="resumen-card">
+
+        <span>👤 Pacientes</span>
+
+        <strong>
+            {{ total_pacientes }}
+        </strong>
+
+        <small>
+            Registrados
+        </small>
+
+    </div>
+
+
+    <div class="resumen-card">
+
+        <span>❤️ Registros vitales</span>
+
+        <strong>
+            {{ total_signos }}
+        </strong>
+
+        <small>
+            Mediciones
+        </small>
+
+    </div>
+
+
+    <div class="resumen-card">
+
+        <span>💊 Medicaciones</span>
+
+        <strong>
+            {{ total_medicaciones }}
+        </strong>
+
+        <small>
+            Registradas
+        </small>
+
+    </div>
+
+
+    <div class="resumen-card">
+
+        <span>🩺 Evoluciones</span>
+
+        <strong>
+            {{ total_evoluciones }}
+        </strong>
+
+        <small>
+            Clínicas
+        </small>
+
+    </div>
+
+
+    <div class="resumen-card">
+
+        <span>🔬 Estudios</span>
+
+        <strong>
+            {{ total_estudios }}
+        </strong>
+
+        <small>
+            Médicos
+        </small>
+
+    </div>
+
+</div>
+
+
+<!-- ==================================================
+     ÚLTIMOS SIGNOS
+     ================================================== -->
+
+<div class="vitales-grid">
+
+    <div class="vital-card">
+
+        <div class="icono">
+            ❤️
+        </div>
+
+        <span>
+            Frecuencia cardíaca
+        </span>
+
+        <strong>
+
+            {% if ultimo_pulso %}
+                {{ ultimo_pulso }}
+                <small>BPM</small>
+            {% else %}
+                --
+            {% endif %}
+
+        </strong>
+
+        <small>
+            Último registro
+        </small>
+
+    </div>
+
+
+    <div class="vital-card">
+
+        <div class="icono">
+            🫁
+        </div>
+
+        <span>
+            Saturación de oxígeno
+        </span>
+
+        <strong>
+
+            {% if ultima_saturacion %}
+                {{ ultima_saturacion }}%
+            {% else %}
+                --
+            {% endif %}
+
+        </strong>
+
+        <small>
+            Última medición
+        </small>
+
+    </div>
+
+
+    <div class="vital-card">
+
+        <div class="icono">
+            🌡️
+        </div>
+
+        <span>
+            Temperatura
+        </span>
+
+        <strong>
+
+            {% if ultima_temperatura %}
+                {{ ultima_temperatura }}°C
+            {% else %}
+                --
+            {% endif %}
+
+        </strong>
+
+        <small>
+            Última medición
+        </small>
+
+    </div>
+
+</div>
+
+
+<!-- ==================================================
+     GRÁFICOS
+     ================================================== -->
+
+<div class="graficos-grid">
+
+
+    <!-- SIGNOS VITALES -->
+
+    <div class="grafico-card grande">
+
+        <h2>
+            ❤️ Evolución de signos vitales
+        </h2>
+
+        <p>
+            Seguimiento histórico de frecuencia cardíaca,
+            saturación y temperatura.
+        </p>
+
+        <div class="grafico-container">
+
+            <canvas id="graficoSignos"></canvas>
+
+        </div>
+
+    </div>
+
+
+    <!-- ESTADO FÍSICO -->
+
+    <div class="grafico-card">
+
+        <h2>
+            🩺 Estado físico
+        </h2>
+
+        <p>
+            Distribución de los estados registrados.
+        </p>
+
+        <div class="grafico-container">
+
+            <canvas id="graficoFisico"></canvas>
+
+        </div>
+
+    </div>
+
+
+    <!-- ESTADO EMOCIONAL -->
+
+    <div class="grafico-card">
+
+        <h2>
+            🧠 Estado emocional
+        </h2>
+
+        <p>
+            Distribución emocional registrada.
+        </p>
+
+        <div class="grafico-container">
+
+            <canvas id="graficoEmocional"></canvas>
+
+        </div>
+
+    </div>
+
+
+    <!-- MEDICACIÓN -->
+
+    <div class="grafico-card">
+
+        <h2>
+            💊 Control de medicación
+        </h2>
+
+        <p>
+            Medicaciones tomadas y pendientes.
+        </p>
+
+        <div class="grafico-container">
+
+            <canvas id="graficoMedicacion"></canvas>
+
+        </div>
+
+    </div>
+
+
+</div>
+
+
+<!-- ==================================================
+     ALERTAS
+     ================================================== -->
+
+{% if alertas_criticas > 0 %}
+
+<div class="alerta-critica">
+
+    🚨
+
+    <strong>
+        Atención Jarvice:
+    </strong>
+
+    se registraron
+    {{ alertas_criticas }}
+    estado{{ alertas_criticas|pluralize }}
+    físico{{ alertas_criticas|pluralize }}
+    crítico{{ alertas_criticas|pluralize }}.
+
+</div>
+
+{% endif %}
+
+
+<!-- ==================================================
+     CHART.JS
+     ================================================== -->
+
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+
+<!-- ==================================================
+     DATOS DJANGO → JAVASCRIPT
+     ================================================== -->
+
+{{ signos_data|json_script:"signos-data" }}
+
+{{ estado_fisico_data|json_script:"fisico-data" }}
+
+{{ estado_emocional_data|json_script:"emocional-data" }}
+
+{{ medicacion_data|json_script:"medicacion-data" }}
+
+
+<script>
+
+const signos =
+    JSON.parse(
+        document.getElementById(
+            "signos-data"
+        ).textContent
+    );
+
+
+const fisico =
+    JSON.parse(
+        document.getElementById(
+            "fisico-data"
+        ).textContent
+    );
+
+
+const emocional =
+    JSON.parse(
+        document.getElementById(
+            "emocional-data"
+        ).textContent
+    );
+
+
+const medicacion =
+    JSON.parse(
+        document.getElementById(
+            "medicacion-data"
+        ).textContent
+    );
+
+
+// ==================================================
+// GRÁFICO SIGNOS VITALES
+// ==================================================
+
+new Chart(
+
+    document.getElementById(
+        "graficoSignos"
+    ),
+
+    {
+
+        type: "line",
+
+        data: {
+
+            labels:
+                signos.map(
+                    item => item.fecha
+                ),
+
+            datasets: [
+
+                {
+
+                    label:
+                        "Frecuencia cardíaca",
+
+                    data:
+                        signos.map(
+                            item =>
+                                item.frecuencia_cardiaca
+                        ),
+
+                    tension: 0.35,
+
+                    spanGaps: true
+
+                },
+
+                {
+
+                    label:
+                        "Saturación O₂",
+
+                    data:
+                        signos.map(
+                            item =>
+                                item.saturacion
+                        ),
+
+                    tension: 0.35,
+
+                    spanGaps: true
+
+                },
+
+                {
+
+                    label:
+                        "Temperatura",
+
+                    data:
+                        signos.map(
+                            item =>
+                                item.temperatura
+                        ),
+
+                    tension: 0.35,
+
+                    spanGaps: true
+
+                }
+
+            ]
+
+        },
+
+        options: {
+
+            responsive: true,
+
+            maintainAspectRatio: false,
+
+            interaction: {
+
+                mode: "index",
+
+                intersect: false
+
+            },
+
+            plugins: {
+
+                legend: {
+
+                    labels: {
+
+                        color: "#dff9ff"
+
+                    }
+
+                }
+
+            },
+
+            scales: {
+
+                x: {
+
+                    ticks: {
+
+                        color: "#789aaa"
+
+                    },
+
+                    grid: {
+
+                        color:
+                            "rgba(255,255,255,.05)"
+
+                    }
+
+                },
+
+                y: {
+
+                    ticks: {
+
+                        color: "#789aaa"
+
+                    },
+
+                    grid: {
+
+                        color:
+                            "rgba(255,255,255,.05)"
+
+                    }
+
+                }
+
+            }
+
+        }
+
+    }
+
+);
+
+
+// ==================================================
+// ESTADO FÍSICO
+// ==================================================
+
+new Chart(
+
+    document.getElementById(
+        "graficoFisico"
+    ),
+
+    {
+
+        type: "doughnut",
+
+        data: {
+
+            labels:
+                fisico.map(
+                    item => item.estado
+                ),
+
+            datasets: [
+
+                {
+
+                    data:
+                        fisico.map(
+                            item => item.total
+                        )
+
+                }
+
+            ]
+
+        },
+
+        options: {
+
+            responsive: true,
+
+            maintainAspectRatio: false,
+
+            plugins: {
+
+                legend: {
+
+                    position: "bottom",
+
+                    labels: {
+
+                        color: "#dff9ff"
+
+                    }
+
+                }
+
+            }
+
+        }
+
+    }
+
+);
+
+
+// ==================================================
+// ESTADO EMOCIONAL
+// ==================================================
+
+new Chart(
+
+    document.getElementById(
+        "graficoEmocional"
+    ),
+
+    {
+
+        type: "bar",
+
+        data: {
+
+            labels:
+                emocional.map(
+                    item => item.estado
+                ),
+
+            datasets: [
+
+                {
+
+                    label:
+                        "Registros",
+
+                    data:
+                        emocional.map(
+                            item => item.total
+                        )
+
+                }
+
+            ]
+
+        },
+
+        options: {
+
+            responsive: true,
+
+            maintainAspectRatio: false,
+
+            plugins: {
+
+                legend: {
+
+                    labels: {
+
+                        color: "#dff9ff"
+
+                    }
+
+                }
+
+            },
+
+            scales: {
+
+                x: {
+
+                    ticks: {
+
+                        color: "#789aaa"
+
+                    }
+
+                },
+
+                y: {
+
+                    beginAtZero: true,
+
+                    ticks: {
+
+                        color: "#789aaa"
+
+                    }
+
+                }
+
+            }
+
+        }
+
+    }
+
+);
+
+
+// ==================================================
+// MEDICACIÓN
+// ==================================================
+
+new Chart(
+
+    document.getElementById(
+        "graficoMedicacion"
+    ),
+
+    {
+
+        type: "doughnut",
+
+        data: {
+
+            labels:
+                medicacion.map(
+                    item => item.estado
+                ),
+
+            datasets: [
+
+                {
+
+                    data:
+                        medicacion.map(
+                            item => item.total
+                        )
+
+                }
+
+            ]
+
+        },
+
+        options: {
+
+            responsive: true,
+
+            maintainAspectRatio: false,
+
+            plugins: {
+
+                legend: {
+
+                    position: "bottom",
+
+                    labels: {
+
+                        color: "#dff9ff"
+
+                    }
+
+                }
+
+            }
+
+        }
+
+    }
+
+);
+
+</script>
 
 
 {% endblock %}

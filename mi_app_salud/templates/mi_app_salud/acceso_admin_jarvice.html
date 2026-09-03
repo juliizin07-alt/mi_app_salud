@@ -1,0 +1,188 @@
+﻿{% extends "mi_app_salud/base_login.html" %}
+
+{% block contenido %}
+
+<style>
+.jarvice-access {
+    min-height: 100vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 30px;
+    box-sizing: border-box;
+}
+
+.jarvice-card {
+    width: 100%;
+    max-width: 460px;
+    background: rgba(2, 6, 23, 0.95);
+    border: 1px solid rgba(0, 174, 255, 0.4);
+    border-radius: 22px;
+    padding: 40px;
+    box-sizing: border-box;
+    box-shadow: 0 0 35px rgba(0, 174, 255, 0.2);
+    color: white;
+}
+
+.jarvice-logo {
+    text-align: center;
+    margin-bottom: 30px;
+}
+
+.jarvice-logo h1 {
+    margin: 0;
+    font-size: 32px;
+    letter-spacing: 3px;
+    color: #38bdf8;
+}
+
+.jarvice-logo p {
+    margin-top: 8px;
+    color: #94a3b8;
+    font-size: 14px;
+}
+
+.jarvice-warning {
+    background: rgba(239, 68, 68, 0.12);
+    border: 1px solid rgba(239, 68, 68, 0.35);
+    color: #fca5a5;
+    border-radius: 10px;
+    padding: 12px;
+    margin-bottom: 20px;
+    text-align: center;
+    font-size: 14px;
+}
+
+.jarvice-field {
+    margin-bottom: 18px;
+}
+
+.jarvice-field label {
+    display: block;
+    margin-bottom: 7px;
+    color: #cbd5e1;
+    font-size: 14px;
+}
+
+.jarvice-field input {
+    width: 100%;
+    box-sizing: border-box;
+    padding: 13px 15px;
+    border-radius: 10px;
+    border: 1px solid #334155;
+    background: #0f172a;
+    color: white;
+    outline: none;
+    font-size: 15px;
+}
+
+.jarvice-field input:focus {
+    border-color: #38bdf8;
+    box-shadow: 0 0 0 2px rgba(56, 189, 248, 0.12);
+}
+
+.jarvice-button {
+    width: 100%;
+    border: none;
+    border-radius: 10px;
+    padding: 14px;
+    background: linear-gradient(135deg, #0284c7, #2563eb);
+    color: white;
+    font-weight: bold;
+    font-size: 15px;
+    cursor: pointer;
+    margin-top: 8px;
+}
+
+.jarvice-button:hover {
+    filter: brightness(1.12);
+}
+
+.jarvice-security {
+    text-align: center;
+    margin-top: 25px;
+    color: #64748b;
+    font-size: 12px;
+    line-height: 1.5;
+}
+</style>
+
+<div class="jarvice-access">
+
+    <div class="jarvice-card">
+
+        <div class="jarvice-logo">
+            <h1>JARVICE CORE</h1>
+            <p>Acceso administrativo seguro</p>
+        </div>
+
+        {% if mensaje_error %}
+            <div class="jarvice-warning">
+                {{ mensaje_error }}
+            </div>
+        {% endif %}
+
+        <form method="POST">
+
+            {% csrf_token %}
+
+            <div class="jarvice-field">
+                <label for="codigo">
+                    Código administrativo
+                </label>
+
+                <input
+                    type="password"
+                    id="codigo"
+                    name="codigo"
+                    placeholder="Ingresá el código secreto"
+                    required
+                >
+            </div>
+
+            <div class="jarvice-field">
+                <label for="username">
+                    Usuario administrador
+                </label>
+
+                <input
+                    type="text"
+                    id="username"
+                    name="username"
+                    placeholder="Usuario"
+                    autocomplete="username"
+                    required
+                >
+            </div>
+
+            <div class="jarvice-field">
+                <label for="password">
+                    Contraseña
+                </label>
+
+                <input
+                    type="password"
+                    id="password"
+                    name="password"
+                    placeholder="Contraseña"
+                    autocomplete="current-password"
+                    required
+                >
+            </div>
+
+            <button type="submit" class="jarvice-button">
+                ACCEDER AL CORE
+            </button>
+
+        </form>
+
+        <div class="jarvice-security">
+            Acceso restringido.<br>
+            Solo personal autorizado.
+        </div>
+
+    </div>
+
+</div>
+
+{% endblock %}

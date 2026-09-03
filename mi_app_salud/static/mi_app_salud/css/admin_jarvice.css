@@ -1,0 +1,618 @@
+/* =========================================================
+   JARVICE CORE — PANEL MAESTRO
+   ========================================================= */
+
+.jarvice-admin {
+    width: 100%;
+    max-width: 1500px;
+    margin: 0 auto;
+}
+
+
+/* =========================================================
+   CABECERA
+   ========================================================= */
+
+.jarvice-admin-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 25px;
+
+    padding: 28px;
+    margin-bottom: 25px;
+
+    border-radius: 22px;
+
+    background:
+        linear-gradient(
+            135deg,
+            rgba(0, 198, 255, 0.12),
+            rgba(0, 114, 255, 0.04)
+        );
+
+    border: 1px solid rgba(0, 198, 255, 0.18);
+
+    box-shadow:
+        0 20px 50px rgba(0, 0, 0, .25);
+}
+
+
+.jarvice-admin-badge {
+    display: inline-block;
+
+    padding: 6px 12px;
+
+    border-radius: 20px;
+
+    font-size: 11px;
+    font-weight: bold;
+
+    letter-spacing: 1.5px;
+
+    color: #8be9ff;
+
+    background: rgba(0, 198, 255, .10);
+
+    border: 1px solid rgba(0, 198, 255, .18);
+}
+
+
+.jarvice-admin-header h1 {
+    margin-top: 10px;
+
+    font-size: 32px;
+
+    color: #ffffff;
+}
+
+
+.jarvice-admin-header p {
+    margin-top: 8px;
+
+    color: #7fa5b8;
+
+    font-size: 14px;
+}
+
+
+.jarvice-admin-status {
+    display: flex;
+    align-items: center;
+    gap: 9px;
+
+    padding: 10px 15px;
+
+    border-radius: 20px;
+
+    background: rgba(22, 199, 132, .10);
+
+    color: #7dffb5;
+
+    font-size: 12px;
+    font-weight: bold;
+}
+
+
+.status-dot {
+    width: 9px;
+    height: 9px;
+
+    border-radius: 50%;
+
+    background: #39ff88;
+
+    box-shadow:
+        0 0 10px rgba(57, 255, 136, .8);
+}
+
+
+/* =========================================================
+   ESTADÍSTICAS
+   ========================================================= */
+
+.jarvice-stats {
+    display: grid;
+
+    grid-template-columns:
+        repeat(4, minmax(0, 1fr));
+
+    gap: 18px;
+
+    margin-bottom: 25px;
+}
+
+
+.jarvice-stat-card {
+    position: relative;
+
+    padding: 22px;
+
+    min-height: 145px;
+
+    border-radius: 18px;
+
+    background:
+        linear-gradient(
+            145deg,
+            rgba(255,255,255,.055),
+            rgba(255,255,255,.018)
+        );
+
+    border: 1px solid rgba(255,255,255,.08);
+
+    box-shadow:
+        0 15px 35px rgba(0,0,0,.20);
+
+    overflow: hidden;
+
+    transition:
+        transform .2s ease,
+        border-color .2s ease,
+        box-shadow .2s ease;
+}
+
+
+.jarvice-stat-card::before {
+    content: "";
+
+    position: absolute;
+
+    left: 0;
+    top: 0;
+
+    width: 4px;
+    height: 100%;
+
+    background:
+        linear-gradient(
+            #00c6ff,
+            #0072ff
+        );
+}
+
+
+.jarvice-stat-card:hover {
+    transform: translateY(-3px);
+
+    border-color:
+        rgba(0,198,255,.25);
+
+    box-shadow:
+        0 20px 45px rgba(0,0,0,.30);
+}
+
+
+.stat-title {
+    display: block;
+
+    color: #7fa5b8;
+
+    font-size: 12px;
+
+    text-transform: uppercase;
+
+    letter-spacing: .8px;
+}
+
+
+.jarvice-stat-card strong {
+    display: block;
+
+    margin-top: 12px;
+
+    font-size: 38px;
+
+    line-height: 1;
+
+    color: #ffffff;
+}
+
+
+.jarvice-stat-card small {
+    display: block;
+
+    margin-top: 10px;
+
+    color: #668899;
+
+    font-size: 11px;
+}
+
+
+/* =========================================================
+   CENTRO DE CONTROL
+   ========================================================= */
+
+.jarvice-control-grid {
+    display: grid;
+
+    grid-template-columns:
+        repeat(3, minmax(0, 1fr));
+
+    gap: 18px;
+
+    margin-bottom: 30px;
+}
+
+
+.jarvice-control-card {
+    display: flex;
+
+    align-items: center;
+
+    gap: 17px;
+
+    min-height: 120px;
+
+    padding: 22px;
+
+    border-radius: 18px;
+
+    background:
+        rgba(255,255,255,.035);
+
+    border:
+        1px solid rgba(255,255,255,.07);
+
+    transition:
+        transform .2s ease,
+        background .2s ease,
+        border-color .2s ease;
+
+    cursor: pointer;
+}
+
+
+.jarvice-control-card:hover {
+    transform: translateY(-3px);
+
+    background:
+        rgba(0,140,255,.08);
+
+    border-color:
+        rgba(0,198,255,.25);
+}
+
+
+.control-icon {
+    flex-shrink: 0;
+
+    width: 55px;
+    height: 55px;
+
+    display: flex;
+
+    align-items: center;
+    justify-content: center;
+
+    border-radius: 15px;
+
+    font-size: 25px;
+
+    background:
+        rgba(0,198,255,.10);
+
+    border:
+        1px solid rgba(0,198,255,.12);
+}
+
+
+.jarvice-control-card h2 {
+    font-size: 16px;
+
+    color: #e8fbff;
+}
+
+
+.jarvice-control-card p {
+    margin-top: 6px;
+
+    color: #718f9d;
+
+    font-size: 12px;
+
+    line-height: 1.5;
+}
+
+
+/* =========================================================
+   SECCIONES
+   ========================================================= */
+
+.jarvice-section {
+    margin-top: 25px;
+
+    padding: 25px;
+
+    border-radius: 20px;
+
+    background:
+        rgba(255,255,255,.025);
+
+    border:
+        1px solid rgba(255,255,255,.07);
+
+    box-shadow:
+        0 15px 35px rgba(0,0,0,.18);
+}
+
+
+.section-header {
+    display: flex;
+
+    justify-content: space-between;
+
+    align-items: center;
+
+    margin-bottom: 20px;
+}
+
+
+.section-header h2 {
+    color: #e8fbff;
+
+    font-size: 19px;
+}
+
+
+.section-header p {
+    margin-top: 5px;
+
+    color: #668899;
+
+    font-size: 12px;
+}
+
+
+/* =========================================================
+   TABLA
+   ========================================================= */
+
+.jarvice-table-container {
+    width: 100%;
+
+    overflow-x: auto;
+}
+
+
+.jarvice-table {
+    width: 100%;
+
+    border-collapse: collapse;
+
+    min-width: 600px;
+}
+
+
+.jarvice-table th {
+    padding: 14px;
+
+    text-align: left;
+
+    font-size: 11px;
+
+    text-transform: uppercase;
+
+    letter-spacing: .7px;
+
+    color: #638596;
+
+    border-bottom:
+        1px solid rgba(255,255,255,.08);
+}
+
+
+.jarvice-table td {
+    padding: 16px 14px;
+
+    color: #dff8ff;
+
+    font-size: 13px;
+
+    border-bottom:
+        1px solid rgba(255,255,255,.05);
+}
+
+
+.jarvice-table tbody tr {
+    transition:
+        background .2s ease;
+}
+
+
+.jarvice-table tbody tr:hover {
+    background:
+        rgba(0,140,255,.05);
+}
+
+
+.jarvice-table td strong {
+    color: #ffffff;
+}
+
+
+/* =========================================================
+   BADGES
+   ========================================================= */
+
+.badge-active,
+.badge-inactive,
+.badge-admin,
+.badge-user {
+    display: inline-block;
+
+    padding: 6px 10px;
+
+    border-radius: 20px;
+
+    font-size: 10px;
+
+    font-weight: bold;
+}
+
+
+.badge-active {
+    color: #7dffb5;
+
+    background:
+        rgba(22,199,132,.10);
+}
+
+
+.badge-inactive {
+    color: #ff9090;
+
+    background:
+        rgba(255,77,77,.10);
+}
+
+
+.badge-admin {
+    color: #8be9ff;
+
+    background:
+        rgba(0,198,255,.10);
+
+    border:
+        1px solid rgba(0,198,255,.12);
+}
+
+
+.badge-user {
+    color: #c3dce8;
+
+    background:
+        rgba(255,255,255,.06);
+}
+
+
+/* =========================================================
+   PACIENTES
+   ========================================================= */
+
+.jarvice-patient-list {
+    display: grid;
+
+    grid-template-columns:
+        repeat(auto-fit, minmax(250px, 1fr));
+
+    gap: 12px;
+}
+
+
+.jarvice-patient {
+    padding: 17px;
+
+    border-radius: 14px;
+
+    background:
+        rgba(255,255,255,.035);
+
+    border:
+        1px solid rgba(255,255,255,.06);
+}
+
+
+.jarvice-patient strong {
+    display: block;
+
+    color: #e8fbff;
+
+    font-size: 14px;
+}
+
+
+.jarvice-patient small {
+    display: block;
+
+    margin-top: 6px;
+
+    color: #668899;
+
+    font-size: 11px;
+}
+
+
+/* =========================================================
+   FOOTER CORE
+   ========================================================= */
+
+.jarvice-core-footer {
+    display: flex;
+
+    justify-content: space-between;
+
+    align-items: center;
+
+    gap: 15px;
+
+    margin-top: 25px;
+
+    padding: 18px 5px;
+
+    color: #527384;
+
+    font-size: 10px;
+
+    letter-spacing: .7px;
+
+    text-transform: uppercase;
+}
+
+
+.jarvice-core-footer span:first-child {
+    color: #00c6ff;
+
+    font-weight: bold;
+}
+
+
+/* =========================================================
+   RESPONSIVE
+   ========================================================= */
+
+@media (max-width: 1100px) {
+
+    .jarvice-stats {
+        grid-template-columns:
+            repeat(2, minmax(0, 1fr));
+    }
+
+    .jarvice-control-grid {
+        grid-template-columns:
+            repeat(2, minmax(0, 1fr));
+    }
+
+}
+
+
+@media (max-width: 700px) {
+
+    .jarvice-admin-header {
+        flex-direction: column;
+
+        align-items: flex-start;
+    }
+
+    .jarvice-stats {
+        grid-template-columns:
+            1fr;
+    }
+
+    .jarvice-control-grid {
+        grid-template-columns:
+            1fr;
+    }
+
+    .jarvice-section {
+        padding: 18px;
+    }
+
+    .jarvice-core-footer {
+        flex-direction: column;
+
+        align-items: flex-start;
+    }
+
+}

@@ -2,8 +2,897 @@
 
 {% block contenido %}
 
-<h1>🚑 Centro de Emergencias Jarvice</h1>
+<div style="
+    background: rgba(255,255,255,.045);
+    border: 1px solid rgba(255,77,77,.25);
+    border-radius: 22px;
+    padding: 30px;
+    max-width: 1200px;
+    margin: 0 auto;
+">
 
-<p>Módulo en construcción...</p>
+<!-- ================================================== -->
+
+<!-- ENCABEZADO -->
+
+<!-- ================================================== -->
+
+<div style="
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 20px;
+    margin-bottom: 30px;
+    flex-wrap: wrap;
+">
+
+
+<div>
+
+    <div style="
+        color: #ff6b6b;
+        font-size: 14px;
+        font-weight: 700;
+        letter-spacing: 1px;
+        margin-bottom: 8px;
+    ">
+        JARVICE HEALTH AI · EMERGENCIAS
+    </div>
+
+    <h1 style="
+        color: #ffffff;
+        margin: 0;
+        font-size: 32px;
+    ">
+        🚑 Centro de Emergencias
+    </h1>
+
+    <p style="
+        color: #8ba9b8;
+        margin-top: 8px;
+    ">
+        Centro de gestión y respuesta ante situaciones críticas.
+    </p>
+
+</div>
+
+<div style="
+    padding: 12px 18px;
+    border-radius: 14px;
+    background: rgba(22,199,132,.08);
+    border: 1px solid rgba(22,199,132,.25);
+    color: #7dffb5;
+    font-weight: 700;
+">
+    🟢 Sistema operativo
+</div>
+
+
+</div>
+
+<!-- ================================================== -->
+
+<!-- RESUMEN DEL SISTEMA -->
+
+<!-- ================================================== -->
+
+<div style="
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(210px, 1fr));
+    gap: 15px;
+    margin-bottom: 25px;
+">
+
+
+<!-- ALERTAS -->
+
+<div style="
+    background: rgba(255,77,77,.07);
+    border: 1px solid rgba(255,77,77,.25);
+    border-radius: 16px;
+    padding: 20px;
+">
+
+    <div style="font-size: 26px;">
+        🚨
+    </div>
+
+    <div style="
+        color: #8ba9b8;
+        margin-top: 8px;
+    ">
+        Alertas activas
+    </div>
+
+    <strong style="
+        display: block;
+        color: #ff8585;
+        font-size: 30px;
+        margin-top: 5px;
+    ">
+        {{ total_alertas|default:0 }}
+    </strong>
+
+</div>
+
+
+<!-- CRÍTICAS -->
+
+<div style="
+    background: rgba(255,77,77,.055);
+    border: 1px solid rgba(255,77,77,.20);
+    border-radius: 16px;
+    padding: 20px;
+">
+
+    <div style="font-size: 26px;">
+        🆘
+    </div>
+
+    <div style="
+        color: #8ba9b8;
+        margin-top: 8px;
+    ">
+        Situaciones críticas
+    </div>
+
+    <strong style="
+        display: block;
+        color: #ff6b6b;
+        font-size: 30px;
+        margin-top: 5px;
+    ">
+        {{ total_criticas|default:0 }}
+    </strong>
+
+</div>
+
+
+<!-- DOLOR -->
+
+<div style="
+    background: rgba(255,170,0,.055);
+    border: 1px solid rgba(255,170,0,.20);
+    border-radius: 16px;
+    padding: 20px;
+">
+
+    <div style="font-size: 26px;">
+        ⚠️
+    </div>
+
+    <div style="
+        color: #8ba9b8;
+        margin-top: 8px;
+    ">
+        Situaciones de dolor
+    </div>
+
+    <strong style="
+        display: block;
+        color: #ffc45c;
+        font-size: 30px;
+        margin-top: 5px;
+    ">
+        {{ total_dolor|default:0 }}
+    </strong>
+
+</div>
+
+
+<!-- QR -->
+
+<div style="
+    background: rgba(22,199,132,.055);
+    border: 1px solid rgba(22,199,132,.20);
+    border-radius: 16px;
+    padding: 20px;
+">
+
+    <div style="font-size: 26px;">
+        📱
+    </div>
+
+    <div style="
+        color: #8ba9b8;
+        margin-top: 8px;
+    ">
+        Servicio QR
+    </div>
+
+    <strong style="
+        display: block;
+        color: #7dffb5;
+        font-size: 18px;
+        margin-top: 12px;
+    ">
+        ACTIVO
+    </strong>
+
+</div>
+
+
+</div>
+
+<!-- ================================================== -->
+
+<!-- ALERTA CRÍTICA -->
+
+<!-- ================================================== -->
+
+{% if total_criticas > 0 %}
+
+<div style="
+    background: rgba(255,40,40,.09);
+    border: 1px solid rgba(255,70,70,.35);
+    border-radius: 18px;
+    padding: 20px;
+    margin-bottom: 25px;
+">
+
+
+<div style="
+    display: flex;
+    align-items: center;
+    gap: 12px;
+">
+
+    <div style="
+        font-size: 30px;
+    ">
+        🚨
+    </div>
+
+    <div>
+
+        <strong style="
+            color: #ff7777;
+            font-size: 18px;
+        ">
+            Atención requerida
+        </strong>
+
+        <p style="
+            color: #c9d4da;
+            margin: 5px 0 0;
+        ">
+            Jarvice detectó
+            {{ total_criticas }}
+            situación{{ total_criticas|pluralize:"es" }}
+            crítica{{ total_criticas|pluralize }}
+            registrada{{ total_criticas|pluralize }}.
+        </p>
+
+    </div>
+
+</div>
+
+
+</div>
+
+{% else %}
+
+<div style="
+    background: rgba(22,199,132,.055);
+    border: 1px solid rgba(22,199,132,.18);
+    border-radius: 18px;
+    padding: 18px 20px;
+    margin-bottom: 25px;
+    color: #9ce8bc;
+">
+    🟢 No hay situaciones críticas activas registradas.
+</div>
+
+{% endif %}
+
+<!-- ================================================== -->
+
+<!-- CONSULTA DE FICHA CLÍNICA -->
+
+<!-- ================================================== -->
+
+<div style="
+    background:
+        linear-gradient(
+            135deg,
+            rgba(255,77,77,.09),
+            rgba(255,255,255,.035)
+        );
+    border: 1px solid rgba(255,77,77,.25);
+    border-radius: 20px;
+    padding: 25px;
+    margin-bottom: 25px;
+">
+
+
+<div style="
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    gap: 20px;
+    flex-wrap: wrap;
+">
+
+    <div>
+
+        <div style="
+            color: #ff6b6b;
+            font-size: 12px;
+            font-weight: 700;
+            letter-spacing: 1px;
+            margin-bottom: 7px;
+        ">
+            ACCESO CLÍNICO
+        </div>
+
+        <h2 style="
+            color: #ffffff;
+            margin: 0;
+        ">
+            📱 Consulta de ficha de emergencia
+        </h2>
+
+        <p style="
+            color: #9aadb7;
+            margin: 8px 0 0;
+            line-height: 1.6;
+        ">
+            Busque una ficha clínica utilizando el identificador
+            del paciente o el código asociado a su acceso de emergencia.
+        </p>
+
+    </div>
+
+    <div style="
+        padding: 9px 13px;
+        border-radius: 10px;
+        background: rgba(22,199,132,.08);
+        border: 1px solid rgba(22,199,132,.20);
+        color: #7dffb5;
+        font-size: 12px;
+        font-weight: 700;
+    ">
+        🔐 ACCESO PROTEGIDO
+    </div>
+
+</div>
+
+
+<div style="
+    margin-top: 22px;
+    display: grid;
+    grid-template-columns: 1fr auto;
+    gap: 12px;
+    align-items: end;
+">
+
+    <div>
+
+        <label style="
+            display: block;
+            color: #b8c8cf;
+            font-size: 13px;
+            margin-bottom: 7px;
+        ">
+            ID del paciente o código de emergencia
+        </label>
+
+        <input
+            type="text"
+            id="codigoEmergencia"
+            placeholder="Ej.: 15 o código QR"
+            autocomplete="off"
+            style="
+                width: 100%;
+                box-sizing: border-box;
+                padding: 14px 15px;
+                border-radius: 12px;
+                border: 1px solid rgba(255,255,255,.12);
+                background: rgba(0,0,0,.22);
+                color: #ffffff;
+                outline: none;
+                font-size: 15px;
+            "
+        >
+
+    </div>
+
+
+    <button
+        type="button"
+        onclick="consultarFichaEmergencia()"
+        style="
+            padding: 14px 20px;
+            border: none;
+            border-radius: 12px;
+            background: linear-gradient(
+                135deg,
+                #ff4d4d,
+                #d93636
+            );
+            color: #ffffff;
+            font-weight: 700;
+            cursor: pointer;
+            white-space: nowrap;
+        "
+    >
+        🔎 Consultar ficha
+    </button>
+
+</div>
+
+
+<div
+    id="resultadoConsultaEmergencia"
+    style="
+        display: none;
+        margin-top: 18px;
+        padding: 15px;
+        border-radius: 12px;
+        background: rgba(0,0,0,.18);
+        border: 1px solid rgba(255,255,255,.08);
+        color: #b9cbd3;
+    "
+></div>
+
+
+<div style="
+    margin-top: 15px;
+    color: #718792;
+    font-size: 12px;
+">
+    🔐 Toda consulta clínica deberá quedar registrada en la auditoría de Jarvice.
+</div>
+
+
+</div>
+
+<!-- ================================================== -->
+
+<!-- ALERTAS RECIENTES -->
+
+<!-- ================================================== -->
+
+<div style="
+    background: rgba(255,255,255,.035);
+    border: 1px solid rgba(255,255,255,.08);
+    border-radius: 18px;
+    padding: 25px;
+    margin-bottom: 20px;
+">
+
+
+<div style="
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 15px;
+    flex-wrap: wrap;
+    margin-bottom: 20px;
+">
+
+    <div>
+
+        <h2 style="
+            color: #ffffff;
+            margin: 0;
+        ">
+            🚨 Alertas recientes
+        </h2>
+
+        <p style="
+            color: #8ba9b8;
+            margin: 6px 0 0;
+        ">
+            Últimas situaciones detectadas por Jarvice.
+        </p>
+
+    </div>
+
+    <div style="
+        padding: 8px 12px;
+        border-radius: 10px;
+        background: rgba(255,255,255,.05);
+        color: #8ba9b8;
+        font-size: 13px;
+    ">
+        Últimos 20 eventos
+    </div>
+
+</div>
+
+
+{% if emergencias %}
+
+<div style="
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+">
+
+    {% for emergencia in emergencias %}
+
+    <div style="
+        background:
+            {% if emergencia.estado == 'CRITICO' %}
+                rgba(255,77,77,.075)
+            {% else %}
+                rgba(255,170,0,.055)
+            {% endif %};
+
+        border:
+            1px solid
+            {% if emergencia.estado == 'CRITICO' %}
+                rgba(255,77,77,.25)
+            {% else %}
+                rgba(255,170,0,.20)
+            {% endif %};
+
+        border-radius: 15px;
+        padding: 18px;
+    ">
+
+        <div style="
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            gap: 15px;
+            flex-wrap: wrap;
+        ">
+
+            <!-- PACIENTE -->
+
+            <div>
+
+                <div style="
+                    color: #ffffff;
+                    font-size: 18px;
+                    font-weight: 700;
+                ">
+                    👤
+                    {{ emergencia.paciente.nombre }}
+                    {{ emergencia.paciente.apellido }}
+                </div>
+
+                <div style="
+                    color: #7f98a5;
+                    font-size: 13px;
+                    margin-top: 5px;
+                ">
+                    Paciente ID: {{ emergencia.paciente.id }}
+                </div>
+
+            </div>
+
+
+            <!-- ESTADO -->
+
+            {% if emergencia.estado == "CRITICO" %}
+
+            <div style="
+                padding: 7px 12px;
+                border-radius: 10px;
+                background: rgba(255,77,77,.15);
+                border: 1px solid rgba(255,77,77,.30);
+                color: #ff8585;
+                font-weight: 700;
+                font-size: 13px;
+            ">
+                🚨 CRÍTICO
+            </div>
+
+            {% else %}
+
+            <div style="
+                padding: 7px 12px;
+                border-radius: 10px;
+                background: rgba(255,170,0,.12);
+                border: 1px solid rgba(255,170,0,.25);
+                color: #ffc45c;
+                font-weight: 700;
+                font-size: 13px;
+            ">
+                ⚠️ DOLOR
+            </div>
+
+            {% endif %}
+
+        </div>
+
+
+        <!-- INFORMACIÓN CLÍNICA -->
+
+        <div style="
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+            gap: 12px;
+            margin-top: 16px;
+        ">
+
+            <div style="
+                background: rgba(0,0,0,.13);
+                border-radius: 10px;
+                padding: 12px;
+            ">
+
+                <div style="
+                    color: #7f98a5;
+                    font-size: 12px;
+                    margin-bottom: 5px;
+                ">
+                    Estado físico
+                </div>
+
+                <div style="
+                    color: #dce7ec;
+                    font-size: 14px;
+                ">
+                    {{ emergencia.estado_fisico|default:"Sin información" }}
+                </div>
+
+            </div>
+
+
+            <div style="
+                background: rgba(0,0,0,.13);
+                border-radius: 10px;
+                padding: 12px;
+            ">
+
+                <div style="
+                    color: #7f98a5;
+                    font-size: 12px;
+                    margin-bottom: 5px;
+                ">
+                    Estado emocional
+                </div>
+
+                <div style="
+                    color: #dce7ec;
+                    font-size: 14px;
+                ">
+                    {{ emergencia.estado_emocional|default:"Sin información" }}
+                </div>
+
+            </div>
+
+
+            <div style="
+                background: rgba(0,0,0,.13);
+                border-radius: 10px;
+                padding: 12px;
+            ">
+
+                <div style="
+                    color: #7f98a5;
+                    font-size: 12px;
+                    margin-bottom: 5px;
+                ">
+                    Fecha del evento
+                </div>
+
+                <div style="
+                    color: #dce7ec;
+                    font-size: 14px;
+                ">
+                    {{ emergencia.fecha|date:"d/m/Y H:i" }}
+                </div>
+
+            </div>
+
+        </div>
+
+    </div>
+
+    {% endfor %}
+
+</div>
+
+{% else %}
+
+<div style="
+    padding: 35px 20px;
+    text-align: center;
+    border-radius: 14px;
+    background: rgba(22,199,132,.04);
+    border: 1px dashed rgba(22,199,132,.18);
+">
+
+    <div style="
+        font-size: 38px;
+        margin-bottom: 10px;
+    ">
+        🟢
+    </div>
+
+    <strong style="
+        color: #d8e5ea;
+        font-size: 17px;
+    ">
+        No hay alertas recientes
+    </strong>
+
+    <p style="
+        color: #7f98a5;
+        margin: 8px 0 0;
+    ">
+        El Centro de Emergencias se encuentra sin eventos pendientes.
+    </p>
+
+</div>
+
+{% endif %}
+
+
+</div>
+
+<!-- ================================================== -->
+
+<!-- SEGURIDAD -->
+
+<!-- ================================================== -->
+
+<div style="
+    background: rgba(255,255,255,.035);
+    border: 1px solid rgba(255,255,255,.08);
+    border-radius: 18px;
+    padding: 25px;
+    margin-bottom: 20px;
+">
+
+
+<h2 style="
+    color: #ffffff;
+    margin-top: 0;
+">
+    🔐 Seguridad Jarvice
+</h2>
+
+<div style="
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+    gap: 12px;
+    margin-top: 18px;
+">
+
+    <div style="
+        padding: 15px;
+        border-radius: 12px;
+        background: rgba(22,199,132,.06);
+        color: #b5c7d0;
+    ">
+        🟢 Validación de acceso
+    </div>
+
+    <div style="
+        padding: 15px;
+        border-radius: 12px;
+        background: rgba(22,199,132,.06);
+        color: #b5c7d0;
+    ">
+        🟢 Protección clínica
+    </div>
+
+    <div style="
+        padding: 15px;
+        border-radius: 12px;
+        background: rgba(22,199,132,.06);
+        color: #b5c7d0;
+    ">
+        🟢 Auditoría central
+    </div>
+
+    <div style="
+        padding: 15px;
+        border-radius: 12px;
+        background: rgba(22,199,132,.06);
+        color: #b5c7d0;
+    ">
+        🟢 Control de roles
+    </div>
+
+</div>
+
+
+</div>
+
+<!-- ================================================== -->
+
+<!-- ESTADO OPERATIVO -->
+
+<!-- ================================================== -->
+
+<div style="
+    padding: 20px;
+    border-radius: 16px;
+    background: rgba(22,199,132,.05);
+    border: 1px solid rgba(22,199,132,.16);
+">
+
+
+<strong style="
+    color: #7dffb5;
+    font-size: 17px;
+">
+    🧬 Jarvice Health AI
+</strong>
+
+<p style="
+    color: #8ba9b8;
+    margin: 8px 0 0;
+">
+    Sistema de asistencia sanitaria y monitoreo inteligente.
+    El Centro de Emergencias se encuentra operativo.
+</p>
+
+
+</div>
+
+</div>
+
+<!-- ================================================== -->
+
+<!-- JAVASCRIPT -->
+
+<!-- ================================================== -->
+
+<script>
+
+function consultarFichaEmergencia() {
+
+    const campo = document.getElementById("codigoEmergencia");
+    const resultado = document.getElementById(
+        "resultadoConsultaEmergencia"
+    );
+
+    const codigo = campo.value.trim();
+
+    if (!codigo) {
+
+        resultado.style.display = "block";
+
+        resultado.style.color = "#ffc45c";
+
+        resultado.innerHTML =
+            "⚠️ Ingrese un ID de paciente o código de emergencia.";
+
+        campo.focus();
+
+        return;
+    }
+
+    resultado.style.display = "block";
+
+    resultado.style.color = "#8ba9b8";
+
+    resultado.innerHTML =
+        "🔎 Buscando ficha clínica para: <strong>" +
+        codigo +
+        "</strong>...";
+
+    /*
+        En el próximo paso conectaremos esta interfaz
+        con Django mediante una vista protegida.
+
+        No se consulta información clínica directamente
+        desde JavaScript para mantener la seguridad.
+    */
+}
+
+
+document.getElementById("codigoEmergencia").addEventListener(
+    "keydown",
+    function(event) {
+
+        if (event.key === "Enter") {
+
+            consultarFichaEmergencia();
+
+        }
+
+    }
+);
+
+</script>
 
 {% endblock %}

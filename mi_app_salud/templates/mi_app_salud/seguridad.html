@@ -1,54 +1,1530 @@
+
 {% extends "mi_app_salud/base.html" %}
 
 {% block contenido %}
 
-<div class="container mt-5">
+<style>
 
-    <h1>🛡️ Seguridad Jarvice AI</h1>
+/* =========================================================
+   JARVICE SECURITY CENTER
+   ========================================================= */
 
-    <p>
-        Centro de protección, permisos y monitoreo del sistema de salud.
-    </p>
+.seguridad-page {
+    width: 100%;
+    max-width: 1500px;
+    margin: 0 auto;
+    padding: 25px;
+    box-sizing: border-box;
+    color: #eaf6ff;
+}
+
+/* HEADER */
+
+.seguridad-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 20px;
+    margin-bottom: 25px;
+    padding: 25px;
+    border: 1px solid rgba(0, 180, 255, .22);
+    border-radius: 20px;
+    background:
+        linear-gradient(
+            135deg,
+            rgba(0, 100, 180, .18),
+            rgba(5, 15, 35, .92)
+        );
+    box-shadow:
+        0 10px 35px rgba(0, 0, 0, .35),
+        inset 0 0 30px rgba(0, 170, 255, .04);
+}
+
+.seguridad-titulo {
+    display: flex;
+    align-items: center;
+    gap: 15px;
+}
+
+.seguridad-icon {
+    width: 60px;
+    height: 60px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 16px;
+    font-size: 30px;
+    background: rgba(0, 170, 255, .12);
+    border: 1px solid rgba(0, 200, 255, .3);
+}
+
+.seguridad-header h1 {
+    margin: 0;
+    font-size: 28px;
+    letter-spacing: .5px;
+}
+
+.seguridad-header p {
+    margin: 6px 0 0;
+    color: #8faec3;
+}
+
+.estado-general {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 12px 18px;
+    border-radius: 30px;
+    background: rgba(0, 220, 130, .08);
+    border: 1px solid rgba(0, 220, 130, .25);
+    color: #63f5ae;
+    font-weight: 700;
+    white-space: nowrap;
+}
+
+.estado-punto {
+    width: 10px;
+    height: 10px;
+    border-radius: 50%;
+    background: #36e88b;
+    box-shadow: 0 0 12px #36e88b;
+}
+
+/* GRID */
+
+.seguridad-grid {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 18px;
+    margin-bottom: 22px;
+}
+
+/* CARDS */
+
+.seguridad-card {
+    position: relative;
+    overflow: hidden;
+    padding: 22px;
+    border-radius: 18px;
+    background:
+        linear-gradient(
+            145deg,
+            rgba(12, 38, 65, .92),
+            rgba(5, 15, 30, .96)
+        );
+    border: 1px solid rgba(0, 170, 255, .16);
+    box-shadow: 0 8px 25px rgba(0, 0, 0, .28);
+}
+
+.seguridad-card::after {
+    content: "";
+    position: absolute;
+    width: 100px;
+    height: 100px;
+    right: -50px;
+    top: -50px;
+    border-radius: 50%;
+    background: rgba(0, 170, 255, .06);
+}
+
+.card-label {
+    color: #7597ad;
+    font-size: 12px;
+    font-weight: 700;
+    letter-spacing: 1px;
+    text-transform: uppercase;
+}
+
+.card-title {
+    margin-top: 8px;
+    font-size: 21px;
+    font-weight: 800;
+}
+
+.card-subtitle {
+    margin-top: 7px;
+    color: #8daabd;
+    font-size: 13px;
+}
+
+.estado-ok {
+    color: #5ff0a5;
+}
+
+.estado-info {
+    color: #4fc8ff;
+}
+
+.estado-warning {
+    color: #ffd166;
+}
+
+/* ICON */
+
+.card-icon {
+    font-size: 28px;
+    margin-bottom: 15px;
+}
+
+/* SECCIONES */
+
+.seguridad-section {
+    margin-bottom: 22px;
+}
+
+.section-title {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin: 0 0 14px;
+    font-size: 20px;
+}
+
+.section-title small {
+    color: #7597ad;
+    font-size: 12px;
+    font-weight: 400;
+}
+
+/* TWO COLUMNS */
+
+.seguridad-columns {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 20px;
+}
+
+/* USER */
+
+.usuario-panel {
+    display: grid;
+    grid-template-columns: auto 1fr;
+    gap: 18px;
+    align-items: center;
+}
+
+.usuario-avatar {
+    width: 72px;
+    height: 72px;
+    border-radius: 18px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 30px;
+    background: linear-gradient(
+        135deg,
+        rgba(0, 160, 255, .25),
+        rgba(0, 80, 160, .12)
+    );
+    border: 1px solid rgba(0, 180, 255, .3);
+}
+
+.usuario-nombre {
+    font-size: 23px;
+    font-weight: 800;
+}
+
+.usuario-datos {
+    margin-top: 7px;
+    color: #8faec3;
+    font-size: 13px;
+}
+
+.badge {
+    display: inline-flex;
+    align-items: center;
+    padding: 5px 10px;
+    border-radius: 20px;
+    font-size: 11px;
+    font-weight: 800;
+    margin-top: 9px;
+    background: rgba(0, 200, 130, .1);
+    border: 1px solid rgba(0, 220, 130, .2);
+    color: #5ff0a5;
+}
+
+/* PERMISSIONS */
+
+.permission-list {
+    display: grid;
+    gap: 11px;
+    margin-top: 14px;
+}
+
+.permission-item {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 11px 13px;
+    border-radius: 10px;
+    background: rgba(255, 255, 255, .025);
+    border: 1px solid rgba(255, 255, 255, .05);
+}
+
+.permission-name {
+    color: #c7dbe8;
+    font-size: 13px;
+}
+
+.permission-state {
+    color: #5ff0a5;
+    font-size: 12px;
+    font-weight: 800;
+}
+
+/* EMERGENCY */
+
+.emergency-grid {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 15px;
+}
+
+.emergency-card {
+    padding: 20px;
+    border-radius: 16px;
+    background:
+        linear-gradient(
+            145deg,
+            rgba(10, 35, 55, .9),
+            rgba(5, 15, 25, .95)
+        );
+    border: 1px solid rgba(0, 170, 255, .14);
+}
+
+.emergency-icon {
+    font-size: 26px;
+    margin-bottom: 12px;
+}
+
+.emergency-name {
+    font-size: 13px;
+    color: #7898aa;
+    text-transform: uppercase;
+    letter-spacing: .6px;
+}
+
+.emergency-status {
+    margin-top: 7px;
+    font-weight: 800;
+}
+
+/* DEVICES */
+
+.device-list {
+    display: grid;
+    gap: 12px;
+}
+
+.device {
+    display: grid;
+    grid-template-columns: auto 1fr auto;
+    align-items: center;
+    gap: 15px;
+    padding: 17px;
+    border-radius: 14px;
+    background: rgba(255, 255, 255, .025);
+    border: 1px solid rgba(0, 170, 255, .1);
+}
+
+.device-icon {
+    width: 48px;
+    height: 48px;
+    border-radius: 13px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: rgba(0, 160, 255, .1);
+    font-size: 23px;
+}
+
+.device-name {
+    font-weight: 800;
+}
+
+.device-meta {
+    margin-top: 5px;
+    color: #7597ad;
+    font-size: 12px;
+}
+
+.battery {
+    text-align: right;
+}
+
+.battery-value {
+    font-size: 20px;
+    font-weight: 800;
+}
+
+.battery-label {
+    font-size: 11px;
+    color: #7597ad;
+}
+
+/* CONTACTS */
+
+.contact-list {
+    display: grid;
+    gap: 12px;
+}
+
+.contact {
+    display: flex;
+    align-items: center;
+    gap: 15px;
+    padding: 15px;
+    border-radius: 13px;
+    background: rgba(255, 255, 255, .025);
+    border: 1px solid rgba(0, 170, 255, .09);
+}
+
+.contact-icon {
+    width: 45px;
+    height: 45px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 12px;
+    background: rgba(0, 160, 255, .1);
+    font-size: 21px;
+}
+
+.contact-name {
+    font-weight: 800;
+}
+
+.contact-type {
+    margin-top: 4px;
+    color: #7898aa;
+    font-size: 12px;
+}
+
+.contact-phone {
+    margin-left: auto;
+    color: #4fc8ff;
+    font-size: 13px;
+}
+
+/* TABLE */
+
+.audit-wrapper {
+    overflow-x: auto;
+}
+
+.audit-table {
+    width: 100%;
+    border-collapse: collapse;
+}
+
+.audit-table th {
+    text-align: left;
+    padding: 13px;
+    color: #6f91a7;
+    font-size: 11px;
+    text-transform: uppercase;
+    letter-spacing: .8px;
+    border-bottom: 1px solid rgba(255, 255, 255, .08);
+}
+
+.audit-table td {
+    padding: 15px 13px;
+    border-bottom: 1px solid rgba(255, 255, 255, .045);
+    color: #c5d8e4;
+    font-size: 13px;
+}
+
+.audit-action {
+    font-weight: 700;
+}
+
+.audit-date {
+    color: #7795a8;
+    white-space: nowrap;
+}
+
+/* ACCESS */
+
+.access-list {
+    display: grid;
+    gap: 10px;
+}
+
+.access-item {
+    display: grid;
+    grid-template-columns: 1fr auto;
+    gap: 15px;
+    padding: 15px;
+    border-radius: 13px;
+    background: rgba(255, 255, 255, .025);
+    border: 1px solid rgba(255, 255, 255, .05);
+}
+
+.access-patient {
+    font-weight: 800;
+}
+
+.access-meta {
+    margin-top: 5px;
+    color: #7898aa;
+    font-size: 12px;
+}
+
+.access-status {
+    align-self: center;
+    padding: 6px 10px;
+    border-radius: 20px;
+    font-size: 11px;
+    font-weight: 800;
+}
+
+.access-authorized {
+    background: rgba(0, 220, 130, .1);
+    color: #5ff0a5;
+}
+
+.access-pending {
+    background: rgba(255, 193, 7, .1);
+    color: #ffd166;
+}
+
+.access-denied {
+    background: rgba(255, 80, 80, .1);
+    color: #ff8585;
+}
+
+/* LOCATION */
+
+.location-panel {
+    display: grid;
+    grid-template-columns: 1fr auto;
+    gap: 20px;
+    align-items: center;
+}
+
+.location-status {
+    font-size: 30px;
+    font-weight: 900;
+}
+
+.location-description {
+    margin-top: 8px;
+    color: #7898aa;
+    line-height: 1.6;
+}
+
+.location-indicator {
+    width: 100px;
+    height: 100px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 35px;
+    background: rgba(0, 160, 255, .08);
+    border: 1px solid rgba(0, 180, 255, .2);
+}
+
+/* PROTECTION */
+
+.protection-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 15px;
+}
+
+.protection-item {
+    padding: 18px;
+    border-radius: 14px;
+    background: rgba(255, 255, 255, .025);
+    border: 1px solid rgba(255, 255, 255, .05);
+}
+
+.protection-icon {
+    font-size: 25px;
+    margin-bottom: 10px;
+}
+
+.protection-title {
+    font-weight: 800;
+}
+
+.protection-text {
+    margin-top: 6px;
+    color: #7898aa;
+    font-size: 12px;
+    line-height: 1.5;
+}
+
+/* EMPTY */
+
+.empty-state {
+    text-align: center;
+    padding: 30px;
+    color: #718fa2;
+}
+
+.empty-icon {
+    font-size: 32px;
+    margin-bottom: 8px;
+}
+
+/* RESPONSIVE */
+
+@media (max-width: 1100px) {
+
+    .seguridad-grid {
+        grid-template-columns: repeat(2, 1fr);
+    }
+
+    .emergency-grid {
+        grid-template-columns: repeat(2, 1fr);
+    }
+
+}
+
+@media (max-width: 800px) {
+
+    .seguridad-header {
+        flex-direction: column;
+        align-items: flex-start;
+    }
+
+    .seguridad-columns {
+        grid-template-columns: 1fr;
+    }
+
+    .protection-grid {
+        grid-template-columns: 1fr;
+    }
+
+}
+
+@media (max-width: 600px) {
+
+    .seguridad-page {
+        padding: 12px;
+    }
+
+    .seguridad-grid,
+    .emergency-grid {
+        grid-template-columns: 1fr;
+    }
+
+    .seguridad-header h1 {
+        font-size: 22px;
+    }
+
+    .device {
+        grid-template-columns: auto 1fr;
+    }
+
+    .battery {
+        grid-column: 2;
+        text-align: left;
+    }
+
+    .contact {
+        align-items: flex-start;
+    }
+
+    .contact-phone {
+        margin-left: 0;
+    }
+
+}
+
+</style>
 
 
-    <div class="card p-4 mt-4">
+<div class="seguridad-page">
 
-        <h4>Estado del sistema</h4>
+    <!-- =====================================================
+         HEADER
+         ===================================================== -->
 
-        <ul>
-            <li>🟢 Servidor operativo</li>
-            <li>🟢 Base de datos protegida</li>
-            <li>🟢 Comunicación segura activa</li>
-            <li>🟢 Monitoreo de accesos habilitado</li>
-        </ul>
+    <div class="seguridad-header">
+
+        <div class="seguridad-titulo">
+
+            <div class="seguridad-icon">
+                🛡️
+            </div>
+
+            <div>
+
+                <h1>Seguridad Jarvice AI</h1>
+
+                <p>
+                    Centro de protección, permisos, accesos y monitoreo
+                    del sistema.
+                </p>
+
+            </div>
+
+        </div>
+
+        <div class="estado-general">
+
+            <span class="estado-punto"></span>
+
+            SISTEMA SEGURO
+
+        </div>
 
     </div>
 
 
-    <div class="card p-4 mt-4">
+    <!-- =====================================================
+         STATUS
+         ===================================================== -->
 
-        <h4>Contactos de emergencia</h4>
+    <div class="seguridad-grid">
 
-        <ul>
-            <li>👨‍👩‍👧 Familiar principal</li>
-            <li>🚑 Servicio de emergencias</li>
-            <li>🏥 Centro médico asignado</li>
-        </ul>
+        <div class="seguridad-card">
+
+            <div class="card-icon">🖥️</div>
+
+            <div class="card-label">
+                Estado del servidor
+            </div>
+
+            <div class="card-title estado-ok">
+                Operativo
+            </div>
+
+            <div class="card-subtitle">
+                Servicio Jarvice activo
+            </div>
+
+        </div>
+
+
+        <div class="seguridad-card">
+
+            <div class="card-icon">🔐</div>
+
+            <div class="card-label">
+                Sesión
+            </div>
+
+            <div class="card-title estado-ok">
+                Protegida
+            </div>
+
+            <div class="card-subtitle">
+                Usuario autenticado
+            </div>
+
+        </div>
+
+
+        <div class="seguridad-card">
+
+            <div class="card-icon">🔑</div>
+
+            <div class="card-label">
+                Control de acceso
+            </div>
+
+            <div class="card-title estado-ok">
+                Activo
+            </div>
+
+            <div class="card-subtitle">
+                Permisos verificados
+            </div>
+
+        </div>
+
+
+        <div class="seguridad-card">
+
+            <div class="card-icon">📡</div>
+
+            <div class="card-label">
+                Monitoreo
+            </div>
+
+            <div class="card-title estado-ok">
+                Activo
+            </div>
+
+            <div class="card-subtitle">
+                Supervisión habilitada
+            </div>
+
+        </div>
 
     </div>
 
 
-    <div class="card p-4 mt-4">
+    <!-- =====================================================
+         USER + PERMISSIONS
+         ===================================================== -->
 
-        <h4>Protección de datos</h4>
+    <div class="seguridad-columns seguridad-section">
 
-        <p>
-            Jarvice mantiene protegida la información médica del paciente
-            mediante control de usuarios y permisos de acceso.
-        </p>
+        <!-- USER -->
+
+        <div class="seguridad-card">
+
+            <h2 class="section-title">
+                👤 Usuario actual
+            </h2>
+
+            <div class="usuario-panel">
+
+                <div class="usuario-avatar">
+                    👤
+                </div>
+
+                <div>
+
+                    <div class="usuario-nombre">
+                        {{ request.user.username }}
+                    </div>
+
+                    <div class="usuario-datos">
+
+                        Estado de cuenta:
+                        {% if request.user.is_active %}
+                            <span class="estado-ok">
+                                🟢 Activa
+                            </span>
+                        {% else %}
+                            <span class="estado-warning">
+                                🟡 Inactiva
+                            </span>
+                        {% endif %}
+
+                    </div>
+
+                    {% if perfil %}
+
+                        <div class="badge">
+
+                            🎭 {{ perfil.get_rol_display }}
+
+                        </div>
+
+                    {% else %}
+
+                        <div class="badge">
+                            👤 Usuario autenticado
+                        </div>
+
+                    {% endif %}
+
+                </div>
+
+            </div>
+
+        </div>
+
+
+        <!-- PERMISSIONS -->
+
+        <div class="seguridad-card">
+
+            <h2 class="section-title">
+                🔑 Permisos de acceso
+            </h2>
+
+            <div class="permission-list">
+
+                <div class="permission-item">
+
+                    <span class="permission-name">
+                        Autenticación requerida
+                    </span>
+
+                    <span class="permission-state">
+                        🟢 ACTIVO
+                    </span>
+
+                </div>
+
+                <div class="permission-item">
+
+                    <span class="permission-name">
+                        Control de usuarios
+                    </span>
+
+                    <span class="permission-state">
+                        🟢 ACTIVO
+                    </span>
+
+                </div>
+
+                <div class="permission-item">
+
+                    <span class="permission-name">
+                        Control por roles
+                    </span>
+
+                    <span class="permission-state">
+                        🟢 ACTIVO
+                    </span>
+
+                </div>
+
+                <div class="permission-item">
+
+                    <span class="permission-name">
+                        Protección de información clínica
+                    </span>
+
+                    <span class="permission-state">
+                        🟢 ACTIVO
+                    </span>
+
+                </div>
+
+                <div class="permission-item">
+
+                    <span class="permission-name">
+                        Registro de actividad
+                    </span>
+
+                    <span class="permission-state">
+                        🟢 ACTIVO
+                    </span>
+
+                </div>
+
+            </div>
+
+        </div>
 
     </div>
 
+
+    <!-- =====================================================
+         EMERGENCY
+         ===================================================== -->
+
+    <div class="seguridad-section">
+
+        <h2 class="section-title">
+            🚨 Centro de emergencias
+
+            <small>
+                Sistema preparado para situaciones críticas
+            </small>
+        </h2>
+
+
+        <div class="emergency-grid">
+
+            <div class="emergency-card">
+
+                <div class="emergency-icon">
+                    🆘
+                </div>
+
+                <div class="emergency-name">
+                    SOS
+                </div>
+
+                <div class="emergency-status estado-ok">
+                    🟢 Sistema disponible
+                </div>
+
+            </div>
+
+
+            <div class="emergency-card">
+
+                <div class="emergency-icon">
+                    📍
+                </div>
+
+                <div class="emergency-name">
+                    GPS
+                </div>
+
+                <div class="emergency-status estado-info">
+                    📡 Módulo preparado
+                </div>
+
+            </div>
+
+
+            <div class="emergency-card">
+
+                <div class="emergency-icon">
+                    👨‍👩‍👧
+                </div>
+
+                <div class="emergency-name">
+                    Contactos
+                </div>
+
+                <div class="emergency-status estado-ok">
+
+                    {% if contactos_emergencia %}
+                        🟢 Configurados
+                    {% else %}
+                        🟡 Sin configurar
+                    {% endif %}
+
+                </div>
+
+            </div>
+
+
+            <div class="emergency-card">
+
+                <div class="emergency-icon">
+                    🚑
+                </div>
+
+                <div class="emergency-name">
+                    Emergencias
+                </div>
+
+                <div class="emergency-status estado-ok">
+                    🟢 Preparado
+                </div>
+
+            </div>
+
+        </div>
+
+    </div>
+
+
+    <!-- =====================================================
+         DEVICES + LOCATION
+         ===================================================== -->
+
+    <div class="seguridad-columns seguridad-section">
+
+        <!-- DEVICES -->
+
+        <div class="seguridad-card">
+
+            <h2 class="section-title">
+                📱 Dispositivos
+
+                <small>
+                    Equipos asociados
+                </small>
+            </h2>
+
+
+            {% if dispositivos %}
+
+                <div class="device-list">
+
+                    {% for dispositivo in dispositivos %}
+
+                        <div class="device">
+
+                            <div class="device-icon">
+
+                                {% if dispositivo.tipo == "SMARTWATCH" %}
+                                    ⌚
+                                {% else %}
+                                    📡
+                                {% endif %}
+
+                            </div>
+
+                            <div>
+
+                                <div class="device-name">
+                                    {{ dispositivo.nombre }}
+                                </div>
+
+                                <div class="device-meta">
+
+                                    {{ dispositivo.get_tipo_display }}
+
+                                    ·
+
+                                    {% if dispositivo.conectado %}
+                                        <span class="estado-ok">
+                                            🟢 Conectado
+                                        </span>
+                                    {% else %}
+                                        <span class="estado-warning">
+                                            🟡 Desconectado
+                                        </span>
+                                    {% endif %}
+
+                                </div>
+
+                                {% if dispositivo.ultima_conexion %}
+
+                                    <div class="device-meta">
+
+                                        Última conexión:
+                                        {{ dispositivo.ultima_conexion|date:"d/m/Y H:i" }}
+
+                                    </div>
+
+                                {% endif %}
+
+                            </div>
+
+                            <div class="battery">
+
+                                <div class="battery-value">
+
+                                    {% if dispositivo.bateria %}
+                                        {{ dispositivo.bateria }}%
+                                    {% else %}
+                                        --
+                                    {% endif %}
+
+                                </div>
+
+                                <div class="battery-label">
+                                    Batería
+                                </div>
+
+                            </div>
+
+                        </div>
+
+                    {% endfor %}
+
+                </div>
+
+            {% else %}
+
+                <div class="empty-state">
+
+                    <div class="empty-icon">
+                        📱
+                    </div>
+
+                    No hay dispositivos asociados.
+
+                </div>
+
+            {% endif %}
+
+        </div>
+
+
+        <!-- LOCATION -->
+
+        <div class="seguridad-card">
+
+            <h2 class="section-title">
+                📍 Localización
+
+                <small>
+                    Estado GPS
+                </small>
+            </h2>
+
+            <div class="location-panel">
+
+                <div>
+
+                    <div class="location-status">
+                        No disponible
+                    </div>
+
+                    <div class="location-description">
+
+                        El módulo de localización permitirá
+                        conocer el estado del GPS y la última
+                        sincronización disponible.
+
+                        <br><br>
+
+                        <span class="estado-info">
+                            📡 Esperando dispositivo compatible
+                        </span>
+
+                    </div>
+
+                </div>
+
+                <div class="location-indicator">
+                    📍
+                </div>
+
+            </div>
+
+        </div>
+
+    </div>
+
+
+    <!-- =====================================================
+         CONTACTS
+         ===================================================== -->
+
+    <div class="seguridad-section">
+
+        <h2 class="section-title">
+            👨‍👩‍👧 Contactos de emergencia
+
+            <small>
+                Personas asociadas al paciente
+            </small>
+        </h2>
+
+
+        <div class="seguridad-card">
+
+            {% if contactos_emergencia %}
+
+                <div class="contact-list">
+
+                    {% for contacto in contactos_emergencia %}
+
+                        <div class="contact">
+
+                            <div class="contact-icon">
+                                {{ contacto.icono }}
+                            </div>
+
+                            <div>
+
+                                <div class="contact-name">
+                                    {{ contacto.nombre }}
+                                </div>
+
+                                <div class="contact-type">
+                                    {{ contacto.tipo }}
+                                </div>
+
+                            </div>
+
+                            {% if contacto.telefono %}
+
+                                <div class="contact-phone">
+                                    📞 {{ contacto.telefono }}
+                                </div>
+
+                            {% endif %}
+
+                        </div>
+
+                    {% endfor %}
+
+                </div>
+
+            {% else %}
+
+                <div class="empty-state">
+
+                    <div class="empty-icon">
+                        👨‍👩‍👧
+                    </div>
+
+                    No hay contactos de emergencia configurados
+                    para el usuario actual.
+
+                </div>
+
+            {% endif %}
+
+        </div>
+
+    </div>
+
+
+    <!-- =====================================================
+         AUDIT + CLINICAL ACCESS
+         ===================================================== -->
+
+    <div class="seguridad-columns seguridad-section">
+
+
+        <!-- AUDIT -->
+
+        <div class="seguridad-card">
+
+            <h2 class="section-title">
+
+                🔐 Auditoría
+
+                <small>
+                    Actividad reciente
+                </small>
+
+            </h2>
+
+
+            {% if auditorias %}
+
+                <div class="audit-wrapper">
+
+                    <table class="audit-table">
+
+                        <thead>
+
+                            <tr>
+
+                                <th>
+                                    Acción
+                                </th>
+
+                                <th>
+                                    Usuario
+                                </th>
+
+                                <th>
+                                    Módulo
+                                </th>
+
+                                <th>
+                                    Fecha
+                                </th>
+
+                            </tr>
+
+                        </thead>
+
+                        <tbody>
+
+                            {% for auditoria in auditorias %}
+
+                                <tr>
+
+                                    <td class="audit-action">
+
+                                        {{ auditoria.get_accion_display }}
+
+                                        <br>
+
+                                        <small>
+                                            {{ auditoria.descripcion|truncatechars:55 }}
+                                        </small>
+
+                                    </td>
+
+                                    <td>
+
+                                        {% if auditoria.usuario %}
+                                            {{ auditoria.usuario.username }}
+                                        {% else %}
+                                            Sistema
+                                        {% endif %}
+
+                                    </td>
+
+                                    <td>
+                                        {{ auditoria.modulo|default:"Sistema" }}
+                                    </td>
+
+                                    <td class="audit-date">
+
+                                        {{ auditoria.fecha|date:"d/m/Y H:i" }}
+
+                                    </td>
+
+                                </tr>
+
+                            {% endfor %}
+
+                        </tbody>
+
+                    </table>
+
+                </div>
+
+            {% else %}
+
+                <div class="empty-state">
+
+                    <div class="empty-icon">
+                        📋
+                    </div>
+
+                    No existen registros de auditoría recientes.
+
+                </div>
+
+            {% endif %}
+
+        </div>
+
+
+        <!-- CLINICAL ACCESS -->
+
+        <div class="seguridad-card">
+
+            <h2 class="section-title">
+
+                🔑 Accesos clínicos
+
+                <small>
+                    Control de autorizaciones
+                </small>
+
+            </h2>
+
+
+            {% if accesos_clinicos %}
+
+                <div class="access-list">
+
+                    {% for acceso in accesos_clinicos %}
+
+                        <div class="access-item">
+
+                            <div>
+
+                                <div class="access-patient">
+
+                                    {{ acceso.paciente.nombre }}
+                                    {{ acceso.paciente.apellido }}
+
+                                </div>
+
+                                <div class="access-meta">
+
+                                    {% if acceso.usuario %}
+
+                                        Usuario:
+                                        {{ acceso.usuario.username }}
+
+                                    {% else %}
+
+                                        Usuario no identificado
+
+                                    {% endif %}
+
+                                    ·
+
+                                    {{ acceso.get_tipo_acceso_display }}
+
+                                </div>
+
+                                <div class="access-meta">
+
+                                    {{ acceso.fecha_solicitud|date:"d/m/Y H:i" }}
+
+                                </div>
+
+                            </div>
+
+
+                            {% if acceso.autorizado %}
+
+                                <div class="access-status access-authorized">
+
+                                    🟢 AUTORIZADO
+
+                                </div>
+
+                            {% else %}
+
+                                <div class="access-status access-pending">
+
+                                    🟡 PENDIENTE
+
+                                </div>
+
+                            {% endif %}
+
+                        </div>
+
+                    {% endfor %}
+
+                </div>
+
+            {% else %}
+
+                <div class="empty-state">
+
+                    <div class="empty-icon">
+                        🔑
+                    </div>
+
+                    No existen solicitudes de acceso clínico.
+
+                </div>
+
+            {% endif %}
+
+        </div>
+
+    </div>
+
+
+    <!-- =====================================================
+         DATA PROTECTION
+         ===================================================== -->
+
+    <div class="seguridad-section">
+
+        <h2 class="section-title">
+            🔒 Protección de datos
+
+            <small>
+                Seguridad de la información
+            </small>
+        </h2>
+
+
+        <div class="protection-grid">
+
+            <div class="protection-item">
+
+                <div class="protection-icon">
+                    🔐
+                </div>
+
+                <div class="protection-title">
+                    Autenticación
+                </div>
+
+                <div class="protection-text">
+                    El acceso al sistema requiere
+                    autenticación de usuarios registrados.
+                </div>
+
+            </div>
+
+
+            <div class="protection-item">
+
+                <div class="protection-icon">
+                    👥
+                </div>
+
+                <div class="protection-title">
+                    Roles y permisos
+                </div>
+
+                <div class="protection-text">
+                    El acceso a las funciones clínicas
+                    se controla mediante roles y permisos.
+                </div>
+
+            </div>
+
+
+            <div class="protection-item">
+
+                <div class="protection-icon">
+                    🛡️
+                </div>
+
+                <div class="protection-title">
+                    Auditoría
+                </div>
+
+                <div class="protection-text">
+                    Jarvice registra actividad relevante
+                    para facilitar el monitoreo y control.
+                </div>
+
+            </div>
+
+        </div>
+
+    </div>
 
 </div>
 

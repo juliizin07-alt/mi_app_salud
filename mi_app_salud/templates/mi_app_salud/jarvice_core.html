@@ -1,0 +1,552 @@
+{% extends "mi_app_salud/base.html" %}
+{% load static %}
+
+{% block extra_css %}
+
+<link rel="stylesheet" href="{% static 'mi_app_salud/css/jarvice_core.css' %}">
+{% endblock %}
+
+{% block contenido %}
+
+<div class="core-page">
+
+<!-- ==================================================
+     CABECERA
+================================================== -->
+
+<div class="core-header">
+
+    <div>
+
+        <span class="core-badge">
+            JARVICE CORE
+        </span>
+
+        <h1>
+            Núcleo Central
+        </h1>
+
+        <p>
+            Centro técnico de supervisión y control de Jarvice Health AI.
+        </p>
+
+    </div>
+
+    <div class="core-online">
+
+        <span></span>
+
+        {% if sistema_online %}
+            SISTEMA ONLINE
+        {% else %}
+            SISTEMA OFFLINE
+        {% endif %}
+
+    </div>
+
+</div>
+
+
+<!-- ==================================================
+     ESTADÍSTICAS PRINCIPALES
+================================================== -->
+
+<div class="core-stats">
+
+    <div class="core-card">
+
+        <span>USUARIOS</span>
+
+        <strong>
+            {{ total_usuarios }}
+        </strong>
+
+        <small>
+            Cuentas registradas
+        </small>
+
+    </div>
+
+
+    <div class="core-card">
+
+        <span>PACIENTES</span>
+
+        <strong>
+            {{ total_pacientes }}
+        </strong>
+
+        <small>
+            Pacientes registrados
+        </small>
+
+    </div>
+
+
+    <div class="core-card">
+
+        <span>ADMINISTRADORES</span>
+
+        <strong>
+            {{ total_superusuarios }}
+        </strong>
+
+        <small>
+            Superusuarios
+        </small>
+
+    </div>
+
+
+    <div class="core-card">
+
+        <span>USUARIOS ACTIVOS</span>
+
+        <strong>
+            {{ total_activos }}
+        </strong>
+
+        <small>
+            Cuentas habilitadas
+        </small>
+
+    </div>
+
+</div>
+
+
+<!-- ==================================================
+     SEGUNDA FILA DE ESTADÍSTICAS
+================================================== -->
+
+<div class="core-stats">
+
+    <div class="core-card">
+
+        <span>ALERTAS CRÍTICAS</span>
+
+        <strong>
+            {{ total_alertas_criticas }}
+        </strong>
+
+        <small>
+            Eventos críticos registrados
+        </small>
+
+    </div>
+
+
+    <div class="core-card">
+
+        <span>MEDICACIONES</span>
+
+        <strong>
+            {{ total_medicaciones }}
+        </strong>
+
+        <small>
+            Medicaciones activas
+        </small>
+
+    </div>
+
+
+    <div class="core-card">
+
+        <span>ESTUDIOS PENDIENTES</span>
+
+        <strong>
+            {{ total_estudios_pendientes }}
+        </strong>
+
+        <small>
+            Solicitudes pendientes
+        </small>
+
+    </div>
+
+
+    <div class="core-card">
+
+        <span>AUDITORÍAS</span>
+
+        <strong>
+            {{ total_auditorias }}
+        </strong>
+
+        <small>
+            Eventos registrados
+        </small>
+
+    </div>
+
+</div>
+
+
+<!-- ==================================================
+     MÓDULOS
+================================================== -->
+
+<div class="core-grid">
+
+    <a href="{% url 'admin_usuarios' %}" class="core-module core-module-link">
+
+    <div class="module-icon">
+        👥
+    </div>
+
+    <div>
+        <h2>Usuarios</h2>
+        <p>
+            Administración central de cuentas,
+            roles y permisos.
+        </p>
+    </div>
+
+</a>
+
+
+    <a href="{% url 'pacientes' %}" class="core-module core-module-link">
+
+    <div class="module-icon">
+        🏥
+    </div>
+
+    <div>
+        <h2>Pacientes</h2>
+        <p>
+            Supervisión global de pacientes
+            y actividad clínica.
+        </p>
+    </div>
+
+</a>
+
+
+    <a href="{% url 'admin_seguridad' %}" class="core-module core-module-link">
+
+    <div class="module-icon">
+        🛡️
+    </div>
+
+    <div>
+        <h2>Seguridad</h2>
+        <p>
+            Control de accesos,
+            privilegios y actividad.
+        </p>
+    </div>
+
+</a>
+
+
+    <div class="core-module">
+
+        <div class="module-icon">
+            🧠
+        </div>
+
+        <div>
+
+            <h2>
+                Inteligencia Jarvice
+            </h2>
+
+            <p>
+                Núcleo de inteligencia artificial
+                y procesamiento del sistema.
+            </p>
+
+            <small>
+
+                {% if ia_activa %}
+                    🟢 IA ACTIVA
+                {% else %}
+                    🟡 IA EN DESARROLLO
+                {% endif %}
+
+            </small>
+
+        </div>
+
+    </div>
+
+
+    <div class="core-module">
+
+        <div class="module-icon">
+            📡
+        </div>
+
+        <div>
+
+            <h2>
+                Dispositivos
+            </h2>
+
+            <p>
+                Monitoreo de relojes,
+                sensores y dispositivos conectados.
+            </p>
+
+            <small>
+                {{ dispositivos }} dispositivos conectados
+            </small>
+
+        </div>
+
+    </div>
+
+
+    <div class="core-module">
+
+        <div class="module-icon">
+            ⚙️
+        </div>
+
+        <div>
+
+            <h2>
+                Sistema
+            </h2>
+
+            <p>
+                Estado general, configuración
+                y servicios internos.
+            </p>
+
+        </div>
+
+    </div>
+
+</div>
+
+
+<!-- ==================================================
+     DISTRIBUCIÓN DE ROLES
+================================================== -->
+
+<div class="core-terminal">
+
+    <div class="terminal-title">
+        DISTRIBUCIÓN DE USUARIOS
+    </div>
+
+
+    <div class="terminal-line">
+        <span>●</span>
+        Administradores:
+        {{ total_admin }}
+    </div>
+
+
+    <div class="terminal-line">
+        <span>●</span>
+        Médicos:
+        {{ total_medicos }}
+    </div>
+
+
+    <div class="terminal-line">
+        <span>●</span>
+        Enfermería:
+        {{ total_enfermeria }}
+    </div>
+
+
+    <div class="terminal-line">
+        <span>●</span>
+        Pacientes:
+        {{ total_pacientes_usuarios }}
+    </div>
+
+
+    <div class="terminal-line">
+        <span>●</span>
+        Familiares:
+        {{ total_familiares }}
+    </div>
+
+
+    <div class="terminal-line">
+        <span>●</span>
+        Emergencias:
+        {{ total_emergencias }}
+    </div>
+
+
+    <div class="terminal-line">
+        <span>●</span>
+        Instituciones:
+        {{ total_instituciones }}
+    </div>
+
+</div>
+
+
+<!-- ==================================================
+     ALERTAS CRÍTICAS
+================================================== -->
+
+<div class="core-terminal">
+
+    <div class="terminal-title">
+        🚨 ALERTAS CRÍTICAS
+    </div>
+
+
+    {% if alertas_criticas %}
+
+        {% for alerta in alertas_criticas %}
+
+            <div class="terminal-line">
+
+                <span>🔴</span>
+
+                {{ alerta.paciente.nombre }}
+                {{ alerta.paciente.apellido }}
+
+                —
+
+                {{ alerta.fecha|date:"d/m/Y H:i" }}
+
+            </div>
+
+        {% endfor %}
+
+    {% else %}
+
+        <div class="terminal-line">
+
+            <span>🟢</span>
+
+            No existen alertas críticas activas.
+
+        </div>
+
+    {% endif %}
+
+</div>
+
+
+<!-- ==================================================
+     AUDITORÍA RECIENTE
+================================================== -->
+
+<div class="core-terminal">
+
+    <div class="terminal-title">
+        🔐 ACTIVIDAD RECIENTE
+    </div>
+
+
+    {% if ultimas_auditorias %}
+
+        {% for auditoria in ultimas_auditorias %}
+
+            <div class="terminal-line">
+
+                <span>●</span>
+
+                {% if auditoria.usuario %}
+                    {{ auditoria.usuario.username }}
+                {% else %}
+                    SISTEMA
+                {% endif %}
+
+                —
+
+                {{ auditoria.accion }}
+
+                —
+
+                {{ auditoria.descripcion }}
+
+            </div>
+
+        {% endfor %}
+
+    {% else %}
+
+        <div class="terminal-line">
+
+            <span>●</span>
+
+            No hay eventos de auditoría registrados.
+
+        </div>
+
+    {% endif %}
+
+</div>
+
+
+<!-- ==================================================
+     ESTADO DEL NÚCLEO
+================================================== -->
+
+<div class="core-terminal">
+
+    <div class="terminal-title">
+        JARVICE CORE MONITOR
+    </div>
+
+
+    <div class="terminal-line">
+
+        <span>●</span>
+
+        Sistema operativo
+
+    </div>
+
+
+    <div class="terminal-line">
+
+        <span>●</span>
+
+        Base de datos conectada
+
+    </div>
+
+
+    <div class="terminal-line">
+
+        <span>●</span>
+
+        Autenticación activa
+
+    </div>
+
+
+    <div class="terminal-line">
+
+        <span>●</span>
+
+        Panel protegido para superusuarios
+
+    </div>
+
+</div>
+
+
+<!-- ==================================================
+     FOOTER
+================================================== -->
+
+<div class="core-footer">
+
+    <strong>
+        JARVICE CORE
+    </strong>
+
+    <span>
+        Centro de control del sistema
+    </span>
+
+</div>
+
+
+</div>
+
+{% endblock %}
