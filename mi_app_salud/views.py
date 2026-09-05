@@ -363,6 +363,7 @@ def bienvenida_rol(request):
 # DASHBOARD PRINCIPAL JARVICE
 # ==================================================
 
+@login_required
 def inicio(request):
 
     perfil = get_object_or_404(
