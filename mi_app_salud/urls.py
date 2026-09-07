@@ -1,5 +1,6 @@
 from django.urls import path
 from . import views
+from .device_api import dispositivo_heartbeat
 from django.contrib.auth import views as auth_views
 
 
@@ -292,6 +293,12 @@ path(
     # ==================================================
     # API JARVICE
     # ==================================================
+
+    path(
+        "api/dispositivo/heartbeat/",
+        dispositivo_heartbeat,
+        name="dispositivo_heartbeat"
+    ),
 
     path(
         "api/pacientes/",
