@@ -253,6 +253,11 @@ class Dispositivo(models.Model):
         unique=True
     )
 
+    credencial_hash = models.CharField(
+        max_length=128,
+        blank=True
+    )
+
     activo = models.BooleanField(
         default=True
     )

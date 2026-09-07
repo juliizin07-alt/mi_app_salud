@@ -1,4 +1,5 @@
-﻿from django.utils import timezone
+from django.contrib.auth.hashers import check_password, make_password
+from django.utils import timezone
 
 from ..models import Dispositivo
 
@@ -59,3 +60,41 @@ def marcar_desconectado(dispositivo):
     )
 
     return dispositivo
+
+
+def establecer_credencial_dispositivo(dispositivo, credencial):
+    """
+    Guarda únicamente el hash de la credencial del dispositivo.
+    """
+    if not credencial:
+        raise ValueError(
+            "La credencial del dispositivo es obligatoria."
+        )
+
+    dispositivo.credencial_hash = make_password(
+        credencial
+    )
+
+    dispositivo.save(
+        update_fields=[
+            "credencial_hash",
+        ]
+    )
+
+    return dispositivo
+
+
+def verificar_credencial_dispositivo(dispositivo, credencial):
+    """
+    Verifica una credencial contra el hash almacenado.
+    """
+    if not dispositivo or not credencial:
+        return False
+
+    if not dispositivo.credencial_hash:
+        return False
+
+    return check_password(
+        credencial,
+        dispositivo.credencial_hash
+    )

@@ -7,6 +7,7 @@ from django.utils import timezone
 from .services.dispositivo_service import (
     obtener_dispositivo,
     marcar_conectado,
+    verificar_credencial_dispositivo,
 )
 
 
@@ -36,6 +37,7 @@ def dispositivo_heartbeat(request):
         )
 
     identificador = datos.get("identificador")
+    credencial = datos.get("credencial")
     bateria = datos.get("bateria")
 
     if not identificador:
@@ -58,6 +60,27 @@ def dispositivo_heartbeat(request):
                 "error": "Dispositivo no encontrado o inactivo.",
             },
             status=404,
+        )
+
+    if not credencial:
+        return JsonResponse(
+            {
+                "ok": False,
+                "error": "Credencial del dispositivo es obligatoria.",
+            },
+            status=401,
+        )
+
+    if not verificar_credencial_dispositivo(
+        dispositivo,
+        credencial
+    ):
+        return JsonResponse(
+            {
+                "ok": False,
+                "error": "Credencial del dispositivo invalida.",
+            },
+            status=401,
         )
 
     if bateria is not None:
