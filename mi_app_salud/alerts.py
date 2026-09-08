@@ -19,22 +19,29 @@ COOLDOWN_SEGUNDOS = 30
 
 def puede_enviar(numero):
     """
-    Evita enviar múltiples mensajes consecutivos
-    al mismo número durante el período de cooldown.
+    Comprueba si se puede enviar un mensaje al número
+    según el período de cooldown.
+
+    No modifica el timestamp del último envío.
     """
 
     ahora = time.time()
 
-    if numero not in ULTIMOS_ENVIADOS:
-        ULTIMOS_ENVIADOS[numero] = ahora
+    ultimo_envio = ULTIMOS_ENVIADOS.get(numero)
+
+    if ultimo_envio is None:
         return True
 
-    if ahora - ULTIMOS_ENVIADOS[numero] > COOLDOWN_SEGUNDOS:
-        ULTIMOS_ENVIADOS[numero] = ahora
-        return True
+    return ahora - ultimo_envio > COOLDOWN_SEGUNDOS
 
-    return False
 
+def registrar_envio(numero):
+    """
+    Registra el momento en que un mensaje fue enviado
+    correctamente.
+    """
+
+    ULTIMOS_ENVIADOS[numero] = time.time()
 
 # ==========================================================
 # CONFIGURACIÓN TWILIO
@@ -116,6 +123,8 @@ def enviar_whatsapp(mensaje):
             to=TO_NUMBER
         )
 
+        registrar_envio(TO_NUMBER)
+
         print(" WhatsApp enviado correctamente")
 
         print(
@@ -187,6 +196,8 @@ def enviar_whatsapp_a(numero, mensaje):
             from_=FROM_NUMBER,
             to=numero
         )
+
+        registrar_envio(numero)
 
         print(
             f" WhatsApp enviado correctamente a {numero}"
