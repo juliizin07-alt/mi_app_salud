@@ -14,6 +14,7 @@ from django.db.models import Q, OuterRef, Subquery
 from django.conf import settings
 import secrets
 from .permissions import requiere_rol
+from .services.alerta_service import escalar_emergencia
 from .clinical_engine import analizar_signos_vitales
 from .forms import PacienteForm, SolicitudUsuarioForm
 from .alerts import (
@@ -2411,233 +2412,7 @@ def api_pacientes(request):
             "pacientes": data
         }
     )
-# ==========================================================
-# ESCALAMIENTO DE EMERGENCIA JARVICE
-# ==========================================================
 
-def escalar_emergencia(
-    request,
-    paciente,
-    signo,
-    analisis
-):
-
-    # ======================================================
-    # DATOS COMUNES
-    # ======================================================
-
-    mensaje_base = f"""
-🚨 ALERTA CRÍTICA JARVICE
-
-Paciente:
-{paciente.nombre} {paciente.apellido}
-
-RIESGO:
-CRÍTICO
-
-❤️ Frecuencia cardíaca:
-{signo.frecuencia_cardiaca if signo.frecuencia_cardiaca is not None else "Sin dato"} lpm
-
-🫁 Saturación:
-{signo.saturacion_oxigeno if signo.saturacion_oxigeno is not None else "Sin dato"} %
-
-🌡️ Temperatura:
-{signo.temperatura if signo.temperatura is not None else "Sin dato"} °C
-
-🩺 Presión arterial:
-{signo.presion_arterial or "Sin dato"}
-
-🧠 Estado emocional:
-{signo.estado_emocional or "Sin dato"}
-
-📡 Origen:
-{signo.origen}
-
-⚠️ Jarvice detectó parámetros clínicos críticos.
-
-Se requiere atención inmediata.
-"""
-
-    # ======================================================
-    # CONTACTO 1
-    # ======================================================
-
-    contacto_1 = paciente.contacto_emergencia
-    telefono_1 = paciente.telefono_emergencia
-
-    if telefono_1:
-
-        mensaje_1 = (
-            "🚨 CONTACTO DE EMERGENCIA JARVICE\n\n"
-            + mensaje_base
-        )
-
-        enviado_1 = enviar_whatsapp_a(
-            telefono_1,
-            mensaje_1
-        )
-
-        registrar_auditoria(
-            request=request,
-            accion="EMERGENCIA",
-            modulo="ESCALAMIENTO",
-            descripcion=(
-                f"Primer contacto de emergencia "
-                f"{'notificado' if enviado_1 else 'no pudo ser notificado'}."
-            ),
-            datos_extra={
-                "nivel": 1,
-                "paciente_id": paciente.id,
-                "signo_id": signo.id,
-                "contacto": contacto_1,
-                "telefono": telefono_1,
-                "enviado": enviado_1,
-            }
-        )
-
-        if enviado_1:
-            return {
-                "nivel": 1,
-                "estado": "CONTACTO_1_NOTIFICADO",
-                "contacto": contacto_1,
-                "telefono": telefono_1,
-            }
-
-    else:
-
-        registrar_auditoria(
-            request=request,
-            accion="EMERGENCIA",
-            modulo="ESCALAMIENTO",
-            descripcion=(
-                "No existe teléfono configurado "
-                "para el primer contacto de emergencia."
-            ),
-            datos_extra={
-                "nivel": 1,
-                "paciente_id": paciente.id,
-                "signo_id": signo.id,
-            }
-        )
-
-    # ======================================================
-    # CONTACTO 2
-    # ======================================================
-
-    contacto_2 = paciente.contacto_emergencia_2
-    telefono_2 = paciente.telefono_emergencia_2
-
-    if telefono_2:
-
-        mensaje_2 = (
-            "🚨 SEGUNDO CONTACTO JARVICE\n\n"
-            + mensaje_base
-            + "\n\nEl primer contacto no pudo ser notificado."
-        )
-
-        enviado_2 = enviar_whatsapp_a(
-            telefono_2,
-            mensaje_2
-        )
-
-        registrar_auditoria(
-            request=request,
-            accion="EMERGENCIA",
-            modulo="ESCALAMIENTO",
-            descripcion=(
-                f"Segundo contacto "
-                f"{'notificado' if enviado_2 else 'no pudo ser notificado'}."
-            ),
-            datos_extra={
-                "nivel": 2,
-                "paciente_id": paciente.id,
-                "signo_id": signo.id,
-                "contacto": contacto_2,
-                "telefono": telefono_2,
-                "enviado": enviado_2,
-            }
-        )
-
-        if enviado_2:
-            return {
-                "nivel": 2,
-                "estado": "CONTACTO_2_NOTIFICADO",
-                "contacto": contacto_2,
-                "telefono": telefono_2,
-            }
-
-    # ======================================================
-    # CONTACTO 3
-    # ======================================================
-
-    contacto_3 = paciente.contacto_emergencia_3
-    telefono_3 = paciente.telefono_emergencia_3
-
-    if telefono_3:
-
-        mensaje_3 = (
-            "🚨 EMERGENCIA JARVICE\n\n"
-            + mensaje_base
-            + "\n\nNo fue posible notificar los contactos anteriores."
-        )
-
-        enviado_3 = enviar_whatsapp_a(
-            telefono_3,
-            mensaje_3
-        )
-
-        registrar_auditoria(
-            request=request,
-            accion="EMERGENCIA",
-            modulo="ESCALAMIENTO",
-            descripcion=(
-                f"Tercer contacto "
-                f"{'notificado' if enviado_3 else 'no pudo ser notificado'}."
-            ),
-            datos_extra={
-                "nivel": 3,
-                "paciente_id": paciente.id,
-                "signo_id": signo.id,
-                "contacto": contacto_3,
-                "telefono": telefono_3,
-                "enviado": enviado_3,
-            }
-        )
-
-        if enviado_3:
-            return {
-                "nivel": 3,
-                "estado": "CONTACTO_3_NOTIFICADO",
-                "contacto": contacto_3,
-                "telefono": telefono_3,
-            }
-
-    # ======================================================
-    # NINGÚN CONTACTO DISPONIBLE
-    # ======================================================
-
-    registrar_auditoria(
-        request=request,
-        accion="EMERGENCIA",
-        modulo="ESCALAMIENTO",
-        descripcion=(
-            "Jarvice no pudo notificar ningún contacto "
-            "de emergencia configurado."
-        ),
-        datos_extra={
-            "paciente_id": paciente.id,
-            "signo_id": signo.id,
-            "nivel": 0,
-            "estado": "SIN_CONTACTO",
-        }
-    )
-
-    return {
-        "nivel": 0,
-        "estado": "SIN_CONTACTO",
-        "contacto": None,
-        "telefono": None,
-    }
 # ==================================================
 # API SIGNOS VITALES JARVICE
 # ==================================================
@@ -2846,10 +2621,11 @@ def api_signos_vitales(request):
     if analisis["riesgo_vital"] == "CRITICO":
 
         escalamiento = escalar_emergencia(
-            request=request,
             paciente=paciente,
             signo=signo,
-            analisis=analisis
+            analisis=analisis,
+            usuario=request.user,
+            ip=request.META.get("REMOTE_ADDR")
         )
 
     # ==================================================
