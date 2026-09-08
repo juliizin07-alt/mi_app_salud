@@ -1,4 +1,4 @@
-﻿import json
+import json
 from decimal import Decimal, InvalidOperation
 
 from django.http import JsonResponse
@@ -6,6 +6,7 @@ from django.views.decorators.csrf import csrf_exempt
 
 from .clinical_engine import analizar_signos_vitales
 from .models import SignoVital
+from .services.alerta_service import escalar_emergencia
 from .services.dispositivo_service import (
     obtener_dispositivo,
     verificar_credencial_dispositivo,
@@ -206,7 +207,20 @@ def dispositivo_signos_vitales(request):
         signo
     )
 
+    escalamiento = None
+
+    if analisis["riesgo_vital"] == "CRITICO":
+
+        escalamiento = escalar_emergencia(
+            paciente=dispositivo.paciente,
+            signo=signo,
+            analisis=analisis,
+            usuario=None,
+            ip=request.META.get("REMOTE_ADDR")
+        )
+
     return JsonResponse(
+
         {
             "ok": True,
             "mensaje": "Signos vitales recibidos correctamente.",
@@ -250,5 +264,7 @@ def dispositivo_signos_vitales(request):
                     signo.fecha.isoformat(),
             },
             "analisis": analisis,
+
+            "escalamiento": escalamiento,
         }
     )
