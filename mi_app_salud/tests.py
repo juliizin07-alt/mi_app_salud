@@ -108,3 +108,258 @@ class DispositivoAutenticacionTests(TestCase):
                 "credencial-incorrecta"
             )
         )
+
+    # ==================================================
+    # SIGNOS VITALES DEL SMARTWATCH
+    # ==================================================
+
+    def test_signos_vitales_normales(self):
+        respuesta = self.client.post(
+            "/api/dispositivo/signos-vitales/",
+            data=json.dumps({
+                "identificador": "TEST-AUTH-001",
+                "credencial": self.credencial,
+                "frecuencia_cardiaca": 82,
+                "saturacion_oxigeno": 97,
+                "temperatura": 36.7,
+                "presion_arterial": "120/75",
+                "estado_emocional": "ESTABLE",
+            }),
+            content_type="application/json",
+        )
+
+        self.assertEqual(
+            respuesta.status_code,
+            200
+        )
+
+        datos = respuesta.json()
+
+        self.assertEqual(
+            datos["signos_vitales"]["origen"],
+            "SMARTWATCH"
+        )
+
+        self.assertEqual(
+            datos["analisis"]["riesgo_vital"],
+            "BAJO"
+        )
+
+        self.assertEqual(
+            datos["analisis"]["color_riesgo_vital"],
+            "verde"
+        )
+
+    def test_signos_vitales_atencion(self):
+        respuesta = self.client.post(
+            "/api/dispositivo/signos-vitales/",
+            data=json.dumps({
+                "identificador": "TEST-AUTH-001",
+                "credencial": self.credencial,
+                "frecuencia_cardiaca": 110,
+                "saturacion_oxigeno": 93,
+                "temperatura": 37.8,
+                "presion_arterial": "135/85",
+                "estado_emocional": "ANSIEDAD",
+            }),
+            content_type="application/json",
+        )
+
+        self.assertEqual(
+            respuesta.status_code,
+            200
+        )
+
+        datos = respuesta.json()
+
+        self.assertEqual(
+            datos["analisis"]["riesgo_vital"],
+            "ATENCION"
+        )
+
+        self.assertEqual(
+            datos["analisis"]["color_riesgo_vital"],
+            "amarillo"
+        )
+
+        self.assertEqual(
+            datos["analisis"]["nivel_riesgo_ia"],
+            "MODERADO"
+        )
+
+    def test_signos_vitales_criticos(self):
+        respuesta = self.client.post(
+            "/api/dispositivo/signos-vitales/",
+            data=json.dumps({
+                "identificador": "TEST-AUTH-001",
+                "credencial": self.credencial,
+                "frecuencia_cardiaca": 145,
+                "saturacion_oxigeno": 88,
+                "temperatura": 39.2,
+                "presion_arterial": "160/100",
+                "estado_emocional": "ANGUSTIADO",
+            }),
+            content_type="application/json",
+        )
+
+        self.assertEqual(
+            respuesta.status_code,
+            200
+        )
+
+        datos = respuesta.json()
+
+        self.assertEqual(
+            datos["analisis"]["riesgo_vital"],
+            "CRITICO"
+        )
+
+        self.assertEqual(
+            datos["analisis"]["color_riesgo_vital"],
+            "rojo"
+        )
+
+        self.assertEqual(
+            datos["analisis"]["nivel_riesgo_ia"],
+            "CRITICO"
+        )
+
+    def test_signos_vitales_con_credencial_incorrecta(self):
+        respuesta = self.client.post(
+            "/api/dispositivo/signos-vitales/",
+            data=json.dumps({
+                "identificador": "TEST-AUTH-001",
+                "credencial": "credencial-incorrecta",
+                "frecuencia_cardiaca": 82,
+            }),
+            content_type="application/json",
+        )
+
+        self.assertEqual(
+            respuesta.status_code,
+            401
+        )
+    # ==================================================
+    # VALIDACIONES DE LA API DEL SMARTWATCH
+    # ==================================================
+
+    def test_signos_vitales_json_invalido(self):
+        respuesta = self.client.post(
+            "/api/dispositivo/signos-vitales/",
+            data="{json-invalido",
+            content_type="application/json",
+        )
+
+        self.assertEqual(
+            respuesta.status_code,
+            400
+        )
+
+    def test_signos_vitales_sin_datos_clinicos(self):
+        respuesta = self.client.post(
+            "/api/dispositivo/signos-vitales/",
+            data=json.dumps({
+                "identificador": "TEST-AUTH-001",
+                "credencial": self.credencial,
+            }),
+            content_type="application/json",
+        )
+
+        self.assertEqual(
+            respuesta.status_code,
+            400
+        )
+
+    def test_signos_vitales_frecuencia_invalida(self):
+        respuesta = self.client.post(
+            "/api/dispositivo/signos-vitales/",
+            data=json.dumps({
+                "identificador": "TEST-AUTH-001",
+                "credencial": self.credencial,
+                "frecuencia_cardiaca": "abc",
+            }),
+            content_type="application/json",
+        )
+
+        self.assertEqual(
+            respuesta.status_code,
+            400
+        )
+
+    def test_signos_vitales_saturacion_invalida(self):
+        respuesta = self.client.post(
+            "/api/dispositivo/signos-vitales/",
+            data=json.dumps({
+                "identificador": "TEST-AUTH-001",
+                "credencial": self.credencial,
+                "saturacion_oxigeno": "abc",
+            }),
+            content_type="application/json",
+        )
+
+        self.assertEqual(
+            respuesta.status_code,
+            400
+        )
+
+    def test_signos_vitales_temperatura_invalida(self):
+        respuesta = self.client.post(
+            "/api/dispositivo/signos-vitales/",
+            data=json.dumps({
+                "identificador": "TEST-AUTH-001",
+                "credencial": self.credencial,
+                "temperatura": "abc",
+            }),
+            content_type="application/json",
+        )
+
+        self.assertEqual(
+            respuesta.status_code,
+            400
+        )
+
+    def test_signos_vitales_presion_invalida(self):
+        respuesta = self.client.post(
+            "/api/dispositivo/signos-vitales/",
+            data=json.dumps({
+                "identificador": "TEST-AUTH-001",
+                "credencial": self.credencial,
+                "presion_arterial": "120",
+            }),
+            content_type="application/json",
+        )
+
+        self.assertEqual(
+            respuesta.status_code,
+            400
+        )
+
+    def test_signos_vitales_sin_identificador(self):
+        respuesta = self.client.post(
+            "/api/dispositivo/signos-vitales/",
+            data=json.dumps({
+                "credencial": self.credencial,
+                "frecuencia_cardiaca": 82,
+            }),
+            content_type="application/json",
+        )
+
+        self.assertEqual(
+            respuesta.status_code,
+            400
+        )
+
+    def test_signos_vitales_sin_credencial(self):
+        respuesta = self.client.post(
+            "/api/dispositivo/signos-vitales/",
+            data=json.dumps({
+                "identificador": "TEST-AUTH-001",
+                "frecuencia_cardiaca": 82,
+            }),
+            content_type="application/json",
+        )
+
+        self.assertEqual(
+            respuesta.status_code,
+            401
+        )

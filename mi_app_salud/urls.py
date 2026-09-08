@@ -2,6 +2,7 @@ from django.urls import path
 from . import views
 from .device_api import dispositivo_heartbeat
 from django.contrib.auth import views as auth_views
+from .device_vitals_api import dispositivo_signos_vitales
 
 
 urlpatterns = [
@@ -293,11 +294,16 @@ path(
     # ==================================================
     # API JARVICE
     # ==================================================
-
     path(
         "api/dispositivo/heartbeat/",
         dispositivo_heartbeat,
         name="dispositivo_heartbeat"
+    ),
+
+    path(
+        "api/dispositivo/signos-vitales/",
+        dispositivo_signos_vitales,
+        name="dispositivo_signos_vitales"
     ),
 
     path(
