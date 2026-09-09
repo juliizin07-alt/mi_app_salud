@@ -1,13 +1,18 @@
 import json
 from unittest.mock import patch
 
+from core_clean.asgi import application
 from django.test import TestCase, Client
-
+from django.contrib.auth.models import User
+from asgiref.sync import sync_to_async
+from channels.layers import get_channel_layer
+from channels.testing import WebsocketCommunicator
 from mi_app_salud.models import (
     Paciente,
     Dispositivo,
     SignoVital,
     AuditoriaJarvice,
+    PerfilUsuario,
 )
 from mi_app_salud.services.dispositivo_service import (
     establecer_credencial_dispositivo,
@@ -568,3 +573,272 @@ class EscalamientoEmergenciaTests(TestCase):
         self.assertTrue(
             auditoria
         )
+# ==================================================
+# TESTS DEL WEBSOCKET DE MONITOREO
+# ==================================================
+
+class MonitoreoWebSocketTests(TestCase):
+
+    async def test_conexion_no_autenticada_es_rechazada(self):
+
+        communicator = WebsocketCommunicator(
+            application,
+            "/ws/monitoreo/"
+        )
+
+        conectado, _ = await communicator.connect()
+
+        self.assertFalse(
+            conectado
+        )
+
+        await communicator.disconnect()
+
+    async def test_conexion_autenticada_es_aceptada(self):
+
+        usuario = await sync_to_async(
+            User.objects.create_user
+        )(
+            username="usuario_ws",
+            password="Test-Jarvice-2026!"
+        )
+
+        await sync_to_async(
+            PerfilUsuario.objects.create
+        )(
+            usuario=usuario,
+            rol="MEDICO",
+            nombre="Medico",
+            apellido="WebSocket",
+        )
+
+        communicator = WebsocketCommunicator(
+            application,
+            "/ws/monitoreo/"
+        )
+
+        communicator.scope["user"] = usuario
+
+        conectado, _ = await communicator.connect()
+
+        self.assertTrue(
+            conectado
+        )
+
+        mensaje = await communicator.receive_json_from()
+
+        self.assertEqual(
+            mensaje["tipo"],
+            "conexion"
+        )
+
+        self.assertEqual(
+            mensaje["estado"],
+            "CONECTADO"
+        )
+
+        await communicator.disconnect()
+        
+    async def test_recibe_evento_de_monitoreo(self):
+
+        usuario = await sync_to_async(
+            User.objects.create_user
+        )(
+            username="usuario_evento",
+            password="Test-Jarvice-2026!"
+        )
+
+        await sync_to_async(
+            PerfilUsuario.objects.create
+        )(
+            usuario=usuario,
+            rol="MEDICO",
+            nombre="Medico",
+            apellido="Evento",
+        )
+
+        communicator = WebsocketCommunicator(
+            application,
+            "/ws/monitoreo/"
+        )
+
+        communicator.scope["user"] = usuario
+
+        conectado, _ = await communicator.connect()
+
+        self.assertTrue(
+            conectado
+        )
+
+        mensaje_inicial = await communicator.receive_json_from()
+
+        self.assertEqual(
+            mensaje_inicial["tipo"],
+            "conexion"
+        )
+
+        channel_layer = get_channel_layer()
+
+        await channel_layer.group_send(
+            "monitoreo",
+            {
+                "type": "enviar_monitoreo",
+                "data": {
+                    "tipo": "signos_vitales",
+                    "paciente_id": 1,
+                    "frecuencia_cardiaca": 82,
+                    "saturacion_oxigeno": 97,
+                    "temperatura": 36.7,
+                    "riesgo_vital": "BAJO",
+                },
+            },
+        )
+
+        evento = await communicator.receive_json_from()
+
+        self.assertEqual(
+            evento["tipo"],
+            "signos_vitales"
+        )
+
+        self.assertEqual(
+            evento["paciente_id"],
+            1
+        )
+
+        self.assertEqual(
+            evento["frecuencia_cardiaca"],
+            82
+        )
+
+        self.assertEqual(
+            evento["riesgo_vital"],
+            "BAJO"
+        )
+
+        await communicator.disconnect()
+        
+    async def test_api_signos_vitales_publica_evento_websocket(self):
+
+        usuario = await sync_to_async(
+            User.objects.create_user
+        )(
+            username="usuario_integracion",
+            password="Test-Jarvice-2026!"
+        )
+
+        await sync_to_async(
+            PerfilUsuario.objects.create
+        )(
+            usuario=usuario,
+            rol="MEDICO",
+            nombre="Medico",
+            apellido="Integracion",
+        )
+
+        paciente = await sync_to_async(
+            Paciente.objects.create
+        )(
+            nombre="Paciente",
+            apellido="Integracion",
+            edad=40,
+        )
+
+        dispositivo = await sync_to_async(
+            Dispositivo.objects.create
+        )(
+            paciente=paciente,
+            nombre="Smartwatch Integracion",
+            tipo="SMARTWATCH",
+            identificador="TEST-WS-001",
+        )
+
+        credencial = "Test-Jarvice-WS-2026!"
+
+        await sync_to_async(
+            establecer_credencial_dispositivo
+        )(
+            dispositivo,
+            credencial
+        )
+
+        communicator = WebsocketCommunicator(
+            application,
+            "/ws/monitoreo/"
+        )
+
+        communicator.scope["user"] = usuario
+
+        conectado, _ = await communicator.connect()
+
+        self.assertTrue(
+            conectado
+        )
+
+        mensaje_inicial = await communicator.receive_json_from()
+
+        self.assertEqual(
+            mensaje_inicial["tipo"],
+            "conexion"
+        )
+
+        respuesta = await sync_to_async(
+            self.client.post
+        )(
+            "/api/dispositivo/signos-vitales/",
+            data=json.dumps({
+                "identificador": "TEST-WS-001",
+                "credencial": credencial,
+                "frecuencia_cardiaca": 82,
+                "saturacion_oxigeno": 97,
+                "temperatura": 36.7,
+                "presion_arterial": "120/75",
+                "estado_emocional": "ESTABLE",
+            }),
+            content_type="application/json",
+            HTTP_HOST="127.0.0.1",
+        )
+
+        self.assertEqual(
+            respuesta.status_code,
+            200
+        )
+
+        evento = await communicator.receive_json_from()
+
+        self.assertEqual(
+            evento["tipo"],
+            "signos_vitales"
+        )
+
+        self.assertEqual(
+            evento["paciente_id"],
+            paciente.id
+        )
+
+        self.assertEqual(
+            evento["dispositivo_id"],
+            dispositivo.id
+        )
+
+        self.assertEqual(
+            evento["frecuencia_cardiaca"],
+            82
+        )
+
+        self.assertEqual(
+            evento["saturacion_oxigeno"],
+            97.0
+        )
+
+        self.assertEqual(
+            evento["temperatura"],
+            36.7
+        )
+
+        self.assertEqual(
+            evento["riesgo_vital"],
+            "BAJO"
+        )
+
+        await communicator.disconnect()

@@ -1,6 +1,7 @@
 import json
 from decimal import Decimal, InvalidOperation
-
+from asgiref.sync import async_to_sync
+from channels.layers import get_channel_layer
 from django.http import JsonResponse
 from django.views.decorators.csrf import csrf_exempt
 
@@ -206,6 +207,60 @@ def dispositivo_signos_vitales(request):
     analisis = analizar_signos_vitales(
         signo
     )
+    channel_layer = get_channel_layer()
+
+    if channel_layer is not None:
+
+        async_to_sync(
+            channel_layer.group_send
+        )(
+            "monitoreo",
+            {
+                "type": "enviar_monitoreo",
+                "data": {
+                    "tipo": (
+                        "alerta_critica"
+                        if analisis["riesgo_vital"] == "CRITICO"
+                        else "signos_vitales"
+                    ),
+                    "paciente_id": dispositivo.paciente.id,
+                    "paciente": (
+                        f"{dispositivo.paciente.nombre} "
+                        f"{dispositivo.paciente.apellido}"
+                    ),
+                    "dispositivo_id": dispositivo.id,
+                    "frecuencia_cardiaca": (
+                        signo.frecuencia_cardiaca
+                    ),
+                    "saturacion_oxigeno": (
+                        float(signo.saturacion_oxigeno)
+                        if signo.saturacion_oxigeno is not None
+                        else None
+                    ),
+                    "temperatura": (
+                        float(signo.temperatura)
+                        if signo.temperatura is not None
+                        else None
+                    ),
+                    "presion_arterial": (
+                        signo.presion_arterial
+                    ),
+                    "estado_emocional": (
+                        signo.estado_emocional
+                    ),
+                    "riesgo_vital": (
+                        analisis["riesgo_vital"]
+                    ),
+                    "color_riesgo_vital": (
+                        analisis["color_riesgo_vital"]
+                    ),
+                    "nivel_riesgo_ia": (
+                        analisis["nivel_riesgo_ia"]
+                    ),
+                    "fecha": signo.fecha.isoformat(),
+                },
+            },
+        )
 
     escalamiento = None
 
