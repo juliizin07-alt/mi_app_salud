@@ -302,13 +302,13 @@
 
         <div class="vital-value">
 
-            <strong>
-                {% if ultimo_signo_vital and ultimo_signo_vital.frecuencia_cardiaca %}
-                    {{ ultimo_signo_vital.frecuencia_cardiaca }}
-                {% else %}
-                    --
-                {% endif %}
-            </strong>
+            <strong id="ws-frecuencia-cardiaca">
+    {% if ultimo_signo_vital and ultimo_signo_vital.frecuencia_cardiaca %}
+        {{ ultimo_signo_vital.frecuencia_cardiaca }}
+    {% else %}
+        --
+    {% endif %}
+</strong>
 
             <span>
                 BPM
@@ -359,13 +359,13 @@
 
         <div class="vital-value">
 
-            <strong>
-                {% if ultimo_signo_vital and ultimo_signo_vital.saturacion_oxigeno %}
-                    {{ ultimo_signo_vital.saturacion_oxigeno }}
-                {% else %}
-                    --
-                {% endif %}
-            </strong>
+            <strong id="ws-saturacion-oxigeno">
+    {% if ultimo_signo_vital and ultimo_signo_vital.saturacion_oxigeno %}
+        {{ ultimo_signo_vital.saturacion_oxigeno }}
+    {% else %}
+        --
+    {% endif %}
+</strong>
 
             <span>
                 %
@@ -414,9 +414,9 @@
             TEMPERATURA
         </span>
 
-        <div class="vital-value">
+                <div class="vital-value">
 
-            <strong>
+            <strong id="ws-temperatura">
                 {% if ultimo_signo_vital and ultimo_signo_vital.temperatura %}
                     {{ ultimo_signo_vital.temperatura }}
                 {% else %}
@@ -465,25 +465,23 @@
             ESTADO CLÍNICO IA
         </span>
 
-        <div class="vital-value">
+                    <div class="vital-value">
 
-                    <strong>
+                <strong id="ws-estado-clinico">
+                    {% if ultimo_signo_vital %}
+                        {{ estado_clinico_ia }}
+                    {% else %}
+                        SIN DATOS
+                    {% endif %}
+                </strong>
 
-            {% if ultimo_signo_vital %}
-                {{ estado_clinico_ia }}
-            {% else %}
-                SIN DATOS
-            {% endif %}
+                <span>
+                    IA
+                </span>
 
-        </strong>
+            </div>
 
-            <span>
-                IA
-            </span>
-
-        </div>
-
-        <p>
+            <p>
 
             {% if ultimo_signo_vital %}
                 Supervisión clínica activa
@@ -3134,5 +3132,135 @@
 }
 
 </style>
+
+<script>
+document.addEventListener("DOMContentLoaded", function () {
+
+    const frecuenciaCardiaca = document.getElementById(
+        "ws-frecuencia-cardiaca"
+    );
+
+    const saturacionOxigeno = document.getElementById(
+        "ws-saturacion-oxigeno"
+    );
+
+    const temperatura = document.getElementById(
+        "ws-temperatura"
+    );
+
+    const estadoClinico = document.getElementById(
+        "ws-estado-clinico"
+    );
+
+    if (
+        !frecuenciaCardiaca ||
+        !saturacionOxigeno ||
+        !temperatura ||
+        !estadoClinico
+    ) {
+        console.error(
+            "JARVICE: no se encontraron los elementos del monitor."
+        );
+        return;
+    }
+
+    const protocolo = window.location.protocol === "https:"
+        ? "wss"
+        : "ws";
+
+    const socket = new WebSocket(
+        `${protocolo}://${window.location.host}/ws/monitoreo/`
+    );
+
+    socket.onopen = function () {
+
+        console.log(
+            "JARVICE: WebSocket de monitoreo conectado."
+        );
+
+    };
+
+    socket.onmessage = function (event) {
+
+        try {
+
+            const datos = JSON.parse(
+                event.data
+            );
+
+            console.log(
+                "JARVICE: evento recibido:",
+                datos
+            );
+
+            if (
+                datos.tipo !== "signos_vitales" &&
+                datos.tipo !== "alerta_critica"
+            ) {
+                return;
+            }
+
+            if (
+                datos.frecuencia_cardiaca !== null &&
+                datos.frecuencia_cardiaca !== undefined
+            ) {
+                frecuenciaCardiaca.textContent =
+                    datos.frecuencia_cardiaca;
+            }
+
+            if (
+                datos.saturacion_oxigeno !== null &&
+                datos.saturacion_oxigeno !== undefined
+            ) {
+                saturacionOxigeno.textContent =
+                    datos.saturacion_oxigeno;
+            }
+
+            if (
+                datos.temperatura !== null &&
+                datos.temperatura !== undefined
+            ) {
+                temperatura.textContent =
+                    datos.temperatura;
+            }
+
+            if (
+                datos.estado_clinico_ia !== null &&
+                datos.estado_clinico_ia !== undefined
+            ) {
+                estadoClinico.textContent =
+                    datos.estado_clinico_ia;
+            }
+
+        } catch (error) {
+
+            console.error(
+                "JARVICE: error procesando evento WebSocket:",
+                error
+            );
+
+        }
+
+    };
+
+    socket.onerror = function (error) {
+
+        console.error(
+            "JARVICE: error en WebSocket:",
+            error
+        );
+
+    };
+
+    socket.onclose = function () {
+
+        console.warn(
+            "JARVICE: WebSocket de monitoreo desconectado."
+        );
+
+    };
+
+});
+</script>
 
 {% endblock %}
