@@ -842,3 +842,204 @@ class MonitoreoWebSocketTests(TestCase):
         )
 
         await communicator.disconnect()
+# =========================================================
+# PRUEBAS DE PERMISOS Y ROLES
+# =========================================================
+
+class PermisosRolesTests(TestCase):
+
+    def crear_usuario_con_rol(self, username, rol):
+
+        usuario = User.objects.create_user(
+            username=username,
+            password="Test-Password-2026!"
+        )
+
+        PerfilUsuario.objects.create(
+            usuario=usuario,
+            rol=rol
+        )
+
+        return usuario
+
+    def iniciar_sesion_con_rol(self, username, rol):
+
+        self.crear_usuario_con_rol(
+            username,
+            rol
+        )
+
+        self.client.login(
+            username=username,
+            password="Test-Password-2026!"
+        )
+
+    # -----------------------------------------------------
+    # USUARIO NO AUTENTICADO
+    # -----------------------------------------------------
+
+    def test_usuario_no_autenticado_redirige_a_login(self):
+
+        respuesta = self.client.get(
+            "/panel/medico/"
+        )
+
+        self.assertEqual(
+            respuesta.status_code,
+            302
+        )
+
+        self.assertIn(
+            "/login",
+            respuesta.url
+        )
+
+    # -----------------------------------------------------
+    # MEDICO
+    # -----------------------------------------------------
+
+    def test_medico_no_puede_acceder_a_panel_paciente(self):
+
+        self.iniciar_sesion_con_rol(
+            "medico_test",
+            "MEDICO"
+        )
+
+        respuesta = self.client.get(
+            "/panel/paciente/"
+        )
+
+        self.assertEqual(
+            respuesta.status_code,
+            302
+        )
+
+        self.assertEqual(
+            respuesta.url,
+            "/"
+        )
+
+    # -----------------------------------------------------
+    # PACIENTE
+    # -----------------------------------------------------
+
+    def test_paciente_no_puede_acceder_a_panel_medico(self):
+
+        self.iniciar_sesion_con_rol(
+            "paciente_test",
+            "PACIENTE"
+        )
+
+        respuesta = self.client.get(
+            "/panel/medico/"
+        )
+
+        self.assertEqual(
+            respuesta.status_code,
+            302
+        )
+
+        self.assertEqual(
+            respuesta.url,
+            "/"
+        )
+
+    # -----------------------------------------------------
+    # ENFERMERIA
+    # -----------------------------------------------------
+
+    def test_enfermeria_no_puede_acceder_a_panel_medico(self):
+
+        self.iniciar_sesion_con_rol(
+            "enfermeria_test",
+            "ENFERMERIA"
+        )
+
+        respuesta = self.client.get(
+            "/panel/medico/"
+        )
+
+        self.assertEqual(
+            respuesta.status_code,
+            302
+        )
+
+        self.assertEqual(
+            respuesta.url,
+            "/"
+        )
+
+    # -----------------------------------------------------
+    # FAMILIAR
+    # -----------------------------------------------------
+
+    def test_familiar_no_puede_acceder_a_panel_medico(self):
+
+        self.iniciar_sesion_con_rol(
+            "familiar_test",
+            "FAMILIAR"
+        )
+
+        respuesta = self.client.get(
+            "/panel/medico/"
+        )
+
+        self.assertEqual(
+            respuesta.status_code,
+            302
+        )
+
+        self.assertEqual(
+            respuesta.url,
+            "/"
+        )
+
+    # -----------------------------------------------------
+    # EMERGENCIA
+    # -----------------------------------------------------
+
+    def test_emergencia_no_puede_acceder_a_panel_paciente(self):
+
+        self.iniciar_sesion_con_rol(
+            "emergencia_test",
+            "EMERGENCIA"
+        )
+
+        respuesta = self.client.get(
+            "/panel/paciente/"
+        )
+
+        self.assertEqual(
+            respuesta.status_code,
+            302
+        )
+
+        self.assertEqual(
+            respuesta.url,
+            "/"
+        )
+
+    # -----------------------------------------------------
+    # INSTITUCION
+    # -----------------------------------------------------
+
+    def test_institucion_no_puede_acceder_a_panel_medico(self):
+
+        self.iniciar_sesion_con_rol(
+            "institucion_test",
+            "INSTITUCION"
+        )
+
+        respuesta = self.client.get(
+            "/panel/medico/"
+        )
+
+        self.assertEqual(
+            respuesta.status_code,
+            302
+        )
+
+        self.assertEqual(
+            respuesta.url,
+            "/"
+        )
