@@ -9,11 +9,13 @@
         <p>Administración inteligente de medicamentos y horarios del paciente.</p>
     </div>
 
-    <div class="acciones">
-        <a href="{% url 'crear_medicacion' %}" class="btn-agregar">
-            ➕ Nuevo medicamento
-        </a>
-    </div>
+    {% if request.user.perfilusuario.rol != "PACIENTE" %}
+<div class="acciones">
+    <a href="{% url 'crear_medicacion' %}" class="btn-agregar">
+        ➕ Nuevo medicamento
+    </a>
+</div>
+{% endif %}
 
     <h2>Medicamentos registrados</h2>
 
@@ -84,34 +86,40 @@
 
             <div class="botones">
 
-                {% if medicamento.tomado %}
+    {% if medicamento.tomado %}
 
-                    <button class="tomado" disabled>
-                        ✅ Medicamento tomado
-                    </button>
+        <button class="tomado" disabled>
+            ✅ Medicamento tomado
+        </button>
 
-                {% else %}
+    {% else %}
 
-                    <a href="{% url 'tomar_medicacion' medicamento.id %}" class="btn-tomar">
-                        💊 Tomar medicamento
-                                </a>
-                        {% endif %}
+        <a href="{% url 'tomar_medicacion' medicamento.id %}" class="btn-tomar">
+            💊 Tomar medicamento
+        </a>
 
-                <a href="{% url 'editar_medicacion' medicamento.id %}" class="editar">
-                    ✏ Editar
-                </a>
+    {% endif %}
 
-                <a href="{% url 'cambiar_estado_medicacion' medicamento.id %}" class="eliminar">
 
-                    {% if medicamento.activo %}
-                        ⏸ Suspender
-                    {% else %}
-                        ▶ Reactivar
-                    {% endif %}
+    {% if request.user.perfilusuario.rol != "PACIENTE" %}
 
-                </a>
+        <a href="{% url 'editar_medicacion' medicamento.id %}" class="editar">
+            ✏️ Editar
+        </a>
 
-            </div>
+        <a href="{% url 'cambiar_estado_medicacion' medicamento.id %}" class="eliminar">
+
+            {% if medicamento.activo %}
+                ⏸️ Suspender
+            {% else %}
+                ▶️ Reactivar
+            {% endif %}
+
+        </a>
+
+    {% endif %}
+
+</div>
 
         </div>
 

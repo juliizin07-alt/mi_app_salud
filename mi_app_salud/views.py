@@ -2827,14 +2827,40 @@ def cambiar_estado(request, paciente_id, estado):
 # MEDICACION
 # ==================================================
 
-@requiere_rol("ADMIN", "MEDICO", "ENFERMERIA")
+@requiere_rol("ADMIN", "MEDICO", "ENFERMERIA", "PACIENTE")
 def medicacion(request):
 
-    medicamentos = (
-        Medicacion.objects
-        .select_related("paciente", "confirmado_por")
-        .order_by("horario")
-    )
+    if request.user.is_superuser:
+        es_paciente = False
+    else:
+        perfil = getattr(request.user, "perfilusuario", None)
+        es_paciente = perfil and perfil.rol == "PACIENTE"
+
+    if es_paciente:
+
+        paciente = getattr(
+            request.user,
+            "paciente",
+            None
+        )
+
+        if paciente:
+            medicamentos = (
+                Medicacion.objects
+                .filter(paciente=paciente)
+                .select_related("paciente", "confirmado_por")
+                .order_by("horario")
+            )
+        else:
+            medicamentos = Medicacion.objects.none()
+
+    else:
+
+        medicamentos = (
+            Medicacion.objects
+            .select_related("paciente", "confirmado_por")
+            .order_by("horario")
+        )
 
     return render(
         request,
@@ -2843,7 +2869,6 @@ def medicacion(request):
             "medicamentos": medicamentos
         }
     )
-
 
 # ==================================================
 # CREAR MEDICACION
@@ -2924,21 +2949,46 @@ def crear_medicacion(request):
     )
 
 
-
-
-
 # ==========================================
 # TOMAR MEDICACION
 # ==========================================
 
-
-@requiere_rol("ADMIN", "MEDICO", "ENFERMERIA")
+@requiere_rol("ADMIN", "MEDICO", "ENFERMERIA", "PACIENTE")
 def tomar_medicacion(request, medicamento_id):
 
     medicamento = get_object_or_404(
         Medicacion,
         id=medicamento_id
     )
+
+    # ==================================================
+    # SEGURIDAD PARA PACIENTES
+    # ==================================================
+
+    perfil = getattr(
+        request.user,
+        "perfilusuario",
+        None
+    )
+
+    if perfil and perfil.rol == "PACIENTE":
+
+        paciente = getattr(
+            request.user,
+            "paciente",
+            None
+        )
+
+        if not paciente or medicamento.paciente_id != paciente.id:
+            messages.error(
+                request,
+                "No tenés permiso para modificar esta medicación."
+            )
+            return redirect("medicacion")
+
+    # ==================================================
+    # REGISTRAR TOMA
+    # ==================================================
 
     medicamento.tomado = True
     medicamento.fecha_ultima_toma = timezone.now()
