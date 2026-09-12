@@ -71,6 +71,15 @@ def escalar_emergencia(
 Paciente:
 {paciente.nombre} {paciente.apellido}
 
+🩺 Patologías:
+{paciente.enfermedades or "Sin datos"}
+
+🧠 Antecedentes de salud mental:
+{paciente.antecedentes_salud_mental or "Sin datos"}
+
+⚠️ Alergias:
+{paciente.alergias or "Sin datos"}
+
 RIESGO:
 CRÍTICO
 
@@ -103,6 +112,20 @@ CRÍTICO
 
 📡 Origen:
 {signo.origen}
+
+📍 Ubicación:
+{
+    f"{signo.latitud}, {signo.longitud}"
+    if signo.latitud is not None and signo.longitud is not None
+    else "Sin ubicación disponible"
+}
+
+🕒 Fecha de ubicación:
+{
+    signo.fecha_ubicacion.isoformat()
+    if signo.fecha_ubicacion is not None
+    else "Sin dato"
+}
 
 ⚠️ Jarvice detectó parámetros clínicos críticos.
 

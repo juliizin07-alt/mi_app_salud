@@ -1906,10 +1906,6 @@ def pacientes(request):
             "datos": datos
         }
     )
-
-
-
-
 # ==================================================
 # HISTORIAL CLÍNICO DEL PACIENTE
 # ==================================================
@@ -1926,9 +1922,11 @@ def historial_paciente(request, paciente_id):
     # REGISTROS DE SALUD
     # ==========================================
 
-    registros = RegistroSalud.objects.filter(
-        paciente=paciente
-    ).order_by("-fecha")
+    registros = (
+        RegistroSalud.objects
+        .filter(paciente=paciente)
+        .order_by("-fecha")
+    )
 
     ultimo_estado = registros.first()
 
@@ -1936,9 +1934,11 @@ def historial_paciente(request, paciente_id):
     # RECORDATORIOS
     # ==========================================
 
-    recordatorios = Recordatorio.objects.filter(
-        paciente=paciente
-    ).order_by("-fecha")
+    recordatorios = (
+        Recordatorio.objects
+        .filter(paciente=paciente)
+        .order_by("-fecha")
+    )
 
     # ==========================================
     # MEDICACIÓN
@@ -1952,9 +1952,11 @@ def historial_paciente(request, paciente_id):
     # SIGNOS VITALES JARVICE
     # ==========================================
 
-    signos_vitales = SignoVital.objects.filter(
-        paciente=paciente
-    ).order_by("-fecha")
+    signos_vitales = (
+        SignoVital.objects
+        .filter(paciente=paciente)
+        .order_by("-fecha")
+    )
 
     ultimo_signo_vital = signos_vitales.first()
 
@@ -1962,47 +1964,74 @@ def historial_paciente(request, paciente_id):
     # EVOLUCIONES MÉDICAS
     # ==========================================
 
-    evoluciones = EvolucionMedica.objects.filter(
-        paciente=paciente
-    ).order_by("-fecha")
+    evoluciones = (
+        EvolucionMedica.objects
+        .filter(paciente=paciente)
+        .order_by("-fecha")
+    )
 
-    evoluciones_enfermeria = EvolucionEnfermeria.objects.filter(
-    paciente=paciente
-).select_related("usuario").order_by("-fecha")
+    evoluciones_enfermeria = (
+        EvolucionEnfermeria.objects
+        .filter(paciente=paciente)
+        .select_related("usuario")
+        .order_by("-fecha")
+    )
 
     # ==========================================
     # ESTUDIOS SOLICITADOS
     # ==========================================
 
-    solicitudes_estudios = SolicitudEstudio.objects.filter(
-        paciente=paciente
-    ).order_by("-fecha_solicitud")
+    solicitudes_estudios = (
+        SolicitudEstudio.objects
+        .filter(paciente=paciente)
+        .order_by("-fecha_solicitud")
+    )
 
     # ==========================================
     # ANÁLISIS DE RIESGO JARVICE
     # ==========================================
 
-    riesgo = "BAJO"
-    color_riesgo = "verde"
+    riesgo = "SIN DATOS"
+    color_riesgo = "gris"
+    analisis_clinico = None
 
     # ==========================================
-    # ANALIZAR ÚLTIMO ESTADO
+    # ANALIZAR ÚLTIMO SIGNO VITAL
     # ==========================================
 
-    if ultimo_estado:
+    if ultimo_signo_vital:
 
-        if ultimo_estado.estado == "CRITICO":
+        analisis_clinico = analizar_signos_vitales(
+            ultimo_signo_vital
+        )
 
-            riesgo = "CRITICO"
-            color_riesgo = "rojo"
+        riesgo = analisis_clinico["riesgo_vital"]
+        color_riesgo = analisis_clinico["color_riesgo_vital"]
 
-        elif ultimo_estado.estado in [
-            "DOLOR",
-            "CANSADO"
-        ]:
+    else:
 
-            riesgo = "ATENCION"
-            color_riesgo = "amarillo"
+        # Si no existen signos vitales, utilizar
+        # el último estado clínico disponible.
+
+        if ultimo_estado:
+
+            if ultimo_estado.estado == "CRITICO":
+
+                riesgo = "CRITICO"
+                color_riesgo = "rojo"
+
+            elif ultimo_estado.estado in [
+                "DOLOR",
+                "CANSADO"
+            ]:
+
+                riesgo = "ATENCION"
+                color_riesgo = "amarillo"
+
+            elif ultimo_estado.estado == "OK":
+
+                riesgo = "BAJO"
+                color_riesgo = "verde"
 
     # ==========================================
     # ANALIZAR MEDICACIÓN
@@ -2021,7 +2050,14 @@ def historial_paciente(request, paciente_id):
     # PROTEGER ESTADO CRÍTICO
     # ==========================================
 
-    if (
+    if analisis_clinico:
+
+        if analisis_clinico["riesgo_vital"] == "CRITICO":
+
+            riesgo = "CRITICO"
+            color_riesgo = "rojo"
+
+    elif (
         ultimo_estado
         and ultimo_estado.estado == "CRITICO"
     ):
@@ -2035,28 +2071,18 @@ def historial_paciente(request, paciente_id):
 
     contexto = {
         "paciente": paciente,
-
         "registros": registros,
-
         "recordatorios": recordatorios,
-
         "medicaciones": medicaciones,
-
         "signos_vitales": signos_vitales,
-
         "ultimo_signo_vital": ultimo_signo_vital,
-
         "ultimo_estado": ultimo_estado,
-
         "evoluciones": evoluciones,
-
         "solicitudes_estudios": solicitudes_estudios,
-
         "riesgo": riesgo,
-
         "color_riesgo": color_riesgo,
-
         "evoluciones_enfermeria": evoluciones_enfermeria,
+        "analisis_clinico": analisis_clinico,
     }
 
     return render(
@@ -4313,6 +4339,13 @@ def ficha_emergencia_qr(request, acceso_id):
         "-fecha"
     ).first()
 
+    analisis_clinico = None
+
+    if ultimo_signo_vital:
+        analisis_clinico = analizar_signos_vitales(
+        ultimo_signo_vital
+    )
+
     # ------------------------------------------------------
     # ÚLTIMO ESTADO
     # ------------------------------------------------------
@@ -4334,6 +4367,23 @@ def ficha_emergencia_qr(request, acceso_id):
     ).first()
 
     # ------------------------------------------------------
+    # UBICACIÓN GPS PARA GOOGLE MAPS
+    # ------------------------------------------------------
+
+    google_maps_url = None
+
+    if (
+        ultimo_signo_vital
+        and ultimo_signo_vital.latitud is not None
+        and ultimo_signo_vital.longitud is not None
+    ):
+        google_maps_url = (
+            "https://www.google.com/maps/search/?api=1&query="
+            f"{float(ultimo_signo_vital.latitud):.6f},"
+            f"{float(ultimo_signo_vital.longitud):.6f}"
+        )
+
+    # ------------------------------------------------------
     # CONTEXTO
     # ------------------------------------------------------
 
@@ -4344,6 +4394,11 @@ def ficha_emergencia_qr(request, acceso_id):
         "ultimo_estado": ultimo_estado,
         "ultima_evolucion": ultima_evolucion,
         "acceso": acceso,
+        "enfermedades": paciente.enfermedades,
+        "alergias": paciente.alergias,
+        "antecedentes_salud_mental": paciente.antecedentes_salud_mental,
+        "analisis_clinico": analisis_clinico,
+        "google_maps_url": google_maps_url,
     }
 
     return render(

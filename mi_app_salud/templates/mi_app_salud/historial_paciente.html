@@ -36,36 +36,67 @@
         </div>
 
 
-        <div class="estado-paciente">
+        
+<div class="estado-paciente">
 
-            {% if ultimo_estado %}
+    {% if analisis_clinico %}
 
-                {% if ultimo_estado.estado == "OK" %}
-                    <span class="estado-dot verde"></span>
-                    Paciente estable
+        {% if analisis_clinico.riesgo_vital == "CRITICO" %}
 
-                {% elif ultimo_estado.estado == "CANSADO" %}
-                    <span class="estado-dot amarillo"></span>
-                    Requiere seguimiento
+            <span class="estado-dot rojo"></span>
+            Atención inmediata
 
-                {% elif ultimo_estado.estado == "DOLOR" %}
-                    <span class="estado-dot naranja"></span>
-                    Dolor registrado
+        {% elif analisis_clinico.riesgo_vital == "ATENCION" %}
 
-                {% elif ultimo_estado.estado == "CRITICO" %}
-                    <span class="estado-dot rojo"></span>
-                    Atención inmediata
+            <span class="estado-dot amarillo"></span>
+            Requiere seguimiento
 
-                {% endif %}
+        {% elif analisis_clinico.riesgo_vital == "BAJO" %}
 
-            {% else %}
+            <span class="estado-dot verde"></span>
+            Paciente estable
 
-                <span class="estado-dot gris"></span>
-                Sin datos recientes
+        {% else %}
 
-            {% endif %}
+            <span class="estado-dot gris"></span>
+            Sin datos recientes
 
-        </div>
+        {% endif %}
+
+    {% elif ultimo_estado %}
+
+        {% if ultimo_estado.estado == "OK" %}
+
+            <span class="estado-dot verde"></span>
+            Paciente estable
+
+        {% elif ultimo_estado.estado == "CANSADO" %}
+
+            <span class="estado-dot amarillo"></span>
+            Requiere seguimiento
+
+        {% elif ultimo_estado.estado == "DOLOR" %}
+
+            <span class="estado-dot amarillo"></span>
+            Requiere seguimiento
+
+        {% elif ultimo_estado.estado == "CRITICO" %}
+
+            <span class="estado-dot rojo"></span>
+            Atención inmediata
+
+        {% endif %}
+
+    {% else %}
+
+        <span class="estado-dot gris"></span>
+        Sin datos recientes
+
+    {% endif %}
+
+</div>
+
+
 
     </header>
 
@@ -136,79 +167,69 @@
         <div class="resumen-grid">
 
 
-            <!-- ESTADO -->
+            <div class="card-contenido">
 
-            <article class="resumen-card">
+    <span class="card-label">
+        Estado general
+    </span>
 
-                <span class="card-icono">❤️</span>
+    {% if analisis_clinico %}
 
-                <div class="card-contenido">
+        {% if analisis_clinico.riesgo_vital == "CRITICO" %}
 
-                    <span class="card-label">
-                        Estado general
-                    </span>
+            <strong class="valor rojo-texto">
+                Crítico
+            </strong>
 
+            <small>
+                Requiere atención inmediata
+            </small>
 
-                    {% if ultimo_estado %}
+        {% elif analisis_clinico.riesgo_vital == "ATENCION" %}
 
-                        {% if ultimo_estado.estado == "OK" %}
+            <strong class="valor amarillo-texto">
+                Atención
+            </strong>
 
-                            <strong class="valor verde-texto">
-                                Estable
-                            </strong>
+            <small>
+                Se recomienda seguimiento clínico
+            </small>
 
-                            <small>
-                                Sin alertas críticas
-                            </small>
+        {% elif analisis_clinico.riesgo_vital == "BAJO" %}
 
+            <strong class="valor verde-texto">
+                Estable
+            </strong>
 
-                        {% elif ultimo_estado.estado == "CANSADO" %}
+            <small>
+                Sin parámetros críticos detectados
+            </small>
 
-                            <strong class="valor amarillo-texto">
-                                Cansado
-                            </strong>
+        {% else %}
 
-                            <small>
-                                Se recomienda seguimiento
-                            </small>
+            <strong class="valor">
+                Sin datos
+            </strong>
 
+            <small>
+                No hay suficientes datos clínicos
+            </small>
 
-                        {% elif ultimo_estado.estado == "DOLOR" %}
+        {% endif %}
 
-                            <strong class="valor naranja-texto">
-                                Dolor
-                            </strong>
+    {% else %}
 
-                            <small>
-                                Se recomienda valoración
-                            </small>
+        <strong class="valor">
+            Sin datos
+        </strong>
 
+        <small>
+            No hay signos vitales disponibles
+        </small>
 
-                        {% elif ultimo_estado.estado == "CRITICO" %}
+    {% endif %}
 
-                            <strong class="valor rojo-texto">
-                                Crítico
-                            </strong>
-
-                            <small>
-                                Requiere atención inmediata
-                            </small>
-
-                        {% endif %}
-
-                    {% else %}
-
-                        <strong class="valor">
-                            Sin datos
-                        </strong>
-
-                        <small>
-                            No hay registros recientes
-                        </small>
-
-                    {% endif %}
-
-                </div>
+</div>
 
             </article>
 
@@ -601,121 +622,163 @@
 
             <article class="estado-card">
 
-                <span class="estado-card-icono">
-                    ❤️
-                </span>
+    <span class="estado-card-icono">
+        ❤️
+    </span>
 
-                <div>
+    <div>
 
-                    <span>
-                        Estado físico
-                    </span>
+        <span>
+            Estado físico
+        </span>
 
-                    {% if ultimo_estado %}
+        {% if analisis_clinico %}
 
-                        <strong>
-                            {{ ultimo_estado.estado }}
-                        </strong>
+            <strong class="{% if analisis_clinico.riesgo_vital == 'CRITICO' %}rojo-texto{% elif analisis_clinico.riesgo_vital == 'ATENCION' %}amarillo-texto{% else %}verde-texto{% endif %}">
 
-                    {% else %}
+                {{ analisis_clinico.riesgo_vital }}
 
-                        <strong class="sin-dato">
-                            Sin datos
-                        </strong>
+            </strong>
 
-                    {% endif %}
+        {% elif ultimo_estado %}
 
-                </div>
+            <strong>
+                {{ ultimo_estado.estado }}
+            </strong>
 
-            </article>
+        {% else %}
+
+            <strong class="sin-dato">
+                Sin datos
+            </strong>
+
+        {% endif %}
+
+    </div>
+
+</article>
 
 
             <!-- ESTADO EMOCIONAL -->
 
-            <article class="estado-card">
+           <article class="estado-card">
 
-                <span class="estado-card-icono">
-                    🧠
-                </span>
+    <span class="estado-card-icono">
+        🧠
+    </span>
 
-                <div>
+    <div>
 
-                    <span>
-                        Estado emocional
-                    </span>
+        <span>
+            Estado emocional
+        </span>
 
-                    {% if ultimo_estado %}
+        {% if ultimo_signo_vital and ultimo_signo_vital.estado_emocional %}
 
-                        <strong>
-                            {{ ultimo_estado.estado_emocional }}
-                        </strong>
+            <strong>
+                {{ ultimo_signo_vital.estado_emocional }}
+            </strong>
 
-                    {% else %}
+        {% elif ultimo_estado %}
 
-                        <strong class="sin-dato">
-                            Sin datos
-                        </strong>
+            <strong>
+                {{ ultimo_estado.estado_emocional }}
+            </strong>
 
-                    {% endif %}
+        {% else %}
 
-                </div>
+            <strong class="sin-dato">
+                Sin datos
+            </strong>
 
-            </article>
+        {% endif %}
+
+    </div>
+
+</article>
 
 
             <!-- ESTADO GENERAL -->
 
             <article class="estado-card">
 
-                <span class="estado-card-icono">
-                    🚦
-                </span>
+    <span class="estado-card-icono">
+        🚦
+    </span>
 
-                <div>
+    <div>
 
-                    <span>
-                        Clasificación
-                    </span>
+        <span>
+            Clasificación
+        </span>
 
-                    {% if ultimo_estado %}
+        {% if analisis_clinico %}
 
-                        {% if ultimo_estado.estado == "OK" %}
+            {% if analisis_clinico.riesgo_vital == "CRITICO" %}
 
-                            <strong class="verde-texto">
-                                🟢 Estable
-                            </strong>
+                <strong class="rojo-texto">
+                    🔴 Crítico
+                </strong>
 
-                        {% elif ultimo_estado.estado == "CANSADO" %}
+            {% elif analisis_clinico.riesgo_vital == "ATENCION" %}
 
-                            <strong class="amarillo-texto">
-                                🟡 Cansado
-                            </strong>
+                <strong class="amarillo-texto">
+                    🟡 Atención
+                </strong>
 
-                        {% elif ultimo_estado.estado == "DOLOR" %}
+            {% elif analisis_clinico.riesgo_vital == "BAJO" %}
 
-                            <strong class="naranja-texto">
-                                🟠 Dolor
-                            </strong>
+                <strong class="verde-texto">
+                    🟢 Estable
+                </strong>
 
-                        {% elif ultimo_estado.estado == "CRITICO" %}
+            {% else %}
 
-                            <strong class="rojo-texto">
-                                🔴 Crítico
-                            </strong>
+                <strong class="sin-dato">
+                    ⚪ Sin datos
+                </strong>
 
-                        {% endif %}
+            {% endif %}
 
-                    {% else %}
+        {% elif ultimo_estado %}
 
-                        <strong class="sin-dato">
-                            ⚪ Sin datos
-                        </strong>
+            {% if ultimo_estado.estado == "OK" %}
 
-                    {% endif %}
+                <strong class="verde-texto">
+                    🟢 Estable
+                </strong>
 
-                </div>
+            {% elif ultimo_estado.estado == "CANSADO" %}
 
-            </article>
+                <strong class="amarillo-texto">
+                    🟡 Cansado
+                </strong>
+
+            {% elif ultimo_estado.estado == "DOLOR" %}
+
+                <strong class="naranja-texto">
+                    🟠 Dolor
+                </strong>
+
+            {% elif ultimo_estado.estado == "CRITICO" %}
+
+                <strong class="rojo-texto">
+                    🔴 Crítico
+                </strong>
+
+            {% endif %}
+
+        {% else %}
+
+            <strong class="sin-dato">
+                ⚪ Sin datos
+            </strong>
+
+        {% endif %}
+
+    </div>
+
+</article>
 
 
             <!-- DISPOSITIVO -->
@@ -1595,28 +1658,37 @@
             {% endif %}
 
 
-            {% if registros %}
+            
+{% if registros %}
 
-                <div class="actividad-item">
+    <div class="actividad-item">
 
-                    <span>📋</span>
+        <span>📋</span>
 
-                    <div>
+        <div>
 
-                        <strong>
-                            Último control clínico
-                        </strong>
+            <strong>
+                Último control clínico
+            </strong>
 
-                        <p>
-                            Estado:
-                            {{ registros.0.estado }}
-                        </p>
+            <p>
+                Estado:
+                {% if analisis_clinico %}
+                    {{ analisis_clinico.estado_clinico_ia }}
+                {% elif ultimo_estado %}
+                    {{ ultimo_estado.estado }}
+                {% else %}
+                    SIN DATOS
+                {% endif %}
+            </p>
 
-                    </div>
+        </div>
 
-                </div>
+    </div>
 
-            {% endif %}
+{% endif %}
+
+
 
 
             {% if recordatorios %}
@@ -1690,27 +1762,34 @@
 
         <div class="ai-resumen">
 
-            <div>
+            
+<div>
+    <span>
+        Estado actual
+    </span>
 
-                <span>
-                    Estado actual
-                </span>
+    {% if analisis_clinico %}
 
-                {% if ultimo_estado %}
+        <strong>
+            {{ analisis_clinico.estado_clinico_ia }}
+        </strong>
 
-                    <strong>
-                        {{ ultimo_estado.estado }}
-                    </strong>
+    {% elif ultimo_estado %}
 
-                {% else %}
+        <strong>
+            {{ ultimo_estado.estado }}
+        </strong>
 
-                    <strong>
-                        Sin datos
-                    </strong>
+    {% else %}
 
-                {% endif %}
+        <strong>
+            Sin datos
+        </strong>
 
-            </div>
+    {% endif %}
+
+</div>
+
 
 
             <div>
@@ -3585,7 +3664,448 @@
     }
 
 }
+/* =========================================================
+   AJUSTE VISUAL JARVICE · PULIDO GENERAL
+========================================================= */
 
+.historia-clinica {
+    padding-top: 24px;
+}
+
+
+/* Cabecera más definida */
+
+.historia-header {
+    padding: 4px 0 18px;
+    border-bottom: 1px solid rgba(139,233,255,.08);
+}
+
+
+/* Identidad del paciente */
+
+.paciente-avatar {
+    box-shadow:
+        0 8px 22px rgba(0,0,0,.18);
+}
+
+
+/* Estado del paciente */
+
+.estado-paciente {
+    box-shadow:
+        0 6px 18px rgba(0,0,0,.16);
+    backdrop-filter: blur(14px);
+}
+
+
+/* Paneles */
+
+.panel-clinico {
+    box-shadow:
+        0 8px 24px rgba(0,0,0,.14);
+    transition:
+        border-color .2s ease,
+        box-shadow .2s ease,
+        transform .2s ease;
+}
+
+.panel-clinico:hover {
+    border-color: rgba(139,233,255,.22);
+    box-shadow:
+        0 10px 28px rgba(0,0,0,.18);
+}
+
+
+/* Tarjetas */
+
+.resumen-card,
+.vital-card,
+.estado-card {
+    transition:
+        transform .18s ease,
+        border-color .18s ease,
+        background .18s ease;
+}
+
+.resumen-card:hover,
+.vital-card:hover,
+.estado-card:hover {
+    transform: translateY(-2px);
+    border-color: rgba(139,233,255,.14);
+    background: rgba(255,255,255,.045);
+}
+
+
+/* Datos vitales */
+
+.vital-info strong {
+    letter-spacing: -.3px;
+}
+
+
+/* Riesgo crítico más visible */
+
+.panel-riesgo.rojo {
+    background:
+        linear-gradient(
+            135deg,
+            rgba(255,82,82,.075),
+            rgba(255,82,82,.025)
+        );
+    box-shadow:
+        0 10px 30px rgba(255,82,82,.06);
+}
+
+
+/* Historial */
+
+.registro-linea {
+    border: 1px solid rgba(255,255,255,.035);
+    transition:
+        background .18s ease,
+        border-color .18s ease;
+}
+
+.registro-linea:hover {
+    background: rgba(139,233,255,.035);
+    border-color: rgba(139,233,255,.10);
+}
+
+
+/* Tratamientos */
+
+.tratamiento-card {
+    border: 1px solid rgba(255,255,255,.035);
+}
+
+
+/* Actividad reciente */
+
+.actividad-item {
+    border: 1px solid rgba(255,255,255,.035);
+    transition:
+        background .18s ease,
+        transform .18s ease;
+}
+
+.actividad-item:hover {
+    background: rgba(139,233,255,.035);
+    transform: translateX(2px);
+}
+
+
+/* Panel IA */
+
+.jarvice-ai-panel {
+    box-shadow:
+        0 10px 30px rgba(0,114,255,.08);
+}
+
+.ai-resumen > div {
+    border: 1px solid rgba(139,233,255,.05);
+}
+
+.recomendacion-ai {
+    box-shadow:
+        0 8px 22px rgba(0,232,144,.04);
+}
+
+
+/* Botones ligeramente más refinados */
+
+.btn-accion {
+    box-shadow:
+        0 4px 12px rgba(0,0,0,.15);
+}
+
+.btn-accion:hover {
+    transform: translateY(-2px);
+    box-shadow:
+        0 7px 18px rgba(0,0,0,.20);
+}
+
+
+/* Tabla */
+
+.tabla-wrapper {
+    box-shadow:
+        0 6px 18px rgba(0,0,0,.10);
+}
+
+.tabla-vitales tbody tr {
+    transition: background .15s ease;
+}
+
+
+/* Gráfico */
+
+.grafico-signos-panel {
+    box-shadow:
+        0 10px 28px rgba(0,0,0,.16);
+}
+/* =========================================================
+   EVOLUCIÓN DE ENFERMERÍA
+========================================================= */
+
+.seccion-clinica {
+
+    margin-top:18px;
+
+    padding:22px;
+
+    background:rgba(255,255,255,.055);
+
+    border:1px solid rgba(139,233,255,.16);
+
+    border-radius:18px;
+
+}
+
+
+.titulo-seccion {
+
+    display:flex;
+
+    flex-direction:column;
+
+    gap:5px;
+
+    margin-bottom:16px;
+
+}
+
+
+.titulo-seccion h2 {
+
+    margin:0;
+
+    color:#dff8ff;
+
+    font-size:19px;
+
+    font-weight:600;
+
+}
+
+
+.titulo-seccion .subtitulo {
+
+    color:#829ba7;
+
+    font-size:12px;
+
+}
+
+
+.lista-evoluciones {
+
+    display:flex;
+
+    flex-direction:column;
+
+    gap:12px;
+
+}
+
+
+.evolucion-card {
+
+    margin:0;
+
+    padding:16px;
+
+    background:rgba(0,0,0,.16);
+
+    border:1px solid rgba(139,233,255,.08);
+
+    border-left:3px solid #7650c9;
+
+    border-radius:12px;
+
+}
+
+
+.evolucion-header {
+
+    display:flex;
+
+    align-items:center;
+
+    justify-content:space-between;
+
+    gap:16px;
+
+    padding-bottom:12px;
+
+    border-bottom:1px solid rgba(255,255,255,.06);
+
+}
+
+
+.evolucion-header > div {
+
+    min-width:0;
+
+}
+
+
+.evolucion-header strong {
+
+    color:#8be9ff;
+
+    font-size:12px;
+
+    font-weight:600;
+
+}
+
+
+.evolucion-header span {
+
+    color:#829ba7;
+
+    font-size:11px;
+
+}
+
+
+.estado-enfermeria {
+
+    flex:none;
+
+    padding:5px 10px;
+
+    border-radius:20px;
+
+    background:rgba(0,232,144,.08);
+
+    border:1px solid rgba(0,232,144,.14);
+
+    color:#75e6b4 !important;
+
+    font-size:10px !important;
+
+    font-weight:600;
+
+}
+
+
+.evolucion-contenido {
+
+    display:grid;
+
+    grid-template-columns:repeat(3,minmax(0,1fr));
+
+    gap:12px;
+
+    margin-top:14px;
+
+}
+
+
+.evolucion-contenido > div {
+
+    padding:12px;
+
+    background:rgba(255,255,255,.025);
+
+    border-radius:9px;
+
+}
+
+
+.evolucion-contenido strong {
+
+    display:block;
+
+    margin-bottom:5px;
+
+    color:#829ba7;
+
+    font-size:10px;
+
+    font-weight:600;
+
+    text-transform:uppercase;
+
+    letter-spacing:.5px;
+
+}
+
+
+.evolucion-contenido p {
+
+    margin:0;
+
+    color:#d2e6ec;
+
+    font-size:12px;
+
+    line-height:1.5;
+
+}
+
+
+.sin-registros {
+
+    padding:16px;
+
+    border:1px dashed rgba(139,233,255,.14);
+
+    border-radius:11px;
+
+    background:rgba(0,0,0,.12);
+
+}
+
+
+.sin-registros p {
+
+    margin:0;
+
+    color:#718791;
+
+    font-size:12px;
+
+}
+
+
+/* -----------------------------------------
+   RESPONSIVE
+------------------------------------------ */
+
+@media (max-width:700px) {
+
+    .seccion-clinica {
+
+        padding:16px;
+
+    }
+
+
+    .evolucion-header {
+
+        align-items:flex-start;
+
+        flex-direction:column;
+
+    }
+
+
+    .evolucion-contenido {
+
+        grid-template-columns:1fr;
+
+    }
+
+
+    .estado-enfermeria {
+
+        align-self:flex-start;
+
+    }
+
+}
 </style>
 
 <script src="{% static 'mi_app_salud/js/chart.umd.min.js' %}"></script>

@@ -166,6 +166,10 @@ class Paciente(models.Model):
         blank=True
     )
 
+    antecedentes_salud_mental = models.TextField(
+    blank=True
+    )
+
     telefono = models.CharField(
         max_length=30,
         blank=True
@@ -616,7 +620,7 @@ class AuditoriaJarvice(models.Model):
         )
 
         return f"{usuario} - {self.accion} - {self.fecha}"
-    # ==================================================
+# ==================================================
 # SIGNOS VITALES JARVICE
 # ==================================================
 
@@ -674,13 +678,37 @@ class SignoVital(models.Model):
         blank=True
     )
 
+    latitud = models.DecimalField(
+        max_digits=9,
+        decimal_places=6,
+        null=True,
+        blank=True
+    )
+
+    longitud = models.DecimalField(
+        max_digits=9,
+        decimal_places=6,
+        null=True,
+        blank=True
+    )
+
+    fecha_ubicacion = models.DateTimeField(
+        null=True,
+        blank=True
+    )
+
     fecha = models.DateTimeField(
         auto_now_add=True
     )
 
     def __str__(self):
-        return f"Signos vitales - {self.paciente.nombre} {self.paciente.apellido} - {self.fecha}"
-    # ==================================================
+        return (
+            f"Signos vitales - "
+            f"{self.paciente.nombre} "
+            f"{self.paciente.apellido} - "
+            f"{self.fecha}"
+        )
+# ==================================================
 # QR DINÁMICO JARVICE
 # ==================================================
 

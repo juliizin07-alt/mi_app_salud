@@ -1,9 +1,10 @@
-import json
+﻿import json
 from decimal import Decimal, InvalidOperation
 from asgiref.sync import async_to_sync
 from channels.layers import get_channel_layer
 from django.http import JsonResponse
 from django.views.decorators.csrf import csrf_exempt
+from django.utils import timezone
 
 from .clinical_engine import analizar_signos_vitales
 from .models import SignoVital
@@ -112,6 +113,9 @@ def dispositivo_signos_vitales(request):
         ""
     )
 
+    latitud = datos.get("latitud")
+    longitud = datos.get("longitud")
+
     if (
         frecuencia_cardiaca in [None, ""]
         and saturacion_oxigeno in [None, ""]
@@ -126,6 +130,48 @@ def dispositivo_signos_vitales(request):
             },
             status=400,
         )
+
+    if latitud not in [None, ""]:
+        try:
+            latitud = Decimal(str(latitud))
+        except (InvalidOperation, ValueError):
+            return JsonResponse(
+                {
+                    "ok": False,
+                    "error": "latitud debe ser numerica.",
+                },
+                status=400,
+            )
+
+        if latitud < Decimal("-90") or latitud > Decimal("90"):
+            return JsonResponse(
+                {
+                    "ok": False,
+                    "error": "latitud debe estar entre -90 y 90.",
+                },
+                status=400,
+            )
+
+    if longitud not in [None, ""]:
+        try:
+            longitud = Decimal(str(longitud))
+        except (InvalidOperation, ValueError):
+            return JsonResponse(
+                {
+                    "ok": False,
+                    "error": "longitud debe ser numerica.",
+                },
+                status=400,
+            )
+
+        if longitud < Decimal("-180") or longitud > Decimal("180"):
+            return JsonResponse(
+                {
+                    "ok": False,
+                    "error": "longitud debe estar entre -180 y 180.",
+                },
+                status=400,
+            )
 
     if frecuencia_cardiaca not in [None, ""]:
         try:
@@ -194,15 +240,18 @@ def dispositivo_signos_vitales(request):
             )
 
     signo = SignoVital.objects.create(
-        paciente=dispositivo.paciente,
-        frecuencia_cardiaca=frecuencia_cardiaca,
-        saturacion_oxigeno=saturacion_oxigeno,
-        temperatura=temperatura,
-        presion_arterial=presion_arterial,
-        estado_emocional=estado_emocional,
-        origen="SMARTWATCH",
-        observaciones=observaciones,
-    )
+    paciente=dispositivo.paciente,
+    frecuencia_cardiaca=frecuencia_cardiaca,
+    saturacion_oxigeno=saturacion_oxigeno,
+    temperatura=temperatura,
+    presion_arterial=presion_arterial,
+    estado_emocional=estado_emocional,
+    origen="SMARTWATCH",
+    observaciones=observaciones,
+    latitud=latitud,
+    longitud=longitud,
+    fecha_ubicacion=timezone.now() if latitud is not None and longitud is not None else None,
+)
 
     analisis = analizar_signos_vitales(
         signo
@@ -258,6 +307,24 @@ def dispositivo_signos_vitales(request):
                         analisis["nivel_riesgo_ia"]
                     ),
                     "fecha": signo.fecha.isoformat(),
+                    
+                    "latitud": (
+                    float(signo.latitud)
+                    if signo.latitud is not None
+                    else None
+                ),
+
+                "longitud": (
+                    float(signo.longitud)
+                    if signo.longitud is not None
+                    else None
+                ),
+
+                "fecha_ubicacion": (
+                    signo.fecha_ubicacion.isoformat()
+                    if signo.fecha_ubicacion is not None
+                    else None
+                ),
                 },
             },
         )

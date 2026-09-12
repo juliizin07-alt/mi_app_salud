@@ -1,4 +1,4 @@
-from django import forms
+﻿from django import forms
 from .models import Paciente, SolicitudUsuario
 
 
@@ -19,10 +19,15 @@ class PacienteForm(forms.ModelForm):
             "altura",
             "alergias",
             "enfermedades",
+            "antecedentes_salud_mental",
             "telefono",
             "direccion",
             "contacto_emergencia",
             "telefono_emergencia",
+            "contacto_emergencia_2",
+            "telefono_emergencia_2",
+            "contacto_emergencia_3",
+            "telefono_emergencia_3",
             "medico_cabecera",
             "observaciones",
         ]
@@ -84,14 +89,20 @@ class PacienteForm(forms.ModelForm):
                 "rows": 3
             }),
 
+            "antecedentes_salud_mental": forms.Textarea(attrs={
+            "class": "campo",
+            "placeholder": "Antecedentes de salud mental relevantes",
+            "rows": 3
+                }),
+
             "telefono": forms.TextInput(attrs={
                 "class": "campo",
-                "placeholder": "Teléfono"
+                "placeholder": "TelÃ©fono"
             }),
 
             "direccion": forms.Textarea(attrs={
                 "class": "campo",
-                "placeholder": "Dirección",
+                "placeholder": "DirecciÃ³n",
                 "rows": 2
             }),
 
@@ -102,17 +113,37 @@ class PacienteForm(forms.ModelForm):
 
             "telefono_emergencia": forms.TextInput(attrs={
                 "class": "campo",
-                "placeholder": "Teléfono de emergencia"
+                "placeholder": "TelÃ©fono de emergencia"
+            }),
+
+                        "contacto_emergencia_2": forms.TextInput(attrs={
+                "class": "campo",
+                "placeholder": "Nombre del segundo contacto"
+            }),
+
+            "telefono_emergencia_2": forms.TextInput(attrs={
+                "class": "campo",
+                "placeholder": "TelÃ©fono del segundo contacto"
+            }),
+
+            "contacto_emergencia_3": forms.TextInput(attrs={
+                "class": "campo",
+                "placeholder": "Nombre del tercer contacto"
+            }),
+
+            "telefono_emergencia_3": forms.TextInput(attrs={
+                "class": "campo",
+                "placeholder": "TelÃ©fono del tercer contacto"
             }),
 
             "medico_cabecera": forms.TextInput(attrs={
                 "class": "campo",
-                "placeholder": "Médico de cabecera"
+                "placeholder": "MÃ©dico de cabecera"
             }),
 
             "observaciones": forms.Textarea(attrs={
                 "class": "campo",
-                "placeholder": "Observaciones clínicas",
+                "placeholder": "Observaciones clÃ­nicas",
                 "rows": 4
             }),
         }
@@ -156,7 +187,7 @@ class SolicitudUsuarioForm(forms.ModelForm):
             "asunto": forms.TextInput(
                 attrs={
                     "class": "campo",
-                    "placeholder": "¿Sobre qué querés comunicarte?",
+                    "placeholder": "Â¿Sobre quÃ© querÃ©s comunicarte?",
                     "maxlength": "200",
                 }
             ),
@@ -164,7 +195,7 @@ class SolicitudUsuarioForm(forms.ModelForm):
             "mensaje": forms.Textarea(
                 attrs={
                     "class": "campo",
-                    "placeholder": "Contanos tu sugerencia, opinión, problema, reclamo o consulta...",
+                    "placeholder": "Contanos tu sugerencia, opiniÃ³n, problema, reclamo o consulta...",
                     "rows": 6,
                 }
             ),

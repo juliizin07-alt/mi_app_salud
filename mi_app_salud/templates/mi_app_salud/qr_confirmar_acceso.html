@@ -1,1 +1,69 @@
-﻿{% extends "mi_app_salud/base.html" %}\n\n{% block contenido %}\n\n<div class="jarvice-card">\n\n    <div class="qr-icon"></div>\n\n    <h1>Acceso a ficha clínica</h1>\n\n    <p>\n        Se detectó un código QR de emergencia asociado al paciente:\n    </p>\n\n    <h2>{{ paciente.nombre }} {{ paciente.apellido }}</h2>\n\n    <div class="qr-info">\n        <p><strong>Usuario:</strong> {{ request.user.username }}</p>\n        <p><strong>Rol:</strong> {{ perfil.get_rol_display }}</p>\n        <p><strong>Motivo:</strong> {{ acceso.motivo }}</p>\n    </div>\n\n    <div class="warning">\n         Este acceso quedará registrado en la auditoría de Jarvice.\n    </div>\n\n    <form method="post"\n          action="{% url 'confirmar_acceso_qr' acceso.id %}">\n        {% csrf_token %}\n\n        <button type="submit" class="btn-primary">\n            Autorizar y consultar ficha\n        </button>\n    </form>\n\n    <a href="{% url 'inicio' %}" class="btn-secondary">\n        Cancelar\n    </a>\n\n</div>\n\n{% endblock %}\n\n
+﻿
+{% extends "mi_app_salud/base.html" %}
+
+{% block contenido %}
+
+<div class="jarvice-card">
+
+    <div class="qr-icon"></div>
+
+    <h1>Acceso a ficha clínica</h1>
+
+    <p>
+        Se detectó un código QR de emergencia asociado al paciente:
+    </p>
+
+    <h2>
+        {{ paciente.nombre }} {{ paciente.apellido }}
+    </h2>
+
+    <div class="qr-info">
+
+        <p>
+            <strong>Tipo de acceso:</strong>
+            Emergencia mediante QR
+        </p>
+
+        <p>
+            <strong>Paciente:</strong>
+            {{ paciente.nombre }} {{ paciente.apellido }}
+        </p>
+
+        <p>
+            <strong>Motivo:</strong>
+            {{ acceso.motivo }}
+        </p>
+
+    </div>
+
+    <div class="warning">
+        🔐 Este acceso es temporal, está limitado a la ficha de emergencia
+        y quedará registrado en la auditoría de Jarvice.
+    </div>
+
+    <form
+        method="post"
+        action="{% url 'confirmar_acceso_qr' acceso.id %}"
+    >
+
+        {% csrf_token %}
+
+        <button
+            type="submit"
+            class="btn-primary"
+        >
+            🚑 Autorizar y consultar ficha
+        </button>
+
+    </form>
+
+    <a
+        href="{% url 'inicio' %}"
+        class="btn-secondary"
+    >
+        Cancelar
+    </a>
+
+</div>
+
+{% endblock %}
