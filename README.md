@@ -549,7 +549,7 @@ La suite desarrollada para el proyecto contempla pruebas relacionadas con:
 Durante el desarrollo se verificó la ejecución de la suite con:
 
 ```text
-38 tests
+39 tests
 OK
 ```
 
