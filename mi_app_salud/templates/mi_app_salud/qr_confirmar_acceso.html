@@ -1,68 +1,231 @@
-﻿
-{% extends "mi_app_salud/base.html" %}
+﻿{% extends "mi_app_salud/base.html" %}
 
 {% block contenido %}
 
-<div class="jarvice-card">
+<style>
 
-    <div class="qr-icon"></div>
+    .qr-access-wrapper {
+        max-width: 760px;
+        margin: 50px auto;
+        padding: 20px;
+    }
 
-    <h1>Acceso a ficha clínica</h1>
+    .qr-access-card {
+        background: #ffffff;
+        border-radius: 24px;
+        padding: 40px;
+        box-shadow: 0 20px 60px rgba(0, 0, 0, 0.18);
+        border: 1px solid #dbe4ee;
+        text-align: center;
+    }
 
-    <p>
-        Se detectó un código QR de emergencia asociado al paciente:
-    </p>
+    .qr-access-icon {
+        width: 80px;
+        height: 80px;
+        margin: 0 auto 20px;
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        background: #e8f1ff;
+        font-size: 40px;
+    }
 
-    <h2>
-        {{ paciente.nombre }} {{ paciente.apellido }}
-    </h2>
+    .qr-access-card h1 {
+        margin: 0 0 12px;
+        font-size: 32px;
+        color: #102a43;
+    }
 
-    <div class="qr-info">
+    .qr-access-card h2 {
+        margin: 20px 0;
+        font-size: 26px;
+        color: #1565c0;
+    }
 
-        <p>
-            <strong>Tipo de acceso:</strong>
-            Emergencia mediante QR
+    .qr-access-description {
+        color: #52606d;
+        font-size: 16px;
+        line-height: 1.6;
+    }
+
+    .qr-info {
+        margin: 30px 0;
+        padding: 24px;
+        border-radius: 16px;
+        background: #f5f8fc;
+        text-align: left;
+        border: 1px solid #d9e2ec;
+    }
+
+    .qr-info p {
+        margin: 10px 0;
+        color: #334e68;
+    }
+
+    .qr-warning {
+        margin: 25px 0;
+        padding: 18px;
+        border-radius: 14px;
+        background: #fff4e5;
+        border: 1px solid #ffd8a8;
+        color: #8a4b08;
+        line-height: 1.5;
+    }
+
+    .qr-actions {
+        display: flex;
+        flex-direction: column;
+        gap: 12px;
+        margin-top: 30px;
+    }
+
+    .qr-btn-primary {
+        display: block;
+        width: 100%;
+        border: none;
+        border-radius: 12px;
+        padding: 16px 20px;
+        background: #1565c0;
+        color: white;
+        font-size: 17px;
+        font-weight: 700;
+        cursor: pointer;
+        transition: 0.2s;
+    }
+
+    .qr-btn-primary:hover {
+        background: #0d47a1;
+        transform: translateY(-1px);
+    }
+
+    .qr-btn-secondary {
+        display: block;
+        width: 100%;
+        box-sizing: border-box;
+        padding: 14px 20px;
+        border-radius: 12px;
+        background: #eef2f7;
+        color: #334e68;
+        text-decoration: none;
+        font-weight: 600;
+    }
+
+    .qr-btn-secondary:hover {
+        background: #dfe7ef;
+    }
+
+    .qr-security {
+        margin-top: 25px;
+        font-size: 13px;
+        color: #7b8794;
+    }
+
+    @media (max-width: 600px) {
+
+        .qr-access-wrapper {
+            margin: 20px auto;
+            padding: 10px;
+        }
+
+        .qr-access-card {
+            padding: 25px 18px;
+        }
+
+        .qr-access-card h1 {
+            font-size: 25px;
+        }
+
+        .qr-access-card h2 {
+            font-size: 21px;
+        }
+
+    }
+
+</style>
+
+<div class="qr-access-wrapper">
+
+    <div class="qr-access-card">
+
+        <div class="qr-access-icon">
+            🔐
+        </div>
+
+        <h1>
+            Acceso a ficha clínica
+        </h1>
+
+        <p class="qr-access-description">
+            Se detectó un código QR de emergencia asociado al siguiente paciente:
         </p>
 
-        <p>
-            <strong>Paciente:</strong>
+        <h2>
             {{ paciente.nombre }} {{ paciente.apellido }}
-        </p>
+        </h2>
 
-        <p>
-            <strong>Motivo:</strong>
-            {{ acceso.motivo }}
-        </p>
+        <div class="qr-info">
+
+            <p>
+                <strong>Tipo de acceso:</strong>
+                Emergencia mediante QR
+            </p>
+
+            <p>
+                <strong>Paciente:</strong>
+                {{ paciente.nombre }} {{ paciente.apellido }}
+            </p>
+
+            <p>
+                <strong>Motivo:</strong>
+                {{ acceso.motivo }}
+            </p>
+
+        </div>
+
+        <div class="qr-warning">
+
+            ⚠️ <strong>Acceso de emergencia</strong><br>
+
+            Este acceso es temporal, está limitado a la ficha clínica
+            de emergencia y quedará registrado en la auditoría de Jarvice.
+
+        </div>
+
+        <div class="qr-actions">
+
+            <form
+                method="post"
+                action="{% url 'confirmar_acceso_qr' acceso.id %}"
+            >
+
+                {% csrf_token %}
+
+                <button
+                    type="submit"
+                    class="qr-btn-primary"
+                >
+                    🚑 Autorizar y consultar ficha
+                </button>
+
+            </form>
+
+            <a
+                href="{% url 'inicio' %}"
+                class="qr-btn-secondary"
+            >
+                Cancelar
+            </a>
+
+        </div>
+
+        <div class="qr-security">
+
+            🛡️ Acceso protegido · Jarvice Health AI
+
+        </div>
 
     </div>
-
-    <div class="warning">
-        🔐 Este acceso es temporal, está limitado a la ficha de emergencia
-        y quedará registrado en la auditoría de Jarvice.
-    </div>
-
-    <form
-        method="post"
-        action="{% url 'confirmar_acceso_qr' acceso.id %}"
-    >
-
-        {% csrf_token %}
-
-        <button
-            type="submit"
-            class="btn-primary"
-        >
-            🚑 Autorizar y consultar ficha
-        </button>
-
-    </form>
-
-    <a
-        href="{% url 'inicio' %}"
-        class="btn-secondary"
-    >
-        Cancelar
-    </a>
 
 </div>
 

@@ -59,9 +59,9 @@
         }
 
 
-        /* =========================================
+/* =========================================
            CONTENEDOR
-        ========================================= */
+ ========================================= */
 
         .login-container {
 
@@ -73,10 +73,256 @@
 
         }
 
+/* =========================================
+   ROBOT JARVICE
+========================================= */
 
-        /* =========================================
+.jarvice-robot {
+
+    position: relative;
+
+    width: 130px;
+    height: 150px;
+
+    margin: 0 auto 18px;
+
+    animation:
+        jarviceFloat 3s ease-in-out infinite;
+
+    filter:
+        drop-shadow(
+            0 0 25px rgba(0, 212, 255, .35)
+        );
+}
+
+.robot-antenna {
+
+    position: absolute;
+
+    width: 4px;
+    height: 22px;
+
+    left: 63px;
+    top: 0;
+
+    border-radius: 5px;
+
+    background:
+        linear-gradient(
+            to top,
+            #0077ff,
+            #8be9ff
+        );
+
+}
+
+.robot-antenna::after {
+
+    content: "";
+
+    position: absolute;
+
+    width: 10px;
+    height: 10px;
+
+    left: -3px;
+    top: -7px;
+
+    border-radius: 50%;
+
+    background: #00ff99;
+
+    box-shadow:
+        0 0 14px #00ff99;
+
+    animation:
+        jarvicePulse 1.7s infinite;
+
+}
+
+.robot-head {
+
+    position: absolute;
+
+    width: 104px;
+    height: 76px;
+
+    left: 13px;
+    top: 22px;
+
+    border-radius: 24px;
+
+    background:
+        linear-gradient(
+            145deg,
+            #edfaff,
+            #77cbea
+        );
+
+    border:
+        2px solid
+        rgba(139, 233, 255, .65);
+
+}
+
+.robot-face {
+
+    position: absolute;
+
+    width: 80px;
+    height: 48px;
+
+    left: 10px;
+    top: 12px;
+
+    border-radius: 15px;
+
+    background: #06111f;
+
+}
+
+.robot-eye {
+
+    position: absolute;
+
+    width: 11px;
+    height: 11px;
+
+    top: 16px;
+
+    border-radius: 50%;
+
+    background: #8be9ff;
+
+    box-shadow:
+        0 0 12px #00d4ff;
+
+}
+
+.robot-eye-left {
+    left: 18px;
+}
+
+.robot-eye-right {
+    right: 18px;
+}
+
+.robot-mouth {
+
+    position: absolute;
+
+    width: 22px;
+    height: 7px;
+
+    left: 29px;
+    top: 30px;
+
+    border-bottom:
+        2px solid #7dffb5;
+
+    border-radius:
+        0 0 15px 15px;
+
+}
+
+.robot-body {
+
+    position: absolute;
+
+    width: 86px;
+    height: 52px;
+
+    left: 22px;
+    top: 99px;
+
+    border-radius: 20px;
+
+    background:
+        linear-gradient(
+            145deg,
+            #dff7ff,
+            #63acd0
+        );
+
+    border:
+        2px solid
+        rgba(139, 233, 255, .55);
+
+}
+
+.robot-core {
+
+    position: absolute;
+
+    width: 28px;
+    height: 28px;
+
+    left: 27px;
+    top: 11px;
+
+    border-radius: 50%;
+
+    background:
+        radial-gradient(
+            circle,
+            #00d4ff,
+            #075a8e
+        );
+
+    border:
+        2px solid #8be9ff;
+
+    box-shadow:
+        0 0 18px rgba(0, 212, 255, .7);
+
+    animation:
+        jarviceCore 2s ease-in-out infinite;
+
+}
+
+@keyframes jarviceFloat {
+
+    0%, 100% {
+        transform: translateY(0);
+    }
+
+    50% {
+        transform: translateY(-8px);
+    }
+
+}
+
+@keyframes jarvicePulse {
+
+    0%, 100% {
+        transform: scale(.8);
+        opacity: .6;
+    }
+
+    50% {
+        transform: scale(1.15);
+        opacity: 1;
+    }
+
+}
+
+@keyframes jarviceCore {
+
+    0%, 100% {
+        box-shadow:
+            0 0 12px rgba(0, 212, 255, .4);
+    }
+
+    50% {
+        box-shadow:
+            0 0 25px rgba(0, 212, 255, .9);
+    }
+
+}
+
+/* =========================================
            CABECERA
-        ========================================= */
+========================================= */
 
         .header {
 
@@ -174,9 +420,9 @@
         }
 
 
-        /* =========================================
+/* =========================================
            TITULO
-        ========================================= */
+========================================= */
 
         .access-title {
 
@@ -207,9 +453,9 @@
         }
 
 
-        /* =========================================
+/* =========================================
            TARJETAS
-        ========================================= */
+========================================= */
 
         .roles {
 
@@ -359,9 +605,9 @@
         }
 
 
-        /* =========================================
+/* =========================================
            FORMULARIO
-        ========================================= */
+========================================= */
 
         .login-panel {
 
@@ -564,9 +810,9 @@
         }
 
 
-        /* =========================================
+/* =========================================
            FOOTER
-        ========================================= */
+========================================= */
 
         .footer {
 
@@ -583,9 +829,9 @@
         }
 
 
-        /* =========================================
+/* =========================================
            ANIMACION
-        ========================================= */
+========================================= */
 
         @keyframes flotar {
 
@@ -600,9 +846,9 @@
         }
 
 
-        /* =========================================
+/* =========================================
            RESPONSIVE
-        ========================================= */
+========================================= */
 
         @media (max-width: 900px) {
 
@@ -658,12 +904,586 @@
 
         }
 
+        /* =========================================================
+   PANTALLA DE BIENVENIDA JARVICE
+========================================================= */
+
+.jarvice-welcome {
+
+    position: fixed;
+
+    inset: 0;
+
+    z-index: 9999;
+
+    display: flex;
+
+    justify-content: center;
+    align-items: center;
+
+    gap: 70px;
+
+    padding: 40px;
+
+    background:
+        radial-gradient(
+            circle at 50% 20%,
+            #123f72 0%,
+            #07172b 45%,
+            #020817 100%
+        );
+
+    transition:
+        opacity .7s ease,
+        visibility .7s ease;
+
+}
+
+.jarvice-welcome.oculto {
+
+    opacity: 0;
+
+    visibility: hidden;
+
+    pointer-events: none;
+
+}
+
+.welcome-content {
+
+    max-width: 560px;
+
+    animation:
+        welcomeText .8s ease;
+
+}
+
+.welcome-status {
+
+    display: inline-flex;
+
+    align-items: center;
+
+    gap: 8px;
+
+    margin-bottom: 18px;
+
+    padding: 8px 15px;
+
+    border-radius: 30px;
+
+    color: #7dffb5;
+
+    font-size: 12px;
+
+    font-weight: 700;
+
+    background:
+        rgba(0,255,153,.08);
+
+    border:
+        1px solid rgba(0,255,153,.25);
+
+}
+
+.welcome-status span {
+
+    width: 8px;
+    height: 8px;
+
+    border-radius: 50%;
+
+    background: #00ff99;
+
+    box-shadow:
+        0 0 14px #00ff99;
+
+    animation:
+        welcomePulse 1.5s infinite;
+
+}
+
+.welcome-content h1 {
+
+    font-size: 48px;
+
+    line-height: 1.08;
+
+    color: #e9fbff;
+
+    margin-bottom: 18px;
+
+}
+
+.welcome-content h1 strong {
+
+    display: block;
+
+    color: #8be9ff;
+
+}
+
+.welcome-content p {
+
+    color: #bfe9ff;
+
+    font-size: 17px;
+
+    line-height: 1.7;
+
+}
+
+.welcome-content .welcome-description {
+
+    margin-top: 15px;
+
+    color: #91b9d0;
+
+    font-size: 14px;
+
+}
+
+.btn-welcome {
+
+    margin-top: 28px;
+
+    padding: 15px 28px;
+
+    border: none;
+
+    border-radius: 16px;
+
+    background:
+        linear-gradient(
+            135deg,
+            #00d4ff,
+            #0077ff
+        );
+
+    color: white;
+
+    font-size: 15px;
+
+    font-weight: 800;
+
+    cursor: pointer;
+
+    box-shadow:
+        0 12px 35px
+        rgba(0,212,255,.25);
+
+    transition:
+        transform .3s ease,
+        box-shadow .3s ease;
+
+}
+
+.btn-welcome:hover {
+
+    transform:
+        translateY(-3px);
+
+    box-shadow:
+        0 18px 40px
+        rgba(0,212,255,.4);
+
+}
+
+/* =========================================================
+   ROBOT DE BIENVENIDA
+========================================================= */
+
+.welcome-robot {
+
+    position: relative;
+
+    width: 210px;
+    height: 245px;
+
+    animation:
+        welcomeRobotFloat 3.5s ease-in-out infinite;
+
+    filter:
+        drop-shadow(
+            0 0 30px
+            rgba(0,212,255,.35)
+        );
+
+}
+
+.welcome-antenna {
+
+    position: absolute;
+
+    width: 5px;
+    height: 28px;
+
+    left: 102px;
+    top: 0;
+
+    background:
+        linear-gradient(
+            to top,
+            #0077ff,
+            #8be9ff
+        );
+
+    border-radius: 5px;
+
+}
+
+.welcome-antenna::after {
+
+    content: "";
+
+    position: absolute;
+
+    width: 13px;
+    height: 13px;
+
+    left: -4px;
+    top: -8px;
+
+    border-radius: 50%;
+
+    background: #00ff99;
+
+    box-shadow:
+        0 0 18px #00ff99;
+
+    animation:
+        welcomePulse 1.7s infinite;
+
+}
+
+.welcome-head {
+
+    position: absolute;
+
+    width: 170px;
+    height: 120px;
+
+    left: 20px;
+    top: 28px;
+
+    border-radius: 32px;
+
+    background:
+        linear-gradient(
+            145deg,
+            #effcff,
+            #83d5f1 60%,
+            #4f98bd
+        );
+
+    border:
+        3px solid
+        rgba(139,233,255,.7);
+
+}
+
+.welcome-face {
+
+    position: absolute;
+
+    width: 132px;
+    height: 78px;
+
+    left: 17px;
+    top: 19px;
+
+    border-radius: 23px;
+
+    background:
+        linear-gradient(
+            180deg,
+            #06111f,
+            #0a1f35
+        );
+
+}
+
+.welcome-eye {
+
+    position: absolute;
+
+    width: 18px;
+    height: 18px;
+
+    top: 28px;
+
+    border-radius: 50%;
+
+    background: #8be9ff;
+
+    box-shadow:
+        0 0 15px #00d4ff;
+
+    animation:
+        welcomeBlink 4s infinite;
+
+}
+
+.welcome-eye.left {
+    left: 32px;
+}
+
+.welcome-eye.right {
+    right: 32px;
+}
+
+.welcome-mouth {
+
+    position: absolute;
+
+    width: 34px;
+    height: 10px;
+
+    left: 49px;
+    top: 52px;
+
+    border-bottom:
+        3px solid #7dffb5;
+
+    border-radius:
+        0 0 20px 20px;
+
+}
+
+.welcome-body {
+
+    position: absolute;
+
+    width: 145px;
+    height: 82px;
+
+    left: 32px;
+    top: 157px;
+
+    border-radius: 26px;
+
+    background:
+        linear-gradient(
+            145deg,
+            #e4faff,
+            #70b9d9 65%,
+            #437f9e
+        );
+
+    border:
+        3px solid
+        rgba(139,233,255,.55);
+
+}
+
+.welcome-core {
+
+    position: absolute;
+
+    width: 42px;
+    height: 42px;
+
+    left: 49px;
+    top: 17px;
+
+    border-radius: 50%;
+
+    background:
+        radial-gradient(
+            circle,
+            #00d4ff,
+            #075a8e
+        );
+
+    border:
+        3px solid #8be9ff;
+
+    box-shadow:
+        0 0 25px
+        rgba(0,212,255,.7);
+
+    animation:
+        welcomeCore 2.2s ease-in-out infinite;
+
+}
+
+/* =========================================================
+   ANIMACIONES
+========================================================= */
+
+@keyframes welcomeRobotFloat {
+
+    0%,100% {
+        transform: translateY(0);
+    }
+
+    50% {
+        transform: translateY(-12px);
+    }
+
+}
+
+@keyframes welcomePulse {
+
+    0%,100% {
+        opacity: .55;
+        transform: scale(.85);
+    }
+
+    50% {
+        opacity: 1;
+        transform: scale(1.15);
+    }
+
+}
+
+@keyframes welcomeBlink {
+
+    0%,44%,48%,100% {
+        transform: scaleY(1);
+    }
+
+    46% {
+        transform: scaleY(.12);
+    }
+
+}
+
+@keyframes welcomeCore {
+
+    0%,100% {
+        box-shadow:
+            0 0 14px rgba(0,212,255,.4);
+    }
+
+    50% {
+        box-shadow:
+            0 0 32px rgba(0,212,255,.95);
+    }
+
+}
+
+@keyframes welcomeText {
+
+    from {
+        opacity: 0;
+        transform: translateX(25px);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateX(0);
+    }
+
+}
+
+/* =========================================================
+   RESPONSIVE
+========================================================= */
+
+@media (max-width: 800px) {
+
+    .jarvice-welcome {
+
+        flex-direction: column;
+
+        gap: 20px;
+
+        text-align: center;
+
+    }
+
+    .welcome-content {
+
+        max-width: 600px;
+
+    }
+
+    .welcome-content h1 {
+
+        font-size: 36px;
+
+    }
+
+    .welcome-content p {
+
+        font-size: 14px;
+
+    }
+
+}
     </style>
 
 </head>
 
 
 <body>
+
+    <!-- =========================================================
+     BIENVENIDA INICIAL JARVICE
+========================================================= -->
+
+<div class="jarvice-welcome" id="jarviceWelcome">
+
+    <div class="welcome-robot">
+
+        <div class="welcome-antenna"></div>
+
+        <div class="welcome-head">
+
+            <div class="welcome-face">
+
+                <span class="welcome-eye left"></span>
+                <span class="welcome-eye right"></span>
+
+                <span class="welcome-mouth"></span>
+
+            </div>
+
+        </div>
+
+        <div class="welcome-body">
+
+            <div class="welcome-core"></div>
+
+        </div>
+
+    </div>
+
+    <div class="welcome-content">
+
+        <div class="welcome-status">
+            <span></span>
+            JARVICE CLINICAL AI · ONLINE
+        </div>
+
+        <h1>
+            Bienvenido a
+            <strong>Jarvice Health AI</strong>
+        </h1>
+
+        <p>
+            Soy Jarvice, tu asistente inteligente de
+            monitoreo, asistencia clínica y gestión de emergencias.
+        </p>
+
+        <p class="welcome-description">
+            Puedo ayudarte a centralizar información clínica,
+            supervisar parámetros vitales, gestionar pacientes
+            y facilitar la atención de profesionales.
+        </p>
+
+        <button
+            type="button"
+            class="btn-welcome"
+            onclick="entrarAJarvice()"
+        >
+            🚀 INGRESAR A JARVICE
+        </button>
+
+    </div>
+
+</div>
 
 
 <div class="login-container">
@@ -675,27 +1495,49 @@
 
     <div class="header">
 
-        <div class="logo">
-            🧬
+    <div class="jarvice-robot" aria-label="Asistente Jarvice">
+
+        <div class="robot-antenna"></div>
+
+        <div class="robot-head">
+
+            <div class="robot-face">
+
+                <span class="robot-eye robot-eye-left"></span>
+                <span class="robot-eye robot-eye-right"></span>
+
+                <span class="robot-mouth"></span>
+
+            </div>
+
         </div>
 
-        <h1>
-            JARVICE HEALTH AI
-        </h1>
+        <div class="robot-body">
 
-        <p>
-            Sistema inteligente de monitoreo y asistencia sanitaria
-        </p>
-
-        <div class="online">
-
-            <span class="online-dot"></span>
-
-            Sistema protegido · Online
+            <div class="robot-core"></div>
 
         </div>
 
     </div>
+
+    <h1>
+        JARVICE HEALTH AI
+    </h1>
+
+    <p>
+        Bienvenido a Jarvice.
+        Sistema inteligente de asistencia y monitoreo de salud.
+    </p>
+
+    <div class="online">
+
+        <span class="online-dot"></span>
+
+        Sistema protegido · Online
+
+    </div>
+
+</div>
 
 
     <!-- =========================================
@@ -955,7 +1797,30 @@
         });
 
     }
+function entrarAJarvice() {
 
+    const bienvenida =
+        document.getElementById("jarviceWelcome");
+
+    bienvenida.classList.add("oculto");
+
+    setTimeout(function() {
+
+        const acceso =
+            document.querySelector(".access-title");
+
+        if (acceso) {
+
+            acceso.scrollIntoView({
+                behavior: "smooth",
+                block: "center"
+            });
+
+        }
+
+    }, 500);
+
+}
 </script>
 
 

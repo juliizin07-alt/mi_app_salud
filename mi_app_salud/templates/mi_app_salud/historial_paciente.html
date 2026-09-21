@@ -123,8 +123,8 @@
         </a>
 
 
-        <a
-            href="{% url 'crear_estudio' paciente.id %}"
+                <a
+            href="{% url 'estudios_paciente' paciente.id %}"
             class="btn-accion naranja"
         >
             🧪 Estudios
@@ -132,11 +132,11 @@
 
 
         <a
-            href="{% url 'crear_evolucion' paciente.id %}"
-            class="btn-accion violeta"
-        >
-            📝 Evolución
-        </a>
+    href="{% url 'crear_evolucion_enfermeria' paciente.id %}"
+    class="btn-accion violeta"
+>
+    📝 Evolución
+</a>
 
     </section>
 

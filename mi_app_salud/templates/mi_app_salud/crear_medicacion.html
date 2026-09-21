@@ -15,6 +15,7 @@
 
         <form method="POST">
 
+
             {% csrf_token %}
 
 
@@ -62,6 +63,16 @@
                 placeholder="Ej: 50 mg"
                 required
             >
+            <label>
+
+            📋 Indicaciones del profesional
+        </label>
+
+        <textarea
+            name="indicaciones"
+            placeholder="Ej: Administrar después del desayuno. Controlar presión arterial."
+            rows="4"
+        ></textarea>
 
 
 
@@ -170,8 +181,9 @@
 
 
 
-.med-form-card input,
-.med-form-card select{
+    .med-form-card input,
+    .med-form-card select,
+    .med-form-card textarea{
 
 
     width:100%;
@@ -194,8 +206,9 @@
 
 
 
-.med-form-card input:focus,
-.med-form-card select:focus{
+    .med-form-card input:focus,
+    .med-form-card select:focus,
+    .med-form-card textarea:focus{
 
     border-color:#00c6ff;
 

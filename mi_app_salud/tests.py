@@ -13,6 +13,8 @@ from mi_app_salud.models import (
     SignoVital,
     AuditoriaJarvice,
     PerfilUsuario,
+    RegistroSalud,
+    EmergenciaJarvice,
 )
 from mi_app_salud.services.dispositivo_service import (
     establecer_credencial_dispositivo,
@@ -21,6 +23,83 @@ from mi_app_salud.services.dispositivo_service import (
 from mi_app_salud.services.alerta_service import (
     escalar_emergencia,
 )
+
+class EmergenciaAutomaticaTests(TestCase):
+
+    def setUp(self):
+        self.usuario = User.objects.create_user(
+            username="medico_test",
+            password="Test-12345!"
+        )
+
+        self.perfil = PerfilUsuario.objects.create(
+            usuario=self.usuario,
+            rol="MEDICO",
+            nombre="Medico",
+            apellido="Test",
+        )
+
+        self.paciente = Paciente.objects.create(
+            nombre="Paciente",
+            apellido="Emergencia",
+            edad=40,
+        )
+
+        self.client = Client(
+            HTTP_HOST="127.0.0.1"
+        )
+
+        self.client.login(
+            username="medico_test",
+            password="Test-12345!"
+        )
+
+    def test_signos_criticos_crean_emergencia_automatica(self):
+
+        respuesta = self.client.post(
+            "/api/signos-vitales/",
+            data=json.dumps({
+                "paciente_id": self.paciente.id,
+                "frecuencia_cardiaca": 145,
+                "saturacion_oxigeno": 88,
+                "temperatura": 39.2,
+                "presion_arterial": "90/60",
+                "estado_emocional": "ALERTA",
+                "origen": "SMARTWATCH",
+                "observaciones": "Prueba automática Jarvice.",
+            }),
+            content_type="application/json",
+        )
+
+        self.assertEqual(
+            respuesta.status_code,
+            200
+        )
+
+        self.assertTrue(
+            RegistroSalud.objects.filter(
+                paciente=self.paciente,
+                estado="CRITICO",
+            ).exists()
+        )
+
+        emergencia = EmergenciaJarvice.objects.filter(
+            paciente=self.paciente
+        ).order_by("-id").first()
+
+        self.assertIsNotNone(
+            emergencia
+        )
+
+        self.assertEqual(
+            emergencia.estado,
+            "DETECTADA"
+        )
+
+        self.assertEqual(
+            emergencia.origen,
+            "SMARTWATCH"
+        )
 
 
 class DispositivoAutenticacionTests(TestCase):

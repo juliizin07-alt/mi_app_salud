@@ -65,6 +65,12 @@ mi_app_salud/templates/mi_app_salud/jarvice_core_roto_css.html
 mi_app_salud/templates/mi_app_salud/panel_medico_pre_vitales.html
 inicio_backup.html
 
-# Archivos temporales de diagnóstico/desarrollo
+# Archivos temporales de diagnï¿½stico/desarrollo
 error_jarvice.txt
 resultado_evolucion.html
+
+# Backups adicionales
+**/*backup*
+**/*BACKUP*
+**/*_backup*
+**/*before_encoding*

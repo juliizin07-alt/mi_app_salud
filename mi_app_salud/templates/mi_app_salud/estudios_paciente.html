@@ -1,0 +1,521 @@
+{% extends "mi_app_salud/base.html" %}
+
+{% block contenido %}
+
+<div class="contenedor-clinico">
+
+    <!-- ========================================== -->
+    <!-- ENCABEZADO -->
+    <!-- ========================================== -->
+
+    <div class="encabezado-clinico">
+
+        <div>
+            <span class="etiqueta-clinica">
+                🧪 HISTORIA CLÍNICA
+            </span>
+
+            <h1>
+                Estudios médicos
+            </h1>
+
+            <p>
+                {{ paciente.nombre }} {{ paciente.apellido }}
+            </p>
+        </div>
+
+        <a
+            href="{% url 'historial_paciente' paciente.id %}"
+            class="btn-volver"
+        >
+            ← Volver a historia
+        </a>
+
+    </div>
+
+
+    <!-- ========================================== -->
+    <!-- INFORMACIÓN DEL PACIENTE -->
+    <!-- ========================================== -->
+
+    <section class="tarjeta-paciente">
+
+        <div>
+            <span>Paciente</span>
+            <strong>
+                {{ paciente.nombre }} {{ paciente.apellido }}
+            </strong>
+        </div>
+
+        <div>
+            <span>Historia clínica</span>
+            <strong>
+                {{ paciente.historia_clinica|default:"Pendiente" }}
+            </strong>
+        </div>
+
+        <div>
+            <span>DNI</span>
+            <strong>
+                {{ paciente.dni|default:"No registrado" }}
+            </strong>
+        </div>
+
+    </section>
+
+
+    <!-- ========================================== -->
+    <!-- ESTUDIOS -->
+    <!-- ========================================== -->
+
+    {% if solicitudes_estudios %}
+
+        <section class="lista-estudios">
+
+            {% for estudio in solicitudes_estudios %}
+
+                <article class="tarjeta-estudio">
+
+                    <div class="cabecera-estudio">
+
+                        <div>
+
+                            <span class="tipo-estudio">
+                                🧪 {{ estudio.estudio }}
+                            </span>
+
+                            <h2>
+                                {{ estudio.estudio }}
+                            </h2>
+
+                        </div>
+
+
+                        {% if estudio.estado == "REALIZADO" %}
+
+                            <span class="estado-estudio realizado">
+                                ✓ REALIZADO
+                            </span>
+
+                        {% elif estudio.estado == "PENDIENTE" %}
+
+                            <span class="estado-estudio pendiente">
+                                ⏳ PENDIENTE
+                            </span>
+
+                        {% elif estudio.estado == "CANCELADO" %}
+
+                            <span class="estado-estudio cancelado">
+                                ✕ CANCELADO
+                            </span>
+
+                        {% endif %}
+
+                    </div>
+
+
+                    <!-- ================================== -->
+                    <!-- DATOS DEL ESTUDIO -->
+                    <!-- ================================== -->
+
+                    <div class="datos-estudio">
+
+                        <div class="dato">
+                            <span>📅 Solicitud</span>
+
+                            <strong>
+                                {{ estudio.fecha_solicitud|date:"d/m/Y H:i" }}
+                            </strong>
+                        </div>
+
+
+                        {% if estudio.fecha_realizacion %}
+
+                            <div class="dato">
+                                <span>📅 Realización</span>
+
+                                <strong>
+                                    {{ estudio.fecha_realizacion|date:"d/m/Y H:i" }}
+                                </strong>
+                            </div>
+
+                        {% endif %}
+
+
+                        <div class="dato">
+                            <span>👨‍⚕️ Profesional solicitante</span>
+
+                            <strong>
+                                {% if estudio.medico %}
+                                    {{ estudio.medico.get_full_name|default:estudio.medico.username }}
+                                {% else %}
+                                    No registrado
+                                {% endif %}
+                            </strong>
+                        </div>
+
+
+                        <div class="dato">
+                            <span>📋 Motivo</span>
+
+                            <strong>
+                                {{ estudio.motivo|default:"No especificado" }}
+                            </strong>
+                        </div>
+
+                    </div>
+
+
+                    <!-- ================================== -->
+                    <!-- INFORME MÉDICO -->
+                    <!-- ================================== -->
+
+                    {% if estudio.informe %}
+
+                        <div class="informe-medico">
+
+                            <div class="titulo-informe">
+                                🩺 Informe médico
+                            </div>
+
+                            <div class="contenido-informe">
+                                {{ estudio.informe|linebreaks }}
+                            </div>
+
+                        </div>
+
+                    {% elif estudio.estado == "REALIZADO" %}
+
+                        <div class="sin-informe">
+                            ⚠️ El estudio figura como realizado,
+                            pero todavía no tiene un informe cargado.
+                        </div>
+
+                    {% endif %}
+
+
+                    <!-- ================================== -->
+                    <!-- ARCHIVO DEL INFORME -->
+                    <!-- ================================== -->
+
+                    {% if estudio.archivo_informe %}
+
+                        <div class="archivo-estudio">
+
+                            <span>
+                                📎 Informe adjunto
+                            </span>
+
+                            <a
+                                href="{{ estudio.archivo_informe.url }}"
+                                target="_blank"
+                                rel="noopener"
+                            >
+                                Ver archivo
+                            </a>
+
+                        </div>
+
+                    {% endif %}
+
+
+                </article>
+
+            {% endfor %}
+
+        </section>
+
+    {% else %}
+
+        <section class="sin-estudios">
+
+            <div class="icono-sin-estudios">
+                🧪
+            </div>
+
+            <h2>
+                No hay estudios registrados
+            </h2>
+
+            <p>
+                Este paciente todavía no tiene estudios
+                médicos registrados en Jarvice.
+            </p>
+
+        </section>
+
+    {% endif %}
+
+</div>
+
+
+<style>
+
+/* ========================================== */
+/* CONTENEDOR */
+/* ========================================== */
+
+.contenedor-clinico {
+    max-width: 1200px;
+    margin: 30px auto;
+    padding: 0 20px;
+}
+
+
+/* ========================================== */
+/* ENCABEZADO */
+/* ========================================== */
+
+.encabezado-clinico {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 20px;
+    margin-bottom: 25px;
+}
+
+.etiqueta-clinica {
+    font-size: 12px;
+    font-weight: 700;
+    letter-spacing: 1px;
+    opacity: .7;
+}
+
+.encabezado-clinico h1 {
+    margin: 5px 0;
+}
+
+.encabezado-clinico p {
+    margin: 0;
+    opacity: .7;
+}
+
+.btn-volver {
+    text-decoration: none;
+    padding: 10px 16px;
+    border-radius: 10px;
+    background: rgba(255,255,255,.08);
+}
+
+
+/* ========================================== */
+/* PACIENTE */
+/* ========================================== */
+
+.tarjeta-paciente {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 15px;
+    margin-bottom: 25px;
+}
+
+.tarjeta-paciente > div {
+    padding: 18px;
+    border-radius: 14px;
+    background: rgba(255,255,255,.05);
+    border: 1px solid rgba(255,255,255,.08);
+}
+
+.tarjeta-paciente span {
+    display: block;
+    font-size: 12px;
+    opacity: .6;
+    margin-bottom: 5px;
+}
+
+.tarjeta-paciente strong {
+    font-size: 15px;
+}
+
+
+/* ========================================== */
+/* ESTUDIO */
+/* ========================================== */
+
+.tarjeta-estudio {
+    margin-bottom: 25px;
+    padding: 25px;
+    border-radius: 18px;
+    background: rgba(255,255,255,.04);
+    border: 1px solid rgba(255,255,255,.08);
+}
+
+.cabecera-estudio {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    gap: 20px;
+    margin-bottom: 22px;
+}
+
+.tipo-estudio {
+    font-size: 12px;
+    opacity: .6;
+}
+
+.cabecera-estudio h2 {
+    margin: 5px 0 0;
+}
+
+
+/* ========================================== */
+/* ESTADO */
+/* ========================================== */
+
+.estado-estudio {
+    padding: 7px 12px;
+    border-radius: 20px;
+    font-size: 11px;
+    font-weight: 700;
+}
+
+.estado-estudio.realizado {
+    background: rgba(46, 204, 113, .15);
+}
+
+.estado-estudio.pendiente {
+    background: rgba(241, 196, 15, .15);
+}
+
+.estado-estudio.cancelado {
+    background: rgba(231, 76, 60, .15);
+}
+
+
+/* ========================================== */
+/* DATOS */
+/* ========================================== */
+
+.datos-estudio {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 15px;
+}
+
+.dato {
+    padding: 15px;
+    border-radius: 12px;
+    background: rgba(0,0,0,.12);
+}
+
+.dato span {
+    display: block;
+    font-size: 12px;
+    opacity: .6;
+    margin-bottom: 6px;
+}
+
+.dato strong {
+    display: block;
+}
+
+
+/* ========================================== */
+/* INFORME */
+/* ========================================== */
+
+.informe-medico {
+    margin-top: 20px;
+    padding: 20px;
+    border-radius: 14px;
+    background: rgba(255,255,255,.05);
+    border-left: 4px solid #4da6ff;
+}
+
+.titulo-informe {
+    font-weight: 700;
+    margin-bottom: 12px;
+}
+
+.contenido-informe {
+    line-height: 1.7;
+}
+
+
+/* ========================================== */
+/* SIN INFORME */
+/* ========================================== */
+
+.sin-informe {
+    margin-top: 20px;
+    padding: 15px;
+    border-radius: 12px;
+    background: rgba(241,196,15,.08);
+}
+
+
+/* ========================================== */
+/* ARCHIVO */
+/* ========================================== */
+
+.archivo-estudio {
+    margin-top: 18px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 15px;
+    padding: 14px;
+    border-radius: 12px;
+    background: rgba(255,255,255,.05);
+}
+
+.archivo-estudio a {
+    text-decoration: none;
+    font-weight: 700;
+}
+
+
+/* ========================================== */
+/* SIN ESTUDIOS */
+/* ========================================== */
+
+.sin-estudios {
+    text-align: center;
+    padding: 60px 20px;
+    border-radius: 18px;
+    background: rgba(255,255,255,.04);
+    border: 1px dashed rgba(255,255,255,.15);
+}
+
+.icono-sin-estudios {
+    font-size: 45px;
+    margin-bottom: 15px;
+}
+
+.sin-estudios h2 {
+    margin-bottom: 8px;
+}
+
+.sin-estudios p {
+    opacity: .65;
+}
+
+
+/* ========================================== */
+/* RESPONSIVE */
+/* ========================================== */
+
+@media (max-width: 800px) {
+
+    .encabezado-clinico {
+        flex-direction: column;
+        align-items: flex-start;
+    }
+
+    .tarjeta-paciente {
+        grid-template-columns: 1fr;
+    }
+
+    .datos-estudio {
+        grid-template-columns: 1fr;
+    }
+
+    .cabecera-estudio {
+        flex-direction: column;
+    }
+
+}
+
+</style>
+
+{% endblock %}

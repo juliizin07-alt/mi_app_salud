@@ -4,482 +4,676 @@
 
 <div class="medicacion-panel">
 
-    <div class="titulo">
-        <h1>💊 Control de Medicación Jarvice</h1>
-        <p>Administración inteligente de medicamentos y horarios del paciente.</p>
-    </div>
 
-    {% if request.user.perfilusuario.rol != "PACIENTE" %}
+<div class="titulo">
+    <h1>💊 Control de Medicación Jarvice</h1>
+    <p>
+        Tratamientos indicados y administración segura de medicamentos.
+    </p>
+</div>
+
+
+{% if request.user.perfilusuario.rol == "ADMIN" or request.user.perfilusuario.rol == "MEDICO" %}
+
 <div class="acciones">
+
     <a href="{% url 'crear_medicacion' %}" class="btn-agregar">
         ➕ Nuevo medicamento
     </a>
+
 </div>
+
 {% endif %}
 
-    <h2>Medicamentos registrados</h2>
 
-    <div class="medicamentos-grid">
+<h2>💊 Tratamientos registrados</h2>
 
-        {% for medicamento in medicamentos %}
 
-        <div class="med-card">
+<div class="medicamentos-grid">
 
-            <div class="med-header">
+    {% for medicamento in medicamentos %}
 
-                <h3>💊 {{ medicamento.nombre }}</h3>
+    <div class="med-card">
 
-                <div class="estados">
 
-                    {% if medicamento.activo %}
-                        <span class="activo">🟢 Activo</span>
-                    {% else %}
-                        <span class="suspendido">🔴 Suspendido</span>
-                    {% endif %}
+        <!-- ==================================================
+             TRATAMIENTO
+        ================================================== -->
 
-                    {% if medicamento.tomado %}
-                        <span class="tomado">✅ Tomado</span>
-                    {% else %}
-                        <span class="pendiente">⏰ Pendiente</span>
+        <div class="med-header">
+
+            <div>
+
+                <h3>
+                    💊 {{ medicamento.nombre }}
+                </h3>
+
+                <span class="tratamiento-label">
+                    Tratamiento indicado
+                </span>
+
+            </div>
+
+
+            <div class="estados">
+
+                {% if medicamento.activo %}
+
+                    <span class="activo">
+                        🟢 Activo
+                    </span>
+
+                {% else %}
+
+                    <span class="suspendido">
+                        🔴 Suspendido
+                    </span>
+
+                {% endif %}
+
+            </div>
+
+        </div>
+
+
+        <div class="dato">
+            👤 Paciente:
+            <strong>
+                {{ medicamento.paciente.nombre }}
+            </strong>
+        </div>
+
+
+        <div class="dato">
+            💉 Dosis:
+            <strong>
+                {{ medicamento.dosis }}
+            </strong>
+        </div>
+
+
+                <div class="dato">
+            ⏰ Horario indicado:
+            <strong>
+                {{ medicamento.horario|time:"H:i" }}
+            </strong>
+            </div>
+
+            <div class="dato">
+    👨‍⚕️ Indicado por:
+    <strong>
+        {% if medicamento.indicado_por %}
+            {{ medicamento.indicado_por.get_full_name|default:medicamento.indicado_por.username }}
+        {% else %}
+            Sin registrar
+        {% endif %}
+    </strong>
+</div>
+
+<div class="dato">
+    📅 Fecha de indicación:
+    <strong>
+        {% if medicamento.fecha_indicacion %}
+            {{ medicamento.fecha_indicacion|date:"d/m/Y H:i" }}
+        {% else %}
+            Sin registrar
+        {% endif %}
+    </strong>
+        </div>
+
+        <div class="dato">
+            📋 Indicaciones profesionales:
+            <strong>
+                {% if medicamento.indicaciones %}
+                    {{ medicamento.indicaciones }}
+                {% else %}
+                    Sin indicaciones registradas
+                {% endif %}
+            </strong>
+        </div>
+
+
+        <!-- ==================================================
+             ÚLTIMA ADMINISTRACIÓN
+        ================================================== -->
+
+        <div class="dato">
+
+            🕒 Última administración:
+
+            <strong>
+
+                {% if medicamento.fecha_ultima_toma %}
+
+                    {{ medicamento.fecha_ultima_toma|date:"d/m/Y H:i" }}
+
+                {% else %}
+
+                    Nunca
+
+                {% endif %}
+
+            </strong>
+
+        </div>
+
+
+        <div class="dato">
+
+            👨‍⚕️ Registrada por:
+
+            <strong>
+
+                {% if medicamento.confirmado_por %}
+
+                    {{ medicamento.confirmado_por.username }}
+
+                {% else %}
+
+                    Sin registrar
+
+                {% endif %}
+
+            </strong>
+
+        </div>
+
+
+        <!-- ==================================================
+             HISTORIAL
+        ================================================== -->
+
+        <div class="historial-administraciones">
+
+            <div class="historial-titulo">
+                💉 Historial de administración
+            </div>
+
+
+            {% for administracion in medicamento.administraciones.all %}
+
+                <div class="administracion-item">
+
+                    <div>
+
+                        {% if administracion.estado == "ADMINISTRADO" %}
+
+                            <span class="admin-ok">
+                                ✅ Administrado
+                            </span>
+
+                        {% elif administracion.estado == "NO_ADMINISTRADO" %}
+
+                            <span class="admin-no">
+                                ❌ No administrado
+                            </span>
+
+                        {% else %}
+
+                            <span class="admin-omitido">
+                                ⚠️ Omitido
+                            </span>
+
+                        {% endif %}
+
+                    </div>
+
+
+                    <div class="administracion-dato">
+
+                        🕒
+                        {{ administracion.fecha_hora|date:"d/m/Y H:i" }}
+
+                    </div>
+
+
+                    <div class="administracion-dato">
+
+                        👩‍⚕️
+
+                        {% if administracion.administrado_por %}
+
+                            {{ administracion.administrado_por.username }}
+
+                        {% else %}
+
+                            Usuario no disponible
+
+                        {% endif %}
+
+                    </div>
+
+
+                    {% if administracion.observacion %}
+
+                        <div class="administracion-observacion">
+
+                            📝
+                            {{ administracion.observacion }}
+
+                        </div>
+
                     {% endif %}
 
                 </div>
 
-            </div>
+            {% empty %}
 
-            <div class="dato">
-                👤 Paciente:
-                <strong>{{ medicamento.paciente.nombre }}</strong>
-            </div>
+                <div class="sin-administraciones">
 
-            <div class="dato">
-                💉 Dosis:
-                <strong>{{ medicamento.dosis }}</strong>
-            </div>
+                    No hay administraciones registradas todavía.
 
-            <div class="dato">
-                ⏰ Horario:
-                <strong>{{ medicamento.horario }}</strong>
-            </div>
+                </div>
 
-            <div class="dato">
-                🕒 Última toma:
-                <strong>
-                    {% if medicamento.fecha_ultima_toma %}
-                        {{ medicamento.fecha_ultima_toma|date:"d/m/Y H:i" }}
-                    {% else %}
-                        Nunca
-                    {% endif %}
-                </strong>
-            </div>
+            {% endfor %}
 
-            <div class="dato">
-                👨‍⚕️ Confirmado por:
-                <strong>
-                    {% if medicamento.confirmado_por %}
-                        {{ medicamento.confirmado_por.username }}
-                    {% else %}
-                        Sin confirmar
-                    {% endif %}
-                </strong>
-            </div>
-
-            <div class="botones">
-
-    {% if medicamento.tomado %}
-
-        <button class="tomado" disabled>
-            ✅ Medicamento tomado
-        </button>
-
-    {% else %}
-
-        <a href="{% url 'tomar_medicacion' medicamento.id %}" class="btn-tomar">
-            💊 Tomar medicamento
-        </a>
-
-    {% endif %}
+        </div>
 
 
-    {% if request.user.perfilusuario.rol != "PACIENTE" %}
+        <!-- ==================================================
+             BOTONES
+        ================================================== -->
 
-        <a href="{% url 'editar_medicacion' medicamento.id %}" class="editar">
-            ✏️ Editar
-        </a>
+        <div class="botones">
 
-        <a href="{% url 'cambiar_estado_medicacion' medicamento.id %}" class="eliminar">
 
-            {% if medicamento.activo %}
-                ⏸️ Suspender
-            {% else %}
-                ▶️ Reactivar
+            <!-- ENFERMERÍA -->
+
+            {% if request.user.perfilusuario.rol == "ENFERMERIA" %}
+
+                {% if medicamento.activo %}
+
+                    <a
+                        href="{% url 'tomar_medicacion' medicamento.id %}"
+                        class="btn-administrar"
+                    >
+                        💉 Registrar administración
+                    </a>
+
+                {% else %}
+
+                    <button
+                        class="btn-disabled"
+                        disabled
+                    >
+                        🔴 Tratamiento suspendido
+                    </button>
+
+                {% endif %}
+
             {% endif %}
 
-        </a>
 
-    {% endif %}
+            <!-- PACIENTE -->
+
+            {% if request.user.perfilusuario.rol == "PACIENTE" %}
+
+                {% if not medicamento.tomado and medicamento.activo %}
+
+                    <a
+                        href="{% url 'tomar_medicacion' medicamento.id %}"
+                        class="btn-tomar"
+                    >
+                        💊 Confirmar toma
+                    </a>
+
+                {% elif medicamento.tomado %}
+
+                    <button
+                        class="tomado"
+                        disabled
+                    >
+                        ✅ Toma confirmada
+                    </button>
+
+                {% endif %}
+
+            {% endif %}
+
+
+            <!-- ADMIN / MÉDICO -->
+
+            {% if request.user.perfilusuario.rol == "ADMIN" or request.user.perfilusuario.rol == "MEDICO" %}
+
+                <a
+                    href="{% url 'editar_medicacion' medicamento.id %}"
+                    class="editar"
+                >
+                    ✏️ Editar tratamiento
+                </a>
+
+
+                <a
+                    href="{% url 'cambiar_estado_medicacion' medicamento.id %}"
+                    class="eliminar"
+                >
+
+                    {% if medicamento.activo %}
+
+                        ⏸️ Suspender tratamiento
+
+                    {% else %}
+
+                        ▶️ Reactivar tratamiento
+
+                    {% endif %}
+
+                </a>
+
+            {% endif %}
+
+
+        </div>
+
+    </div>
+
+
+    {% empty %}
+
+        <div class="sin-datos">
+
+            💊 No hay medicamentos registrados.
+
+        </div>
+
+    {% endfor %}
 
 </div>
 
-        </div>
-
-        {% empty %}
-
-        <div class="sin-datos">
-            No hay medicamentos registrados.
-        </div>
-
-        {% endfor %}
-
-    </div>
 
 </div>
 
 <style>
 
-.medicacion-panel{
-    color:white;
+.medicacion-panel {
+    color: white;
 }
 
-.titulo h1{
-    color:#69d8ff;
+.titulo h1 {
+    color: #69d8ff;
+    margin-bottom: 8px;
 }
 
-.acciones{
-    margin:20px 0;
+.titulo p {
+    color: #b9d9e8;
+    margin-bottom: 25px;
 }
 
-.btn-agregar{
-    display:inline-block;
-    background:#00b3ff;
-    padding:12px 25px;
-    border-radius:15px;
-    color:white;
-    text-decoration:none;
-    font-weight:bold;
+.acciones {
+    margin: 20px 0 30px 0;
 }
 
-.medicamentos-grid{
-    display:grid;
-    grid-template-columns:repeat(auto-fit,minmax(320px,1fr));
-    gap:25px;
+.btn-agregar {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    background: linear-gradient(135deg, #00b3ff, #0066ff);
+    padding: 12px 25px;
+    border-radius: 15px;
+    color: white;
+    text-decoration: none;
+    font-weight: bold;
 }
 
-.med-card{
-    background:rgba(255,255,255,.06);
-    border:1px solid rgba(0,200,255,.25);
-    border-radius:20px;
-    padding:25px;
-    box-shadow:0 0 20px rgba(0,200,255,.15);
+.btn-agregar:hover {
+    transform: translateY(-2px);
+    filter: brightness(1.15);
 }
 
-.med-header{
-    display:flex;
-    justify-content:space-between;
-    align-items:center;
-    margin-bottom:20px;
+.medicamentos-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(340px, 1fr));
+    gap: 25px;
 }
 
-.med-header h3{
-    color:#8be9ff;
+.med-card {
+    background: rgba(255,255,255,.06);
+    border: 1px solid rgba(0,200,255,.25);
+    border-radius: 20px;
+    padding: 25px;
+    box-shadow: 0 0 20px rgba(0,200,255,.15);
 }
 
-.estados{
-    display:flex;
-    gap:8px;
-    flex-wrap:wrap;
+.med-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    gap: 15px;
+    margin-bottom: 20px;
 }
 
-.activo{
-    background:#16c78433;
-    color:#7dffb5;
-    padding:8px 12px;
-    border-radius:20px;
+.med-header h3 {
+    color: #8be9ff;
+    margin: 0 0 5px 0;
+    font-size: 22px;
 }
 
-.tomado{
-    background:#008cff33;
-    color:#8bd8ff;
-    padding:8px 12px;
-    border-radius:20px;
+.tratamiento-label {
+    font-size: 12px;
+    color: #8faebe;
+    text-transform: uppercase;
+    letter-spacing: 1px;
 }
 
-.pendiente{
-    background:#ffaa0033;
-    color:#ffd27d;
-    padding:8px 12px;
-    border-radius:20px;
+.estados {
+    display: flex;
+    gap: 8px;
+    flex-wrap: wrap;
 }
 
-.suspendido{
-    background:#ff444433;
-    color:#ff9999;
-    padding:8px 12px;
-    border-radius:20px;
+.activo {
+    background: #16c78433;
+    color: #7dffb5;
+    padding: 8px 12px;
+    border-radius: 20px;
 }
 
-.dato{
-    margin:12px 0;
-    font-size:16px;
+.suspendido {
+    background: #ff444433;
+    color: #ff9999;
+    padding: 8px 12px;
+    border-radius: 20px;
 }
 
-.botones{
-    margin-top:25px;
-    display:flex;
-    gap:10px;
-    flex-wrap:wrap;
+.dato {
+    margin: 12px 0;
+    font-size: 16px;
+    color: #d9edf5;
+}
+
+.dato strong {
+    color: white;
+}
+
+
+/* ==================================================
+   HISTORIAL DE ADMINISTRACIONES
+================================================== */
+
+.historial-administraciones {
+    margin-top: 25px;
+    padding-top: 20px;
+    border-top: 1px solid rgba(255,255,255,.10);
+}
+
+.historial-titulo {
+    color: #69d8ff;
+    font-size: 17px;
+    font-weight: 800;
+    margin-bottom: 15px;
+}
+
+.administracion-item {
+    background: rgba(0,0,0,.20);
+    border: 1px solid rgba(0,200,255,.12);
+    border-radius: 12px;
+    padding: 12px;
+    margin-bottom: 10px;
+}
+
+.admin-ok {
+    color: #7dffb5;
+    font-weight: 700;
+}
+
+.admin-no {
+    color: #ff9999;
+    font-weight: 700;
+}
+
+.admin-omitido {
+    color: #ffd27d;
+    font-weight: 700;
+}
+
+.administracion-dato {
+    color: #c8dce5;
+    font-size: 14px;
+    margin-top: 5px;
+}
+
+.administracion-observacion {
+    margin-top: 8px;
+    padding: 8px;
+    border-radius: 8px;
+    background: rgba(255,255,255,.05);
+    color: #dcecf2;
+    font-size: 14px;
+}
+
+.sin-administraciones {
+    color: #9db4c0;
+    font-size: 14px;
+    padding: 10px 0;
+}
+
+
+/* ==================================================
+   BOTONES
+================================================== */
+
+.botones {
+    margin-top: 25px;
+    display: flex;
+    gap: 10px;
+    flex-wrap: wrap;
 }
 
 .botones a,
-.botones button{
-
-    border:none;
-    padding:12px 20px;
-
-    border-radius:14px;
-
-    color:white;
-
-    text-decoration:none;
-
-    cursor:pointer;
-
-    font-weight:700;
-
-    display:flex;
-
-    align-items:center;
-
-    gap:8px;
-
-    transition:.3s;
-
-    box-shadow:
-    0 5px 15px rgba(0,0,0,.25);
-
+.botones button {
+    border: none;
+    padding: 12px 20px;
+    border-radius: 14px;
+    color: white;
+    text-decoration: none;
+    cursor: pointer;
+    font-weight: 700;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    transition: .3s;
+    box-shadow: 0 5px 15px rgba(0,0,0,.25);
 }
-
 
 .botones a:hover,
-.botones button:hover{
-
-    transform:translateY(-3px);
-
-    filter:brightness(1.2);
-
-}
-
-.btn-tomar{
-
-    background:
-    linear-gradient(
-        135deg,
-        #00ff88,
-        #00995c
-    );
-
-    color:white;
-
-    padding:12px 22px;
-
-    border-radius:14px;
-
-    font-weight:700;
-
-    text-decoration:none;
-
-    display:flex;
-
-    align-items:center;
-
-    gap:8px;
-
-    box-shadow:
-    0 0 15px rgba(0,255,120,.4);
-
+.botones button:hover {
+    transform: translateY(-3px);
+    filter: brightness(1.15);
 }
 
 
-.btn-tomar:hover{
+/* ==================================================
+   ADMINISTRAR
+================================================== */
 
-    transform:translateY(-3px);
-
-    box-shadow:
-    0 0 25px rgba(0,255,120,.8);
-
-}
-
-
-.editar{
-
-    background:
-    linear-gradient(
-        135deg,
-        #00bfff,
-        #0066ff
-    );
-
-}
-
-
-.eliminar{
-
-    background:
-    linear-gradient(
-        135deg,
-        #ff5555,
-        #990000
-    );
-
-}
-
-
-button.tomado{
-
-    background:#16c784;
-
-    cursor:default;
-
-}
-
-
-.sin-datos{
-
-    background:#111;
-
-    padding:30px;
-
-    border-radius:15px;
-
-    text-align:center;
-
-}
-
-
-/* =========================
-   BOTONES MEDICACION
-========================= */
-
-.botones a,
-.botones button{
-
-    border:none;
-    padding:12px 22px;
-    border-radius:14px;
-
-    color:white;
-
-    text-decoration:none;
-
-    cursor:pointer;
-
-    font-weight:700;
-
-    display:flex;
-
-    align-items:center;
-
-    gap:8px;
-
-    transition:.3s;
-
-    box-shadow:0 5px 15px rgba(0,0,0,.25);
-
-}
-
-
-.botones a:hover,
-.botones button:hover{
-
-    transform:translateY(-3px);
-
-    filter:brightness(1.2);
-
-}
-
-
-/* TOMAR */
-
-.botones .btn-tomar{
-
-    background:linear-gradient(
+.btn-administrar {
+    background: linear-gradient(
         135deg,
         #00ff88,
         #00995c
     ) !important;
 
-    color:white !important;
-
-    padding:14px 25px !important;
-
-    border-radius:18px !important;
-
-    font-size:16px !important;
-
-    font-weight:800 !important;
-
-    text-decoration:none !important;
-
-    display:flex !important;
-
-    align-items:center;
-
-    gap:10px;
+    color: white !important;
+    padding: 14px 22px !important;
+    border-radius: 18px !important;
+    font-weight: 800 !important;
 
     box-shadow:
-    0 0 20px rgba(0,255,120,.5);
+        0 0 20px rgba(0,255,120,.40);
+}
 
+.btn-administrar:hover {
+    box-shadow:
+        0 0 30px rgba(0,255,120,.75);
 }
 
 
-.botones .btn-tomar:hover{
+/* ==================================================
+   PACIENTE
+================================================== */
 
-    transform:translateY(-4px);
+.btn-tomar {
+    background: linear-gradient(
+        135deg,
+        #00ff88,
+        #00995c
+    ) !important;
+}
 
-    box-shadow:
-    0 0 30px rgba(0,255,120,.9);
-
+.tomado {
+    background: #16c784;
+    cursor: default;
 }
 
 
-/* EDITAR */
+/* ==================================================
+   EDITAR
+================================================== */
 
-.editar{
-
-    background:linear-gradient(
+.editar {
+    background: linear-gradient(
         135deg,
         #00bfff,
         #0066ff
     ) !important;
-
 }
 
 
-/* SUSPENDER */
+/* ==================================================
+   SUSPENDER
+================================================== */
 
-.eliminar{
-
-    background:linear-gradient(
+.eliminar {
+    background: linear-gradient(
         135deg,
         #ff5555,
         #990000
     ) !important;
-
 }
 
 
-/* YA TOMADO */
+/* ==================================================
+   DESHABILITADO
+================================================== */
 
-button.tomado{
-
-    background:#16c784;
-
-    cursor:default;
-
+.btn-disabled {
+    background: #555 !important;
+    color: #aaa !important;
+    cursor: not-allowed !important;
+    box-shadow: none !important;
 }
-.botones .btn-tomar{
-    background:red !important;
-    color:white !important;
+
+
+/* ==================================================
+   SIN DATOS
+================================================== */
+
+.sin-datos {
+    background: #111;
+    padding: 30px;
+    border-radius: 15px;
+    text-align: center;
+    color: #b9cbd3;
 }
 
 </style>

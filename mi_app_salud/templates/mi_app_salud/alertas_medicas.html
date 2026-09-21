@@ -1,0 +1,636 @@
+{% extends "mi_app_salud/base.html" %}
+
+{% block contenido %}
+
+<style>
+
+    .alertas-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        gap: 20px;
+        margin-bottom: 28px;
+    }
+
+    .alertas-header h1 {
+        margin: 0 0 8px;
+    }
+
+    .alertas-header p {
+        margin: 0;
+        opacity: .7;
+    }
+
+    .alertas-contador {
+        padding: 10px 16px;
+        border-radius: 14px;
+        background: rgba(255, 60, 60, .12);
+        border: 1px solid rgba(255, 80, 80, .35);
+        color: #ff7b7b;
+        font-weight: 800;
+        white-space: nowrap;
+    }
+
+    .alerta-clinica {
+        margin-bottom: 18px;
+        padding: 0;
+        border-radius: 20px;
+        overflow: hidden;
+        background: linear-gradient(
+            145deg,
+            rgba(255, 60, 60, .10),
+            rgba(7, 24, 40, .55)
+        );
+        border: 1px solid rgba(255, 80, 80, .25);
+    }
+
+    .alerta-cabecera {
+        display: flex;
+        justify-content: space-between;
+        align-items: flex-start;
+        gap: 20px;
+        padding: 20px;
+        border-bottom: 1px solid rgba(255,255,255,.07);
+    }
+
+    .alerta-tipo {
+        color: #ff6b6b;
+        font-size: 11px;
+        font-weight: 800;
+        letter-spacing: .7px;
+        margin-bottom: 7px;
+    }
+
+    .alerta-paciente {
+        margin: 0;
+        font-size: 22px;
+    }
+
+    .alerta-hc {
+        margin-top: 5px;
+        color: #8fa8b4;
+        font-size: 12px;
+    }
+
+    .badge-critica {
+        padding: 6px 10px;
+        border-radius: 7px;
+        background: rgba(255, 60, 70, .14);
+        color: #ff6974;
+        font-size: 9px;
+        font-weight: 800;
+        letter-spacing: .6px;
+    }
+
+    .alerta-cuerpo {
+        padding: 20px;
+    }
+
+    .alerta-fecha {
+        margin: 0 0 18px;
+        color: #9db2bc;
+        font-size: 12px;
+    }
+
+    .estado-alerta-box {
+        padding: 16px;
+        border-radius: 13px;
+        background: rgba(255,255,255,.035);
+        border-left: 3px solid #ff5c67;
+    }
+
+    .estado-alerta-box h3 {
+        margin: 0 0 12px;
+        color: #8be9ff;
+        font-size: 13px;
+    }
+
+    .estado-grid {
+        display: grid;
+        grid-template-columns: repeat(2, minmax(0,1fr));
+        gap: 10px;
+    }
+
+    .estado-item {
+        padding: 11px;
+        border-radius: 9px;
+        background: rgba(255,255,255,.035);
+    }
+
+    .estado-item small {
+        display: block;
+        margin-bottom: 4px;
+        color: #718b97;
+        font-size: 10px;
+    }
+
+    .estado-item strong {
+        color: #ffffff;
+        font-size: 13px;
+    }
+
+    .tabla-vitales {
+        width: 100%;
+        border-collapse: collapse;
+        margin-top: 8px;
+    }
+
+    .tabla-vitales th {
+        padding: 11px;
+        text-align: left;
+        color: #7e9ba8;
+        font-size: 10px;
+        text-transform: uppercase;
+        letter-spacing: .5px;
+        border-bottom: 1px solid rgba(255,255,255,.08);
+    }
+
+    .tabla-vitales td {
+        padding: 13px 11px;
+        color: #d7e4e9;
+        font-size: 12px;
+        border-bottom: 1px solid rgba(255,255,255,.05);
+    }
+
+    .tabla-vitales tr:last-child td {
+        border-bottom: none;
+    }
+
+    .valor-critico {
+        color: #ff6873 !important;
+        font-weight: 800;
+    }
+
+    .ia-alerta {
+        margin-top: 18px;
+        padding: 15px;
+        border-radius: 12px;
+        background: rgba(255, 77, 90, .06);
+        border-left: 3px solid #ff4d5a;
+    }
+
+    .ia-alerta strong {
+        color: #ff8790;
+        font-size: 12px;
+    }
+
+    .ia-alerta p {
+        margin: 7px 0;
+        color: #c5d4da;
+        font-size: 12px;
+        line-height: 1.5;
+    }
+
+    .ia-estado {
+        color: #ff6873;
+        font-size: 11px;
+        font-weight: 800;
+    }
+
+    .alerta-footer {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        gap: 15px;
+        padding: 15px 20px;
+        border-top: 1px solid rgba(255,255,255,.06);
+    }
+
+    .alerta-origen {
+        color: #647f8b;
+        font-size: 10px;
+        text-transform: uppercase;
+        letter-spacing: .5px;
+    }
+
+    .btn-alerta-paciente {
+        display: inline-block;
+        padding: 9px 14px;
+        border-radius: 9px;
+        background: rgba(139,233,255,.08);
+        color: #8be9ff !important;
+        text-decoration: none;
+        font-size: 11px;
+        font-weight: 800;
+    }
+
+    .btn-alerta-paciente:hover {
+        background: rgba(139,233,255,.15);
+    }
+
+    .sin-alertas {
+        padding: 22px;
+        border-radius: 16px;
+        background: rgba(22,199,132,.06);
+        border: 1px solid rgba(22,199,132,.18);
+        color: #7ce7b7;
+    }
+
+    @media (max-width: 650px) {
+
+        .alertas-header {
+            flex-direction: column;
+            align-items: flex-start;
+        }
+
+        .estado-grid {
+            grid-template-columns: 1fr;
+        }
+
+        .alerta-footer {
+            flex-direction: column;
+            align-items: flex-start;
+        }
+
+    }
+
+</style>
+
+
+<div class="jarvice-card">
+
+    <div class="alertas-header">
+
+        <div>
+
+            <h1>🚨 Alertas clínicas</h1>
+
+            <p>
+                Eventos críticos que requieren atención.
+            </p>
+
+        </div>
+
+        <div class="alertas-contador">
+            {{ total_alertas }} activa{{ total_alertas|pluralize }}
+        </div>
+
+    </div>
+
+
+    {% if alertas %}
+
+        {% for alerta in alertas %}
+
+            <article class="alerta-clinica">
+
+
+                <!-- CABECERA -->
+
+                <div class="alerta-cabecera">
+
+                    <div>
+
+                        {% if alerta.tipo_alerta == "SIGNOS_VITALES" %}
+
+                            <div class="alerta-tipo">
+                                🚨 ALERTA DE SIGNOS VITALES
+                            </div>
+
+                        {% else %}
+
+                            <div class="alerta-tipo">
+                                ⚠️ CAMBIO DE ESTADO
+                            </div>
+
+                        {% endif %}
+
+
+                        <h2 class="alerta-paciente">
+
+                            {{ alerta.paciente.nombre }}
+                            {{ alerta.paciente.apellido }}
+
+                        </h2>
+
+
+                        {% if alerta.paciente.historia_clinica %}
+
+                            <div class="alerta-hc">
+
+                                HC:
+                                {{ alerta.paciente.historia_clinica }}
+
+                            </div>
+
+                        {% endif %}
+
+                    </div>
+
+
+                    <div class="badge-critica">
+                        CRÍTICA
+                    </div>
+
+                </div>
+
+
+                <!-- CUERPO -->
+
+                <div class="alerta-cuerpo">
+
+                    <p class="alerta-fecha">
+
+                        📅
+                        <strong>Fecha:</strong>
+                        {{ alerta.fecha }}
+
+                    </p>
+
+
+                    {% if alerta.tipo_alerta == "SIGNOS_VITALES" and alerta.signo_vital %}
+
+
+                        <!-- TABLA DE SIGNOS VITALES -->
+
+                        <div class="estado-alerta-box">
+
+                            <h3>
+                                🔎 Parámetros que generaron la alerta
+                            </h3>
+
+
+                            <table class="tabla-vitales">
+
+                                <thead>
+
+                                    <tr>
+
+                                        <th>
+                                            Parámetro
+                                        </th>
+
+                                        <th>
+                                            Valor
+                                        </th>
+
+                                        <th>
+                                            Estado
+                                        </th>
+
+                                    </tr>
+
+                                </thead>
+
+
+                                <tbody>
+
+
+                                    {% if alerta.signo_vital.frecuencia_cardiaca %}
+
+                                        <tr>
+
+                                            <td>
+                                                ❤️ Frecuencia cardíaca
+                                            </td>
+
+                                            <td>
+                                                {{ alerta.signo_vital.frecuencia_cardiaca }}
+                                                lpm
+                                            </td>
+
+                                            <td class="valor-critico">
+                                                🔴 CRÍTICO
+                                            </td>
+
+                                        </tr>
+
+                                    {% endif %}
+
+
+                                    {% if alerta.signo_vital.saturacion_oxigeno %}
+
+                                        <tr>
+
+                                            <td>
+                                                🫁 Saturación
+                                            </td>
+
+                                            <td>
+                                                {{ alerta.signo_vital.saturacion_oxigeno }}%
+                                            </td>
+
+                                            <td class="valor-critico">
+                                                🔴 CRÍTICO
+                                            </td>
+
+                                        </tr>
+
+                                    {% endif %}
+
+
+                                    {% if alerta.signo_vital.temperatura %}
+
+                                        <tr>
+
+                                            <td>
+                                                🌡️ Temperatura
+                                            </td>
+
+                                            <td>
+                                                {{ alerta.signo_vital.temperatura }} °C
+                                            </td>
+
+                                            <td class="valor-critico">
+                                                🔴 CRÍTICO
+                                            </td>
+
+                                        </tr>
+
+                                    {% endif %}
+
+
+                                    {% if alerta.signo_vital.presion_arterial %}
+
+                                        <tr>
+
+                                            <td>
+                                                🩺 Presión arterial
+                                            </td>
+
+                                            <td>
+                                                {{ alerta.signo_vital.presion_arterial }}
+                                            </td>
+
+                                            <td class="valor-critico">
+                                                🔴 CRÍTICO
+                                            </td>
+
+                                        </tr>
+
+                                    {% endif %}
+
+
+                                    {% if alerta.signo_vital.estado_emocional %}
+
+                                        <tr>
+
+                                            <td>
+                                                🧠 Estado emocional
+                                            </td>
+
+                                            <td>
+                                                {{ alerta.signo_vital.estado_emocional }}
+                                            </td>
+
+                                            <td>
+                                                🟠 Atención
+                                            </td>
+
+                                        </tr>
+
+                                    {% endif %}
+
+
+                                </tbody>
+
+                            </table>
+
+
+                            {% if alerta.analisis_alerta %}
+
+                                <div class="ia-alerta">
+
+                                    <strong>
+                                        🤖 Jarvice Clinical AI
+                                    </strong>
+
+                                    <p>
+                                        {{ alerta.analisis_alerta.analisis_ia }}
+                                    </p>
+
+                                    <span class="ia-estado">
+
+                                        Estado:
+                                        {{ alerta.analisis_alerta.estado_clinico_ia }}
+
+                                    </span>
+
+                                </div>
+
+                            {% endif %}
+
+                        </div>
+
+
+                    {% else %}
+
+
+                        <!-- ALERTA POR CAMBIO DE ESTADO -->
+
+                        <div class="estado-alerta-box">
+
+                            <h3>
+                                ⚠️ Información del evento
+                            </h3>
+
+
+                            <div class="estado-grid">
+
+                                <div class="estado-item">
+
+                                    <small>
+                                        Estado registrado
+                                    </small>
+
+                                    <strong>
+                                        🔴 {{ alerta.estado }}
+                                    </strong>
+
+                                </div>
+
+
+                                <div class="estado-item">
+
+                                    <small>
+                                        Tipo de alerta
+                                    </small>
+
+                                    <strong>
+                                        Cambio de estado
+                                    </strong>
+
+                                </div>
+
+
+                                <div class="estado-item">
+
+                                    <small>
+                                        Estado emocional
+                                    </small>
+
+                                    <strong>
+                                        {{ alerta.estado_emocional }}
+                                    </strong>
+
+                                </div>
+
+
+                                <div class="estado-item">
+
+                                    <small>
+                                        Signos vitales
+                                    </small>
+
+                                    <strong>
+                                        Sin datos asociados
+                                    </strong>
+
+                                </div>
+
+                            </div>
+
+                        </div>
+
+                    {% endif %}
+
+                </div>
+
+
+                <!-- FOOTER -->
+
+                <div class="alerta-footer">
+
+                    <span class="alerta-origen">
+
+                        {% if alerta.tipo_alerta == "SIGNOS_VITALES" %}
+
+                            🩺 Jarvice · Monitoreo clínico
+
+                        {% else %}
+
+                            📋 Jarvice · Registro de estado
+
+                        {% endif %}
+
+                    </span>
+
+
+                    <a
+                        href="{% url 'historial_paciente' alerta.paciente.id %}"
+                        class="btn-alerta-paciente"
+                    >
+                        👤 Ver ficha del paciente →
+                    </a>
+
+                </div>
+
+
+            </article>
+
+        {% endfor %}
+
+
+    {% else %}
+
+        <div class="sin-alertas">
+
+            🟢 No existen alertas críticas activas.
+
+        </div>
+
+    {% endif %}
+
+</div>
+
+{% endblock %}

@@ -1,0 +1,46 @@
+services:
+
+  db:
+    image: postgres:16
+    container_name: jarvice_postgres
+    restart: unless-stopped
+
+    environment:
+      POSTGRES_DB: jarvice
+      POSTGRES_USER: jarvice
+      POSTGRES_PASSWORD: jarvice_password
+
+    volumes:
+      - jarvice_postgres_data:/var/lib/postgresql/data
+
+    ports:
+      - "5432:5432"
+
+
+  web:
+    build: .
+    container_name: jarvice_web
+    restart: unless-stopped
+
+    depends_on:
+      - db
+
+    environment:
+      DJANGO_DEBUG: "True"
+
+      DB_ENGINE: django.db.backends.postgresql
+      DB_NAME: jarvice
+      DB_USER: jarvice
+      DB_PASSWORD: jarvice_password
+      DB_HOST: db
+      DB_PORT: "5432"
+
+    ports:
+      - "8000:8000"
+
+    volumes:
+      - .:/app
+
+
+volumes:
+  jarvice_postgres_data:

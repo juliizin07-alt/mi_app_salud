@@ -1,218 +1,437 @@
-﻿
-{% extends "mi_app_salud/base.html" %}
+﻿{% extends "mi_app_salud/base.html" %}
 
 {% block contenido %}
 
-<div class="jarvice-card">
+<style>
 
-    <div class="qr-icon"></div>
+    /* =====================================================
+       JARVICE · FICHA DE EMERGENCIA QR
+    ===================================================== */
 
-    <h1>Ficha clínica de emergencia</h1>
+    .emergency-wrapper {
+        max-width: 1000px;
+        margin: 25px auto 50px;
+        padding: 15px;
+    }
 
-    <p class="subtitle">
-        Información clínica autorizada mediante QR Jarvice.
-    </p>
+    .emergency-header {
+        background: linear-gradient(135deg, #102a43, #1565c0);
+        color: white;
+        border-radius: 22px;
+        padding: 28px;
+        box-shadow: 0 15px 40px rgba(0,0,0,.18);
+        margin-bottom: 20px;
+    }
+
+    .emergency-badge {
+        display: inline-flex;
+        align-items: center;
+        gap: 8px;
+        background: rgba(255,255,255,.14);
+        border: 1px solid rgba(255,255,255,.25);
+        border-radius: 30px;
+        padding: 8px 14px;
+        font-size: 13px;
+        font-weight: 700;
+        letter-spacing: .4px;
+        margin-bottom: 15px;
+    }
+
+    .emergency-header h1 {
+        margin: 0;
+        font-size: 30px;
+    }
+
+    .emergency-header p {
+        margin: 8px 0 0;
+        opacity: .9;
+        line-height: 1.5;
+    }
+
+    .patient-card {
+        background: white;
+        border: 1px solid #d9e2ec;
+        border-radius: 20px;
+        padding: 24px;
+        margin-bottom: 20px;
+        box-shadow: 0 8px 25px rgba(0,0,0,.07);
+    }
+
+    .patient-card h2 {
+        margin: 0 0 8px;
+        color: #102a43;
+        font-size: 27px;
+    }
+
+    .patient-data {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 12px 25px;
+        color: #52606d;
+        font-size: 14px;
+    }
+
+    .critical-grid {
+        display: grid;
+        grid-template-columns: repeat(2, 1fr);
+        gap: 16px;
+        margin-bottom: 20px;
+    }
+
+    .critical-card {
+        background: white;
+        border-radius: 18px;
+        padding: 22px;
+        border: 1px solid #d9e2ec;
+        box-shadow: 0 8px 25px rgba(0,0,0,.06);
+    }
+
+    .critical-card h3 {
+        margin: 0 0 15px;
+        color: #102a43;
+        font-size: 18px;
+    }
+
+    .critical-card p {
+        margin: 7px 0;
+        line-height: 1.5;
+        color: #334e68;
+    }
+
+    .alert-card {
+        border-left: 6px solid #d32f2f;
+    }
+
+    .allergy-card {
+        border-left: 6px solid #f57c00;
+    }
+
+    .section-card {
+        background: white;
+        border-radius: 20px;
+        padding: 24px;
+        margin-bottom: 20px;
+        border: 1px solid #d9e2ec;
+        box-shadow: 0 8px 25px rgba(0,0,0,.06);
+    }
+
+    .section-card h3 {
+        margin: 0 0 18px;
+        color: #102a43;
+        font-size: 20px;
+    }
+
+    .clinical-item {
+        background: #f5f8fc;
+        border: 1px solid #e1e8ef;
+        border-radius: 14px;
+        padding: 15px;
+        margin-bottom: 10px;
+    }
+
+    .clinical-item:last-child {
+        margin-bottom: 0;
+    }
+
+    .clinical-item strong {
+        display: block;
+        color: #102a43;
+        margin-bottom: 5px;
+    }
+
+    .clinical-item span {
+        display: block;
+        color: #52606d;
+        margin-top: 4px;
+    }
+
+    .vitals-grid {
+        display: grid;
+        grid-template-columns: repeat(4, 1fr);
+        gap: 12px;
+    }
+
+    .vital {
+        background: #f5f8fc;
+        border: 1px solid #d9e2ec;
+        border-radius: 15px;
+        padding: 16px;
+        text-align: center;
+    }
+
+    .vital-label {
+        display: block;
+        font-size: 12px;
+        color: #7b8794;
+        margin-bottom: 8px;
+    }
+
+    .vital-value {
+        display: block;
+        font-size: 22px;
+        font-weight: 800;
+        color: #102a43;
+    }
+
+    .vital-unit {
+        display: block;
+        font-size: 12px;
+        color: #52606d;
+        margin-top: 3px;
+    }
+
+    .gps-card {
+        background: #eef7ff;
+        border: 1px solid #c9e2f5;
+        border-radius: 16px;
+        padding: 18px;
+    }
+
+    .gps-data {
+        display: grid;
+        grid-template-columns: repeat(2, 1fr);
+        gap: 12px;
+        margin-bottom: 16px;
+    }
+
+    .gps-value {
+        background: white;
+        border-radius: 12px;
+        padding: 12px;
+        border: 1px solid #d9e2ec;
+    }
+
+    .gps-value small {
+        display: block;
+        color: #7b8794;
+        margin-bottom: 4px;
+    }
+
+    .gps-value strong {
+        color: #102a43;
+        word-break: break-word;
+    }
+
+    .map-button {
+        display: block;
+        text-align: center;
+        text-decoration: none;
+        background: #1565c0;
+        color: white;
+        padding: 15px;
+        border-radius: 12px;
+        font-weight: 700;
+        transition: .2s;
+    }
+
+    .map-button:hover {
+        background: #0d47a1;
+        transform: translateY(-1px);
+    }
+
+    .status-card {
+        background: #f5f8fc;
+        border-radius: 16px;
+        border: 1px solid #d9e2ec;
+        padding: 20px;
+    }
+
+    .status-main {
+        font-size: 22px;
+        font-weight: 800;
+        color: #102a43;
+        margin-bottom: 8px;
+    }
+
+    .audit-notice {
+        background: #eef2f7;
+        border: 1px solid #d9e2ec;
+        border-radius: 15px;
+        padding: 16px;
+        text-align: center;
+        color: #52606d;
+        font-size: 13px;
+        margin-top: 25px;
+    }
+
+    .back-button {
+        display: block;
+        text-align: center;
+        text-decoration: none;
+        background: #eef2f7;
+        color: #334e68;
+        padding: 14px;
+        border-radius: 12px;
+        margin-top: 12px;
+        font-weight: 700;
+    }
+
+    .empty-data {
+        color: #7b8794;
+        font-style: italic;
+        margin: 0;
+    }
+
+    @media (max-width: 750px) {
+
+        .emergency-wrapper {
+            margin: 10px auto 30px;
+            padding: 8px;
+        }
+
+        .emergency-header {
+            padding: 22px 18px;
+            border-radius: 18px;
+        }
+
+        .emergency-header h1 {
+            font-size: 24px;
+        }
+
+        .patient-card,
+        .section-card,
+        .critical-card {
+            padding: 18px;
+        }
+
+        .critical-grid {
+            grid-template-columns: 1fr;
+        }
+
+        .vitals-grid {
+            grid-template-columns: repeat(2, 1fr);
+        }
+
+        .gps-data {
+            grid-template-columns: 1fr;
+        }
+
+        .patient-card h2 {
+            font-size: 23px;
+        }
+    }
+
+</style>
 
 
-    <div class="patient-header">
+<div class="emergency-wrapper">
+
+
+    <!-- =================================================
+         ENCABEZADO
+    ================================================== -->
+
+    <header class="emergency-header">
+
+        <div class="emergency-badge">
+            🚨 ACCESO DE EMERGENCIA
+        </div>
+
+        <h1>
+            Ficha clínica Jarvice
+        </h1>
+
+        <p>
+            Información clínica autorizada mediante código QR
+            para atención de emergencia.
+        </p>
+
+    </header>
+
+
+    <!-- =================================================
+         IDENTIFICACIÓN DEL PACIENTE
+    ================================================== -->
+
+    <section class="patient-card">
 
         <h2>
             {{ paciente.nombre }} {{ paciente.apellido }}
         </h2>
 
-        {% if paciente.dni %}
-            <p>DNI: {{ paciente.dni }}</p>
-        {% endif %}
+        <div class="patient-data">
 
-        {% if paciente.historia_clinica %}
-            <p>
-                Historia clínica:
-                {{ paciente.historia_clinica }}
-            </p>
-        {% endif %}
+            {% if paciente.dni %}
+                <span>
+                    <strong>DNI:</strong> {{ paciente.dni }}
+                </span>
+            {% endif %}
 
-    </div>
+            {% if paciente.historia_clinica %}
+                <span>
+                    <strong>Historia clínica:</strong>
+                    {{ paciente.historia_clinica }}
+                </span>
+            {% endif %}
+
+        </div>
+
+    </section>
 
 
-    <!-- ==========================================
-         PATOLOGÍAS FÍSICAS
-    =========================================== -->
+    <!-- =================================================
+         INFORMACIÓN CRÍTICA
+    ================================================== -->
 
-    <section class="clinical-section">
+    <div class="critical-grid">
 
-        <h3>🩺 Patologías físicas</h3>
 
-        {% if enfermedades %}
+        <!-- PATOLOGÍAS -->
 
-            <div class="clinical-item">
+        <section class="critical-card">
+
+            <h3>🩺 Patologías relevantes</h3>
+
+            {% if enfermedades %}
 
                 <p>
                     {{ enfermedades }}
                 </p>
 
-            </div>
+            {% else %}
 
-        {% else %}
-
-            <p>
-                No hay patologías físicas registradas.
-            </p>
-
-        {% endif %}
-
-    </section>
-
-
-    <!-- ==========================================
-         SALUD MENTAL
-    =========================================== -->
-
-    <section class="clinical-section">
-
-        <h3>🧠 Antecedentes de salud mental</h3>
-
-        {% if antecedentes_salud_mental %}
-
-            <div class="clinical-item">
-
-                <p>
-                    {{ antecedentes_salud_mental }}
+                <p class="empty-data">
+                    No hay patologías registradas.
                 </p>
 
-            </div>
+            {% endif %}
 
-        {% else %}
-
-            <p>
-                No hay antecedentes de salud mental registrados.
-            </p>
-
-        {% endif %}
-
-    </section>
+        </section>
 
 
-    <!-- ==========================================
-         ALERGIAS
-    =========================================== -->
+        <!-- ALERGIAS -->
 
-    <section class="clinical-section">
+        <section class="critical-card allergy-card">
 
-        <h3>⚠️ Alergias</h3>
+            <h3>⚠️ Alergias</h3>
 
-        {% if alergias %}
-
-            <div class="clinical-item">
+            {% if alergias %}
 
                 <p>
                     {{ alergias }}
                 </p>
 
-            </div>
+            {% else %}
 
-        {% else %}
+                <p class="empty-data">
+                    No hay alergias registradas.
+                </p>
 
-            <p>
-                No hay alergias registradas.
-            </p>
+            {% endif %}
 
-        {% endif %}
-
-    </section>
+        </section>
 
 
-<!-- ==========================================
-     CONTACTOS DE EMERGENCIA
-=========================================== -->
-
-<section class="clinical-section">
-
-    <h3>📞 Contactos de emergencia</h3>
-
-    {% if paciente.contacto_emergencia or paciente.contacto_emergencia_2 or paciente.contacto_emergencia_3 %}
-
-        {% if paciente.contacto_emergencia %}
-            <div class="clinical-item">
-
-                <strong>
-                    Contacto 1
-                </strong>
-
-                <span>
-                    {{ paciente.contacto_emergencia }}
-                </span>
-
-                {% if paciente.telefono_emergencia %}
-                    <span>
-                        Teléfono: {{ paciente.telefono_emergencia }}
-                    </span>
-                {% endif %}
-
-            </div>
-        {% endif %}
+    </div>
 
 
-        {% if paciente.contacto_emergencia_2 %}
-            <div class="clinical-item">
-
-                <strong>
-                    Contacto 2
-                </strong>
-
-                <span>
-                    {{ paciente.contacto_emergencia_2 }}
-                </span>
-
-                {% if paciente.telefono_emergencia_2 %}
-                    <span>
-                        Teléfono: {{ paciente.telefono_emergencia_2 }}
-                    </span>
-                {% endif %}
-
-            </div>
-        {% endif %}
-
-
-        {% if paciente.contacto_emergencia_3 %}
-            <div class="clinical-item">
-
-                <strong>
-                    Contacto 3
-                </strong>
-
-                <span>
-                    {{ paciente.contacto_emergencia_3 }}
-                </span>
-
-                {% if paciente.telefono_emergencia_3 %}
-                    <span>
-                        Teléfono: {{ paciente.telefono_emergencia_3 }}
-                    </span>
-                {% endif %}
-
-            </div>
-        {% endif %}
-
-    {% else %}
-
-        <p>
-            No hay contactos de emergencia configurados.
-        </p>
-
-    {% endif %}
-
-</section>
-
-
-
-
-    <!-- ==========================================
+    <!-- =================================================
          MEDICACIÓN
-    =========================================== -->
+    ================================================== -->
 
-    <section class="clinical-section">
+    <section class="section-card">
 
-        <h3>💊 Medicación actual</h3>
+        <h3>💊 Medicación activa</h3>
 
         {% if medicaciones %}
 
@@ -242,7 +461,7 @@
 
         {% else %}
 
-            <p>
+            <p class="empty-data">
                 No hay medicación activa registrada.
             </p>
 
@@ -251,212 +470,400 @@
     </section>
 
 
+    <!-- =================================================
+         SIGNOS VITALES
+    ================================================== -->
 
-<!-- ==========================================
-     SIGNOS VITALES
-=========================================== -->
+    <section class="section-card">
 
-<section class="clinical-section">
+        <h3>❤️ Últimos signos vitales</h3>
 
-    <h3>❤️ Últimos signos vitales</h3>
+        {% if ultimo_signo_vital %}
 
-    {% if ultimo_signo_vital %}
-
-        <div class="clinical-item">
-
-            <p>
-                <strong>Fecha:</strong>
-                {{ ultimo_signo_vital.fecha }}
-            </p>
-
-            {% if ultimo_signo_vital.frecuencia_cardiaca %}
-                <p>
-                    <strong>Frecuencia cardíaca:</strong>
-                    {{ ultimo_signo_vital.frecuencia_cardiaca }} BPM
-                </p>
-            {% endif %}
-
-            {% if ultimo_signo_vital.saturacion_oxigeno %}
-                <p>
-                    <strong>Saturación O₂:</strong>
-                    {{ ultimo_signo_vital.saturacion_oxigeno }}%
-                </p>
-            {% endif %}
-
-            {% if ultimo_signo_vital.temperatura %}
-                <p>
-                    <strong>Temperatura:</strong>
-                    {{ ultimo_signo_vital.temperatura }} °C
-                </p>
-            {% endif %}
-
-            {% if ultimo_signo_vital.presion_arterial %}
-                <p>
-                    <strong>Presión arterial:</strong>
-                    {{ ultimo_signo_vital.presion_arterial }}
-                </p>
-            {% endif %}
-
-            {% if ultimo_signo_vital.estado_emocional %}
-                <p>
-                    <strong>Estado emocional:</strong>
-                    {{ ultimo_signo_vital.estado_emocional }}
-                </p>
-            {% endif %}
-
-        </div>
-
-    {% else %}
-
-        <p>
-            No hay signos vitales registrados.
-        </p>
-
-    {% endif %}
-
-</section>
+            <div class="vitals-grid">
 
 
-<!-- =====================================================
-     UBICACIÓN GPS
-     ===================================================== -->
+                {% if ultimo_signo_vital.frecuencia_cardiaca %}
 
-<section class="clinical-section">
-    <h3>📍 Ubicación GPS</h3>
+                    <div class="vital">
 
-    {% if ultimo_signo_vital and ultimo_signo_vital.latitud is not None and ultimo_signo_vital.longitud is not None %}
+                        <span class="vital-label">
+                            Frecuencia cardíaca
+                        </span>
 
-        <div class="clinical-grid">
+                        <span class="vital-value">
+                            {{ ultimo_signo_vital.frecuencia_cardiaca }}
+                        </span>
 
-            <div class="clinical-item">
-                <span class="label">Latitud</span>
-                <strong>{{ ultimo_signo_vital.latitud }}</strong>
-            </div>
+                        <span class="vital-unit">
+                            BPM
+                        </span>
 
-            <div class="clinical-item">
-                <span class="label">Longitud</span>
-                <strong>{{ ultimo_signo_vital.longitud }}</strong>
-            </div>
+                    </div>
 
-            <div class="clinical-item">
-                <span class="label">Última actualización</span>
-                <strong>
-                    {% if ultimo_signo_vital.fecha_ubicacion %}
-                        {{ ultimo_signo_vital.fecha_ubicacion }}
-                    {% else %}
-                        Sin dato
-                    {% endif %}
-                </strong>
-            </div>
-
-        </div>
-
-        <div style="margin-top: 16px;">
-            <a
-                href="{{ google_maps_url }}"
-                target="_blank"
-                rel="noopener noreferrer"
-                class="btn-emergency"
-            >
-                🗺️ Abrir ubicación en Google Maps
-            </a>
-        </div>
-
-    {% else %}
-
-        <div class="clinical-alert">
-            📡 No hay una ubicación GPS disponible para el último registro.
-        </div>
-
-    {% endif %}
-</section>
-
-
-<!-- ==========================================
-     ESTADO CLÍNICO
-=========================================== -->
-
-<section class="clinical-section">
-
-    <h3>🩺 Estado clínico</h3>
-
-    {% if ultimo_signo_vital %}
-
-        <div class="clinical-item">
-
-            <p>
-                <strong>Estado actual:</strong>
-
-                {% if analisis_clinico %}
-                    {{ analisis_clinico.estado_clinico_ia }}
-                {% else %}
-                    {{ riesgo|default:"SIN DATOS" }}
                 {% endif %}
 
+
+                {% if ultimo_signo_vital.saturacion_oxigeno %}
+
+                    <div class="vital">
+
+                        <span class="vital-label">
+                            Saturación O₂
+                        </span>
+
+                        <span class="vital-value">
+                            {{ ultimo_signo_vital.saturacion_oxigeno }}
+                        </span>
+
+                        <span class="vital-unit">
+                            %
+                        </span>
+
+                    </div>
+
+                {% endif %}
+
+
+                {% if ultimo_signo_vital.temperatura %}
+
+                    <div class="vital">
+
+                        <span class="vital-label">
+                            Temperatura
+                        </span>
+
+                        <span class="vital-value">
+                            {{ ultimo_signo_vital.temperatura }}
+                        </span>
+
+                        <span class="vital-unit">
+                            °C
+                        </span>
+
+                    </div>
+
+                {% endif %}
+
+
+                {% if ultimo_signo_vital.presion_arterial %}
+
+                    <div class="vital">
+
+                        <span class="vital-label">
+                            Presión arterial
+                        </span>
+
+                        <span class="vital-value">
+                            {{ ultimo_signo_vital.presion_arterial }}
+                        </span>
+
+                    </div>
+
+                {% endif %}
+
+
+            </div>
+
+
+            <div class="clinical-item" style="margin-top:15px;">
+
+                <strong>
+                    Último registro
+                </strong>
+
+                <span>
+                    {{ ultimo_signo_vital.fecha }}
+                </span>
+
+                {% if ultimo_signo_vital.estado_emocional %}
+
+                    <span>
+                        Estado emocional:
+                        {{ ultimo_signo_vital.estado_emocional }}
+                    </span>
+
+                {% endif %}
+
+            </div>
+
+        {% else %}
+
+            <p class="empty-data">
+                No hay signos vitales registrados.
             </p>
 
-            {% if ultimo_signo_vital.estado_emocional %}
+        {% endif %}
+
+    </section>
+
+
+    <!-- =================================================
+         ESTADO CLÍNICO
+    ================================================== -->
+
+    <section class="section-card">
+
+        <h3>🩺 Estado clínico</h3>
+
+        <div class="status-card">
+
+            {% if ultimo_signo_vital %}
+
+                <div class="status-main">
+
+                    {% if analisis_clinico %}
+                        {{ analisis_clinico.estado_clinico_ia }}
+                    {% else %}
+                        {{ riesgo|default:"SIN DATOS" }}
+                    {% endif %}
+
+                </div>
+
                 <p>
-                    <strong>Estado emocional:</strong>
-                    {{ ultimo_signo_vital.estado_emocional }}
+                    <strong>Último control:</strong>
+                    {{ ultimo_signo_vital.fecha }}
                 </p>
-            {% endif %}
 
-            <p>
-                <strong>Fecha del último control:</strong>
-                {{ ultimo_signo_vital.fecha }}
-            </p>
+            {% elif ultimo_estado %}
+
+                <div class="status-main">
+                    {{ ultimo_estado.get_estado_display }}
+                </div>
+
+                <p>
+                    <strong>Fecha:</strong>
+                    {{ ultimo_estado.fecha }}
+                </p>
+
+            {% else %}
+
+                <p class="empty-data">
+                    No hay registros de estado clínico.
+                </p>
+
+            {% endif %}
 
         </div>
 
-    {% elif ultimo_estado %}
+    </section>
 
-        <div class="clinical-item">
 
-            <p>
-                <strong>Estado:</strong>
-                {{ ultimo_estado.get_estado_display }}
+    <!-- =================================================
+         UBICACIÓN GPS
+    ================================================== -->
+
+    <section class="section-card">
+
+        <h3>📍 Última ubicación registrada</h3>
+
+        {% if ultimo_signo_vital and ultimo_signo_vital.latitud is not None and ultimo_signo_vital.longitud is not None %}
+
+            <div class="gps-card">
+
+                <div class="gps-data">
+
+                    <div class="gps-value">
+
+                        <small>Latitud</small>
+
+                        <strong>
+                            {{ ultimo_signo_vital.latitud }}
+                        </strong>
+
+                    </div>
+
+
+                    <div class="gps-value">
+
+                        <small>Longitud</small>
+
+                        <strong>
+                            {{ ultimo_signo_vital.longitud }}
+                        </strong>
+
+                    </div>
+
+
+                    <div class="gps-value">
+
+                        <small>Actualización</small>
+
+                        <strong>
+
+                            {% if ultimo_signo_vital.fecha_ubicacion %}
+                                {{ ultimo_signo_vital.fecha_ubicacion }}
+                            {% else %}
+                                Sin dato
+                            {% endif %}
+
+                        </strong>
+
+                    </div>
+
+                </div>
+
+
+                {% if google_maps_url %}
+
+                    <a
+                        href="{{ google_maps_url }}"
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        class="map-button"
+                    >
+                        🗺️ ABRIR UBICACIÓN EN GOOGLE MAPS
+                    </a>
+
+                {% endif %}
+
+            </div>
+
+        {% else %}
+
+            <p class="empty-data">
+                📡 No hay una ubicación GPS disponible.
             </p>
 
-            {% if ultimo_estado.estado_fisico %}
-                <p>
-                    Estado físico:
-                    {{ ultimo_estado.estado_fisico }}
-                </p>
+        {% endif %}
+
+    </section>
+
+
+    <!-- =================================================
+         CONTACTOS DE EMERGENCIA
+    ================================================== -->
+
+    <section class="section-card">
+
+        <h3>📞 Contactos de emergencia</h3>
+
+        {% if paciente.contacto_emergencia or paciente.contacto_emergencia_2 or paciente.contacto_emergencia_3 %}
+
+
+            {% if paciente.contacto_emergencia %}
+
+                <div class="clinical-item">
+
+                    <strong>
+                        Contacto 1
+                    </strong>
+
+                    <span>
+                        {{ paciente.contacto_emergencia }}
+                    </span>
+
+                    {% if paciente.telefono_emergencia %}
+
+                        <span>
+                            Teléfono:
+                            {{ paciente.telefono_emergencia }}
+                        </span>
+
+                    {% endif %}
+
+                </div>
+
             {% endif %}
 
-            {% if ultimo_estado.estado_emocional %}
-                <p>
-                    Estado emocional:
-                    {{ ultimo_estado.estado_emocional }}
-                </p>
+
+            {% if paciente.contacto_emergencia_2 %}
+
+                <div class="clinical-item">
+
+                    <strong>
+                        Contacto 2
+                    </strong>
+
+                    <span>
+                        {{ paciente.contacto_emergencia_2 }}
+                    </span>
+
+                    {% if paciente.telefono_emergencia_2 %}
+
+                        <span>
+                            Teléfono:
+                            {{ paciente.telefono_emergencia_2 }}
+                        </span>
+
+                    {% endif %}
+
+                </div>
+
             {% endif %}
 
-            <p>
-                Fecha:
-                {{ ultimo_estado.fecha }}
+
+            {% if paciente.contacto_emergencia_3 %}
+
+                <div class="clinical-item">
+
+                    <strong>
+                        Contacto 3
+                    </strong>
+
+                    <span>
+                        {{ paciente.contacto_emergencia_3 }}
+                    </span>
+
+                    {% if paciente.telefono_emergencia_3 %}
+
+                        <span>
+                            Teléfono:
+                            {{ paciente.telefono_emergencia_3 }}
+                        </span>
+
+                    {% endif %}
+
+                </div>
+
+            {% endif %}
+
+
+        {% else %}
+
+            <p class="empty-data">
+                No hay contactos de emergencia configurados.
             </p>
 
-        </div>
+        {% endif %}
 
-    {% else %}
-
-        <p>
-            No hay registros de estado clínico.
-        </p>
-
-    {% endif %}
-
-</section>
+    </section>
 
 
+    <!-- =================================================
+         ANTECEDENTES
+    ================================================== -->
+
+    <section class="section-card">
+
+        <h3>🧠 Antecedentes de salud mental</h3>
+
+        {% if antecedentes_salud_mental %}
+
+            <div class="clinical-item">
+
+                <p>
+                    {{ antecedentes_salud_mental }}
+                </p>
+
+            </div>
+
+        {% else %}
+
+            <p class="empty-data">
+                No hay antecedentes registrados.
+            </p>
+
+        {% endif %}
+
+    </section>
 
 
-    <!-- ==========================================
-         EVOLUCIÓN MÉDICA
-    =========================================== -->
+    <!-- =================================================
+         ÚLTIMA EVOLUCIÓN
+    ================================================== -->
 
-    <section class="clinical-section">
+    <section class="section-card">
 
         <h3>📝 Última evolución médica</h3>
 
@@ -472,7 +879,7 @@
 
         {% else %}
 
-            <p>
+            <p class="empty-data">
                 No hay evoluciones médicas registradas.
             </p>
 
@@ -481,16 +888,25 @@
     </section>
 
 
+    <!-- =================================================
+         SEGURIDAD
+    ================================================== -->
+
     <div class="audit-notice">
 
-        🔐 Acceso autorizado y registrado por Jarvice.
+        🔐 Acceso autorizado mediante QR y registrado
+        por Jarvice Health AI.
 
     </div>
 
 
-    <a href="{% url 'inicio' %}" class="btn-secondary">
-        Volver al inicio
+    <a
+        href="{% url 'inicio' %}"
+        class="back-button"
+    >
+        ← Volver al inicio
     </a>
+
 
 </div>
 

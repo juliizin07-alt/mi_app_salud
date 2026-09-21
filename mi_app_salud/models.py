@@ -306,6 +306,25 @@ class RegistroSalud(models.Model):
         on_delete=models.CASCADE,
         related_name="registros"
     )
+    
+    TIPOS_ALERTA = [
+        ("ESTADO", "Cambio de estado"),
+        ("SIGNOS_VITALES", "Signos vitales"),
+    ]
+
+    tipo_alerta = models.CharField(
+        max_length=30,
+        choices=TIPOS_ALERTA,
+        default="ESTADO"
+    )
+
+    signo_vital = models.ForeignKey(
+        "SignoVital",
+        on_delete=models.SET_NULL,
+        null=True,
+        blank=True,
+        related_name="alertas_generadas"
+    )
 
 
     estado_fisico = models.CharField(
@@ -335,6 +354,148 @@ class RegistroSalud(models.Model):
     def __str__(self):
 
         return f"{self.paciente.nombre} - {self.estado}"
+    
+# ============================
+# EMERGENCIAS JARVICE
+# ============================
+
+class EmergenciaJarvice(models.Model):
+
+    ESTADOS = [
+        ("DETECTADA", "Detectada"),
+        ("ALERTADA", "Alertada"),
+        ("OPERADOR", "Operador conectado"),
+        ("UNIDAD_EN_CAMINO", "Unidad en camino"),
+        ("ASISTIDA", "Paciente asistido"),
+        ("CERRADA", "Emergencia cerrada"),
+    ]
+
+    paciente = models.ForeignKey(
+        Paciente,
+        on_delete=models.CASCADE,
+        related_name="emergencias_jarvice"
+    )
+
+    registro_salud = models.ForeignKey(
+        RegistroSalud,
+        on_delete=models.SET_NULL,
+        null=True,
+        blank=True,
+        related_name="emergencias"
+    )
+
+    signo_vital = models.ForeignKey(
+        "SignoVital",
+        on_delete=models.SET_NULL,
+        null=True,
+        blank=True,
+        related_name="emergencias"
+    )
+
+    estado = models.CharField(
+        max_length=30,
+        choices=ESTADOS,
+        default="DETECTADA"
+    )
+
+    origen = models.CharField(
+        max_length=30,
+        default="SMARTWATCH"
+    )
+
+    latitud = models.DecimalField(
+        max_digits=9,
+        decimal_places=6,
+        null=True,
+        blank=True
+    )
+
+    longitud = models.DecimalField(
+        max_digits=9,
+        decimal_places=6,
+        null=True,
+        blank=True
+    )
+
+    operador = models.ForeignKey(
+        User,
+        on_delete=models.SET_NULL,
+        null=True,
+        blank=True,
+        related_name="emergencias_operadas"
+    )
+
+    fecha_deteccion = models.DateTimeField(
+        auto_now_add=True
+    )
+
+    fecha_actualizacion = models.DateTimeField(
+        auto_now=True
+    )
+
+    observaciones = models.TextField(
+        blank=True,
+        null=True
+    )
+
+    def __str__(self):
+        return f"Emergencia {self.id} - {self.paciente} - {self.estado}"
+    
+    
+# ============================
+# COMUNICACIÓN DE EMERGENCIA
+# ============================
+
+class ComunicacionEmergencia(models.Model):
+
+    ESTADOS = [
+        ("INACTIVA", "Inactiva"),
+        ("CONECTANDO", "Conectando"),
+        ("ACTIVA", "Comunicación activa"),
+        ("FINALIZADA", "Comunicación finalizada"),
+    ]
+
+    emergencia = models.OneToOneField(
+        EmergenciaJarvice,
+        on_delete=models.CASCADE,
+        related_name="comunicacion"
+    )
+
+    operador = models.ForeignKey(
+        User,
+        on_delete=models.SET_NULL,
+        null=True,
+        blank=True,
+        related_name="comunicaciones_emergencia"
+    )
+
+    estado = models.CharField(
+        max_length=20,
+        choices=ESTADOS,
+        default="INACTIVA"
+    )
+
+    canal = models.CharField(
+        max_length=30,
+        default="RADIO"
+    )
+
+    fecha_inicio = models.DateTimeField(
+        null=True,
+        blank=True
+    )
+
+    fecha_fin = models.DateTimeField(
+        null=True,
+        blank=True
+    )
+
+    observaciones = models.TextField(
+        blank=True
+    )
+
+    def __str__(self):
+        return f"Comunicación emergencia #{self.emergencia.id} - {self.estado}"
 
 
 
@@ -389,6 +550,24 @@ class Medicacion(models.Model):
 
     horario = models.TimeField()
 
+    indicado_por = models.ForeignKey(
+        User,
+        on_delete=models.SET_NULL,
+        null=True,
+        blank=True,
+        related_name="tratamientos_indicados"
+    )
+
+    indicaciones = models.TextField(
+        blank=True,
+        null=True
+    )
+
+    fecha_indicacion = models.DateTimeField(
+    null=True,
+    blank=True
+)
+
     activo = models.BooleanField(default=True)
 
     tomado = models.BooleanField(default=False)
@@ -407,6 +586,53 @@ class Medicacion(models.Model):
 
     def __str__(self):
         return self.nombre
+    
+    # ==================================================
+# ADMINISTRACIÓN DE MEDICACIÓN
+# ==================================================
+
+class AdministracionMedicacion(models.Model):
+
+    ESTADO_CHOICES = [
+        ("ADMINISTRADO", "Administrado"),
+        ("NO_ADMINISTRADO", "No administrado"),
+        ("OMITIDO", "Omitido"),
+    ]
+
+    medicacion = models.ForeignKey(
+        Medicacion,
+        on_delete=models.CASCADE,
+        related_name="administraciones"
+    )
+
+    administrado_por = models.ForeignKey(
+        User,
+        on_delete=models.SET_NULL,
+        null=True,
+        blank=True,
+        related_name="administraciones_medicacion"
+    )
+
+    fecha_hora = models.DateTimeField(
+        auto_now_add=True
+    )
+
+    estado = models.CharField(
+        max_length=20,
+        choices=ESTADO_CHOICES,
+        default="ADMINISTRADO"
+    )
+
+    observacion = models.TextField(
+        blank=True,
+        null=True
+    )
+
+    def __str__(self):
+        return (
+            f"{self.medicacion.nombre} - "
+            f"{self.fecha_hora}"
+        )
 
 
 # ==================================================
@@ -771,6 +997,14 @@ class AccesoClinico(models.Model):
         null=True,
         blank=True,
         related_name="accesos_clinicos"
+    )
+    
+    qr_token = models.ForeignKey(
+        QRToken,
+        on_delete=models.SET_NULL,
+        null=True,
+        blank=True,
+        related_name="accesos"
     )
 
     tipo_acceso = models.CharField(

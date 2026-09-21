@@ -7,7 +7,7 @@ from django.views.decorators.csrf import csrf_exempt
 from django.utils import timezone
 
 from .clinical_engine import analizar_signos_vitales
-from .models import SignoVital
+from .models import SignoVital, RegistroSalud
 from .services.alerta_service import escalar_emergencia
 from .services.dispositivo_service import (
     obtener_dispositivo,
@@ -256,6 +256,18 @@ def dispositivo_signos_vitales(request):
     analisis = analizar_signos_vitales(
         signo
     )
+    
+    if analisis["riesgo_vital"] == "CRITICO":
+
+        RegistroSalud.objects.create(
+        paciente=dispositivo.paciente,
+        estado_fisico="CRITICO",
+        estado_emocional=signo.estado_emocional or "NEUTRO",
+        estado="CRITICO",
+        tipo_alerta="SIGNOS_VITALES",
+        signo_vital=signo,
+    )
+    
     channel_layer = get_channel_layer()
 
     if channel_layer is not None:

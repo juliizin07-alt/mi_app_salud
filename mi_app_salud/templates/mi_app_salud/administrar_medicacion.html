@@ -1,0 +1,381 @@
+
+{% extends "mi_app_salud/base.html" %}
+
+{% block contenido %}
+
+<style>
+
+    .admin-medicacion-container {
+        max-width: 850px;
+        margin: 40px auto;
+        padding: 20px;
+    }
+
+    .titulo-principal {
+        margin-bottom: 25px;
+    }
+
+    .titulo-principal h1 {
+        margin-bottom: 8px;
+    }
+
+    .subtitulo {
+        opacity: 0.75;
+    }
+
+    .medicacion-resumen {
+        background: rgba(10, 30, 60, 0.85);
+        border: 1px solid rgba(80, 150, 255, 0.25);
+        border-radius: 16px;
+        padding: 25px;
+        margin-bottom: 25px;
+    }
+
+    .medicacion-resumen h2 {
+        margin-top: 0;
+        margin-bottom: 20px;
+    }
+
+    .dato {
+        display: flex;
+        justify-content: space-between;
+        gap: 20px;
+        padding: 12px 0;
+        border-bottom: 1px solid rgba(255,255,255,0.08);
+    }
+
+    .dato:last-child {
+        border-bottom: none;
+    }
+
+    .dato-label {
+        opacity: 0.7;
+    }
+
+    .dato-valor {
+        font-weight: 600;
+        text-align: right;
+    }
+
+    .formulario-administracion {
+        background: rgba(10, 30, 60, 0.85);
+        border: 1px solid rgba(80, 150, 255, 0.25);
+        border-radius: 16px;
+        padding: 25px;
+    }
+
+    .campo-grupo {
+        margin-bottom: 20px;
+    }
+
+    .campo-grupo label {
+        display: block;
+        margin-bottom: 8px;
+        font-weight: 600;
+    }
+
+    .campo {
+        width: 100%;
+        box-sizing: border-box;
+        padding: 12px 14px;
+        border-radius: 10px;
+        border: 1px solid rgba(255,255,255,0.15);
+        background: rgba(0,0,0,0.25);
+        color: inherit;
+        font-size: 15px;
+    }
+
+    textarea.campo {
+        resize: vertical;
+        min-height: 110px;
+    }
+
+    .ayuda {
+        display: block;
+        margin-top: 7px;
+        font-size: 13px;
+        opacity: 0.65;
+    }
+
+    .error {
+        margin-top: 6px;
+        color: #ff8d8d;
+        font-size: 14px;
+    }
+
+    .acciones {
+        display: flex;
+        justify-content: space-between;
+        gap: 15px;
+        margin-top: 25px;
+    }
+
+    .boton {
+        display: inline-block;
+        padding: 12px 20px;
+        border-radius: 10px;
+        border: none;
+        text-decoration: none;
+        cursor: pointer;
+        font-weight: 600;
+        font-size: 15px;
+    }
+
+    .boton-principal {
+        background: #1769aa;
+        color: white;
+    }
+
+    .boton-secundario {
+        background: rgba(255,255,255,0.08);
+        color: inherit;
+    }
+
+    .aviso {
+        margin-top: 20px;
+        padding: 15px;
+        border-radius: 10px;
+        background: rgba(255, 193, 7, 0.08);
+        border: 1px solid rgba(255, 193, 7, 0.2);
+        font-size: 14px;
+        line-height: 1.5;
+    }
+
+    @media (max-width: 600px) {
+
+        .admin-medicacion-container {
+            margin: 20px auto;
+            padding: 12px;
+        }
+
+        .dato {
+            flex-direction: column;
+            gap: 5px;
+        }
+
+        .dato-valor {
+            text-align: left;
+        }
+
+        .acciones {
+            flex-direction: column-reverse;
+        }
+
+        .boton {
+            width: 100%;
+            text-align: center;
+            box-sizing: border-box;
+        }
+    }
+
+</style>
+
+
+<div class="admin-medicacion-container">
+
+    <div class="titulo-principal">
+
+        <h1>💉 Administración de medicación</h1>
+
+        <div class="subtitulo">
+            Registro de administración de tratamiento · Jarvice Health AI
+        </div>
+
+    </div>
+
+
+    <!-- ========================================== -->
+    <!-- RESUMEN DEL TRATAMIENTO -->
+    <!-- ========================================== -->
+
+    <div class="medicacion-resumen">
+
+        <h2>💊 Tratamiento indicado</h2>
+
+        <div class="dato">
+
+            <span class="dato-label">
+                Paciente
+            </span>
+
+            <span class="dato-valor">
+                {{ medicamento.paciente.nombre }}
+                {{ medicamento.paciente.apellido }}
+            </span>
+
+        </div>
+
+
+        <div class="dato">
+
+            <span class="dato-label">
+                Medicación
+            </span>
+
+            <span class="dato-valor">
+                {{ medicamento.nombre }}
+            </span>
+
+        </div>
+
+
+        <div class="dato">
+
+            <span class="dato-label">
+                Dosis
+            </span>
+
+            <span class="dato-valor">
+                {{ medicamento.dosis }}
+            </span>
+
+        </div>
+
+
+        <div class="dato">
+
+            <span class="dato-label">
+                Horario indicado
+            </span>
+
+            <span class="dato-valor">
+                {{ medicamento.horario|time:"H:i" }}
+            </span>
+
+        </div>
+
+
+        <div class="dato">
+
+            <span class="dato-label">
+                Estado del tratamiento
+            </span>
+
+            <span class="dato-valor">
+
+                {% if medicamento.activo %}
+
+                    🟢 Activo
+
+                {% else %}
+
+                    🔴 Suspendido
+
+                {% endif %}
+
+            </span>
+
+        </div>
+
+    </div>
+
+
+    <!-- ========================================== -->
+    <!-- FORMULARIO -->
+    <!-- ========================================== -->
+
+    <div class="formulario-administracion">
+
+        <h2>🩺 Registrar administración</h2>
+
+        <p class="subtitulo">
+            Registrá qué ocurrió con la administración de este tratamiento.
+        </p>
+
+
+        <form method="post">
+
+            {% csrf_token %}
+
+
+            <!-- ================================== -->
+            <!-- ESTADO -->
+            <!-- ================================== -->
+
+            <div class="campo-grupo">
+
+                {{ form.estado.label_tag }}
+
+                {{ form.estado }}
+
+                {% if form.estado.errors %}
+
+                    <div class="error">
+
+                        {{ form.estado.errors }}
+
+                    </div>
+
+                {% endif %}
+
+            </div>
+
+
+            <!-- ================================== -->
+            <!-- OBSERVACIÓN -->
+            <!-- ================================== -->
+
+            <div class="campo-grupo">
+
+                {{ form.observacion.label_tag }}
+
+                {{ form.observacion }}
+
+                <span class="ayuda">
+                    Podés registrar una incidencia, reacción,
+                    negativa del paciente u otra observación relevante.
+                </span>
+
+                {% if form.observacion.errors %}
+
+                    <div class="error">
+
+                        {{ form.observacion.errors }}
+
+                    </div>
+
+                {% endif %}
+
+            </div>
+
+
+            <div class="aviso">
+
+                🔐 <strong>Registro clínico:</strong>
+                Jarvice guardará automáticamente la fecha, hora
+                y usuario que realizó esta administración.
+
+            </div>
+
+
+            <!-- ================================== -->
+            <!-- ACCIONES -->
+            <!-- ================================== -->
+
+            <div class="acciones">
+
+                <a
+                    href="{% url 'medicacion' %}"
+                    class="boton boton-secundario"
+                >
+                    ← Cancelar
+                </a>
+
+
+                <button
+                    type="submit"
+                    class="boton boton-principal"
+                >
+                    💾 Registrar administración
+                </button>
+
+            </div>
+
+        </form>
+
+    </div>
+
+</div>
+
+{% endblock %}
+

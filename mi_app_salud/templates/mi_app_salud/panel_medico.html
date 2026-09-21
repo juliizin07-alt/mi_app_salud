@@ -161,39 +161,68 @@
 
         <!-- ALERTAS -->
 
-        <article class="kpi-card {% if total_alertas > 0 %}danger-card{% endif %}">
+        <article class="kpi-card {% if total_alertas > 0 %}critical-alert-kpi{% endif %}">
 
-            <div class="kpi-icon red">
-                🚨
-            </div>
+    <div class="kpi-icon red critical-alert-icon">
+        🚨
+    </div>
 
-            <div class="kpi-content">
+    <div class="kpi-content">
 
-                <span>
-                    ALERTAS CRÍTICAS
-                </span>
+        <span>
+            ALERTAS CRÍTICAS
+        </span>
 
-                <strong>
-                    {{ total_alertas }}
-                </strong>
+        <strong>
+            {{ total_alertas }}
+        </strong>
 
-                {% if total_alertas > 0 %}
+        {% if total_alertas > 0 %}
 
-                    <small class="danger-text">
-                        ● Requieren atención
-                    </small>
+            <small class="danger-text critical-alert-message">
+                🔴 ATENCIÓN INMEDIATA
+            </small>
 
-                {% else %}
+            {% with alerta_principal=alertas|first %}
 
-                    <small>
-                        ✓ Sin emergencias críticas
-                    </small>
+                {% if alerta_principal %}
+
+                    <div class="critical-alert-patient">
+
+                        <strong>
+                            {{ alerta_principal.paciente.nombre }}
+                            {{ alerta_principal.paciente.apellido }}
+                        </strong>
+
+                        <small>
+                            HC:
+                            {{ alerta_principal.paciente.historia_clinica }}
+                        </small>
+
+                    </div>
 
                 {% endif %}
 
-            </div>
+            {% endwith %}
 
-        </article>
+            <a
+                href="{% url 'alertas_medicas' %}"
+                class="critical-alert-button"
+            >
+                VER ALERTA →
+            </a>
+
+        {% else %}
+
+            <small>
+                🟢 Sin emergencias críticas
+            </small>
+
+        {% endif %}
+
+    </div>
+
+</article>
 
 
         <!-- IA -->
@@ -786,22 +815,43 @@
 
                         <td>
 
-                            <a
-                                href="{% url 'historial_paciente' paciente.id %}"
-                                class="history-button"
-                            >
+                            <div style="display: flex; gap: 8px; align-items: center; flex-wrap: wrap;">
 
-                                <span>
-                                    📋
-                                </span>
+                        <a
+                            href="{% url 'historial_paciente' paciente.id %}"
+                            class="history-button"
+                        >
 
-                                Ver historia
+                            <span>
+                                📋
+                            </span>
 
-                                <b>
-                                    →
-                                </b>
+                            Ver historia
 
-                            </a>
+                            <b>
+                                →
+                            </b>
+
+                        </a>
+
+                        <a
+                            href="{% url 'crear_evolucion' paciente.id %}"
+                            class="history-button"
+                        >
+
+                            <span>
+                                📝
+                            </span>
+
+                            Evolución
+
+                            <b>
+                                →
+                            </b>
+
+                        </a>
+
+                    </div>
 
                         </td>
 
@@ -944,108 +994,113 @@
             </article>
 
 
-            <!-- ESTUDIOS -->
+           <!-- ESTUDIOS -->
 
-            <article class="module-card development">
+<article class="module-card development">
 
-                <div class="module-icon purple">
-                    🧪
-                </div>
+    <div class="module-icon purple">
+        🧪
+    </div>
 
-                <span class="module-tag">
-                    EN DESARROLLO
-                </span>
+    <span class="module-tag">
+        EN DESARROLLO
+    </span>
 
-                <h3>
-                    Estudios
-                </h3>
+    <h3>
+        Estudios
+    </h3>
 
-                <strong>
-                    —
-                </strong>
+    <strong>
+        —
+    </strong>
 
-                <p>
-                    Radiografías, laboratorio, tomografías y análisis clínicos.
-                </p>
+    <p>
+        Radiografías, laboratorio, tomografías y análisis clínicos.
+    </p>
 
-                <button type="button">
-                    PRÓXIMAMENTE
-                </button>
-
-            </article>
+</article>
 
 
-            <!-- EVOLUCION -->
+<!-- EVOLUCION -->
 
-            <article class="module-card development">
+<article class="module-card">
 
-                <div class="module-icon violet">
-                    📝
-                </div>
+    <div class="module-icon violet">
+        📝
+    </div>
 
-                <span class="module-tag">
-                    EN DESARROLLO
-                </span>
+    <span class="module-tag">
+        MÓDULO CLÍNICO
+    </span>
 
-                <h3>
-                    Evolución clínica
-                </h3>
+    <h3>
+        Evolución clínica
+    </h3>
 
-                <strong>
-                    —
-                </strong>
+    <strong>
+        📝
+    </strong>
 
-                <p>
-                    Registrar y consultar la evolución médica del paciente.
-                </p>
+    <p>
+        Registrar y consultar la evolución médica del paciente.
+    </p>
 
-                <button type="button">
-                    PRÓXIMAMENTE
-                </button>
+    <a
+        href="{% url 'crear_evolucion' paciente_demo_evolucion.id %}"
+    >
+        CREAR EVOLUCIÓN
+        <span>→</span>
+    </a>
 
-            </article>
+</article>
 
 
             <!-- ALERTAS -->
 
-            <article class="module-card alert-module">
+                    <article class="module-card alert-module {% if total_alertas > 0 %}alerta-activa{% endif %}">
 
-                <div class="module-icon red">
-                    🚨
-                </div>
+            <div class="module-icon red">
+                🚨
+            </div>
 
-                <span class="module-tag">
-                    VIGILANCIA ACTIVA
-                </span>
+            <span class="module-tag">
+                VIGILANCIA ACTIVA
+            </span>
 
-                <h3>
-                    Alertas IA
-                </h3>
+            <h3>
+                Alertas IA
+            </h3>
 
-                <strong>
-                    {{ total_alertas }}
-                </strong>
+            <strong>
+                {{ total_alertas }}
+            </strong>
 
-                {% if total_alertas > 0 %}
+            {% if total_alertas > 0 %}
 
-                    <p>
-                        Existen eventos clínicos que requieren atención.
-                    </p>
+                <p class="mensaje-emergencia">
+                    🔴 ATENCIÓN INMEDIATA
+                    <br>
+                    Existen {{ total_alertas }}
+                    alertas clínicas críticas.
+                </p>
 
-                {% else %}
+            {% else %}
 
-                    <p>
-                        No se detectan emergencias críticas.
-                    </p>
+                <p>
+                    🟢 No se detectan emergencias críticas.
+                </p>
 
-                {% endif %}
+            {% endif %}
 
-                <button type="button">
-                    VER ALERTAS
-                    <span>→</span>
-                </button>
+            <a
+                href="{% url 'alertas_medicas' %}"
+                class="module-button"
+            >
+                VER ALERTAS
+                <span>→</span>
+            </a>
 
-            </article>
+        </article>
 
 
             <!-- IA -->
@@ -3126,6 +3181,360 @@
     .pro-search button {
 
         width: 100%;
+
+    }
+
+}
+
+/* =====================================================
+   ALERTA CRÍTICA — MODO EMERGENCIA
+===================================================== */
+
+.alert-module.alerta-activa {
+
+    position: relative;
+
+    overflow: hidden;
+
+    border: 2px solid rgba(255, 55, 55, 0.95);
+
+    background:
+        linear-gradient(
+            145deg,
+            rgba(255, 45, 45, 0.18),
+            rgba(100, 10, 20, 0.08)
+        );
+
+    box-shadow:
+        0 0 0 1px rgba(255, 55, 55, 0.25),
+        0 0 20px rgba(255, 55, 55, 0.35),
+        0 0 45px rgba(255, 55, 55, 0.15);
+
+    animation:
+        alertaEmergencia 1.8s ease-in-out infinite;
+
+}
+
+
+/* Luz que recorre el borde */
+
+.alert-module.alerta-activa::after {
+
+    content: "";
+
+    position: absolute;
+
+    inset: -2px;
+
+    border-radius: inherit;
+
+    border: 2px solid transparent;
+
+    background:
+        linear-gradient(
+            90deg,
+            transparent,
+            rgba(255, 80, 80, 0.95),
+            transparent
+        ) border-box;
+
+    mask:
+        linear-gradient(#000 0 0) padding-box,
+        linear-gradient(#000 0 0);
+
+    mask-composite: exclude;
+
+    animation:
+        alertaBorde 2.2s linear infinite;
+
+    pointer-events: none;
+
+}
+
+
+/* Icono 🚨 */
+
+.alert-module.alerta-activa .module-icon {
+
+    animation:
+        alertaIcono 0.9s ease-in-out infinite;
+
+    filter:
+        drop-shadow(
+            0 0 12px rgba(255, 60, 60, 0.9)
+        );
+
+}
+
+
+/* Contador */
+
+.alert-module.alerta-activa strong {
+
+    color: #ff6b6b;
+
+    font-size: 32px;
+
+    text-shadow:
+        0 0 14px rgba(255, 70, 70, 0.8);
+
+    animation:
+        contadorCritico 1.2s ease-in-out infinite;
+
+}
+
+
+/* Etiqueta */
+
+.alert-module.alerta-activa .module-tag {
+
+    color: #ff7777;
+
+    font-weight: 900;
+
+    letter-spacing: 1px;
+
+}
+
+
+/* =====================================================
+   ANIMACIONES
+===================================================== */
+
+@keyframes alertaEmergencia {
+
+    0%, 100% {
+
+        box-shadow:
+            0 0 0 1px rgba(255, 55, 55, 0.25),
+            0 0 18px rgba(255, 55, 55, 0.20),
+            0 0 35px rgba(255, 55, 55, 0.10);
+
+    }
+
+    50% {
+
+        box-shadow:
+            0 0 0 3px rgba(255, 55, 55, 0.40),
+            0 0 30px rgba(255, 55, 55, 0.50),
+            0 0 65px rgba(255, 55, 55, 0.25);
+
+    }
+
+}
+
+
+@keyframes alertaIcono {
+
+    0%, 100% {
+
+        transform:
+            scale(1)
+            rotate(0deg);
+
+    }
+
+    25% {
+
+        transform:
+            scale(1.12)
+            rotate(-4deg);
+
+    }
+
+    75% {
+
+        transform:
+            scale(1.12)
+            rotate(4deg);
+
+    }
+
+}
+
+
+@keyframes contadorCritico {
+
+    0%, 100% {
+
+        opacity: .75;
+
+    }
+
+    50% {
+
+        opacity: 1;
+
+    }
+
+}
+
+
+@keyframes alertaBorde {
+
+    0% {
+
+        transform:
+            translateX(-100%);
+
+    }
+
+    100% {
+
+        transform:
+            translateX(100%);
+
+    }
+
+}
+/* =====================================================
+   ALERTA CRÍTICA PRINCIPAL
+===================================================== */
+
+.critical-alert-kpi {
+
+    position: relative;
+
+    overflow: hidden;
+
+    border: 2px solid rgba(255, 55, 55, .85);
+
+    background:
+        linear-gradient(
+            135deg,
+            rgba(255, 50, 50, .17),
+            rgba(255, 50, 50, .04)
+        );
+
+    box-shadow:
+        0 0 20px rgba(255, 55, 55, .25);
+
+    animation:
+        criticalKpiPulse 1.8s ease-in-out infinite;
+
+}
+
+.critical-alert-icon {
+
+    animation:
+        criticalIconPulse .9s ease-in-out infinite;
+
+    filter:
+        drop-shadow(
+            0 0 12px rgba(255, 55, 55, .9)
+        );
+
+}
+
+.critical-alert-message {
+
+    display: block;
+
+    margin-top: 6px;
+
+    color: #ff6b6b;
+
+    font-weight: 900;
+
+    letter-spacing: .5px;
+
+}
+
+.critical-alert-patient {
+
+    display: flex;
+
+    flex-direction: column;
+
+    gap: 3px;
+
+    margin-top: 9px;
+
+}
+
+.critical-alert-patient strong {
+
+    color: white;
+
+    font-size: 14px;
+
+}
+
+.critical-alert-patient small {
+
+    color: #ffb0b0;
+
+    font-size: 11px;
+
+}
+
+.critical-alert-button {
+
+    display: inline-block;
+
+    margin-top: 10px;
+
+    padding: 7px 11px;
+
+    border-radius: 10px;
+
+    text-decoration: none;
+
+    color: white;
+
+    background:
+        rgba(255, 55, 55, .20);
+
+    border:
+        1px solid rgba(255, 90, 90, .45);
+
+    font-size: 11px;
+
+    font-weight: 800;
+
+    transition: .25s ease;
+
+}
+
+.critical-alert-button:hover {
+
+    background:
+        rgba(255, 55, 55, .35);
+
+    transform:
+        translateY(-1px);
+
+}
+
+@keyframes criticalKpiPulse {
+
+    0%, 100% {
+
+        box-shadow:
+            0 0 12px rgba(255, 55, 55, .18);
+
+    }
+
+    50% {
+
+        box-shadow:
+            0 0 30px rgba(255, 55, 55, .42);
+
+    }
+
+}
+
+@keyframes criticalIconPulse {
+
+    0%, 100% {
+
+        transform: scale(1);
+
+    }
+
+    50% {
+
+        transform: scale(1.12);
 
     }
 

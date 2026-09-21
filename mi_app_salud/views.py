@@ -2,7 +2,12 @@
 # IMPORTACIONES
 # ==================================================
 
-from django.shortcuts import render, redirect, get_object_or_404
+from django.shortcuts import (
+    render,
+    redirect,
+    get_object_or_404
+)
+from django.urls import reverse
 from django.http import JsonResponse
 from django.contrib import messages
 from django.contrib.auth.models import User
@@ -16,7 +21,11 @@ import secrets
 from .permissions import requiere_rol
 from .services.alerta_service import escalar_emergencia
 from .clinical_engine import analizar_signos_vitales
-from .forms import PacienteForm, SolicitudUsuarioForm
+from .forms import (
+    PacienteForm,
+    SolicitudUsuarioForm,
+    AdministracionMedicacionForm,
+)
 from .alerts import (
     enviar_whatsapp,
     enviar_whatsapp_a
@@ -27,8 +36,10 @@ from .models import (
     PerfilUsuario,
     Paciente,
     RegistroSalud,
+    EmergenciaJarvice,
     Recordatorio,
     Medicacion,
+    AdministracionMedicacion,
     EvolucionMedica,
     EvolucionEnfermeria,
     EstudioMedico,
@@ -39,6 +50,7 @@ from .models import (
     AccesoClinico,
     Dispositivo,
     SolicitudUsuario,
+    ComunicacionEmergencia,
 )
 
 
@@ -948,6 +960,10 @@ def panel_medico(request):
         "apellido",
         "nombre"
     )
+    
+    paciente_demo = pacientes.filter(
+    nombre__icontains="Paciente Prueba"
+    ).first()
 
     # ==================================================
     # BUSCADOR
@@ -1187,6 +1203,12 @@ def panel_medico(request):
 
         "total_pacientes":
             pacientes.count(),
+            
+    
+            "paciente_demo_evolucion":
+                pacientes.filter(
+                    id=3
+                ).first(),
 
         # --------------------------------------------------
         # ALERTAS
@@ -1278,6 +1300,11 @@ def panel_medico(request):
             analisis_clinico["analisis_ia"],
     }
 
+    print(
+    "JARVICE DEBUG EVOLUCION:",
+    contexto.get("paciente_demo_evolucion")
+)
+    
     # ==================================================
     # RENDER
     # ==================================================
@@ -1287,7 +1314,62 @@ def panel_medico(request):
     "mi_app_salud/panel_medico.html",
     contexto
 )
-    # ============================================================
+    
+# ============================================================
+# ALERTAS MÉDICAS
+# ============================================================
+
+@requiere_rol("MEDICO")
+@requiere_rol("MEDICO")
+def alertas_medicas(request):
+
+    alertas = list(
+        RegistroSalud.objects
+        .filter(
+            estado="CRITICO"
+        )
+        .select_related(
+            "paciente"
+        )
+        .order_by(
+            "-fecha"
+        )[:50]
+    )
+
+    for alerta in alertas:
+
+        # Buscar el signo vital registrado en el momento
+        # de la alerta o el más cercano anterior.
+        signo_alerta = (
+            SignoVital.objects
+            .filter(
+                paciente=alerta.paciente,
+                fecha__lte=alerta.fecha
+            )
+            .order_by("-fecha")
+            .first()
+        )
+
+        alerta.signo_alerta = signo_alerta
+
+        if signo_alerta:
+            alerta.analisis_alerta = analizar_signos_vitales(
+                signo_alerta
+            )
+        else:
+            alerta.analisis_alerta = None
+
+    contexto = {
+        "alertas": alertas,
+        "total_alertas": len(alertas),
+    }
+
+    return render(
+        request,
+        "mi_app_salud/alertas_medicas.html",
+        contexto
+    )
+# ============================================================
 # PANEL DE ENFERMERÍA
 # ============================================================
 
@@ -1299,10 +1381,10 @@ def panel_enfermeria(request):
     # ========================================================
 
     pacientes = (
-        Paciente.objects
-        .all()
-        .order_by("apellido", "nombre")
-    )
+    Paciente.objects
+    .filter(enfermera_asignada__usuario=request.user)
+    .order_by("apellido", "nombre")
+)
 
     mis_pacientes = (
         Paciente.objects
@@ -1649,47 +1731,208 @@ def panel_paciente(request):
         contexto
     )
 
+@requiere_rol("ADMIN", "EMERGENCIA")
+def atender_emergencia(request, emergencia_id):
 
-@requiere_rol("EMERGENCIA")
+    emergencia = get_object_or_404(
+        EmergenciaJarvice,
+        id=emergencia_id
+    )
+
+    if emergencia.estado != "DETECTADA":
+        messages.warning(
+            request,
+            "Esta emergencia ya fue atendida o cambió de estado."
+        )
+        return redirect("panel_emergencia")
+
+    emergencia.estado = "ALERTADA"
+    emergencia.operador = request.user
+    emergencia.save(
+        update_fields=[
+            "estado",
+            "operador",
+            "fecha_actualizacion",
+        ]
+    )
+
+    messages.success(
+        request,
+        f"Emergencia #{emergencia.id} atendida correctamente."
+    )
+
+    return redirect("panel_emergencia")
+
+
+@requiere_rol("ADMIN", "EMERGENCIA")
+def conectar_operador(request, emergencia_id):
+
+    emergencia = get_object_or_404(
+        EmergenciaJarvice,
+        id=emergencia_id
+    )
+
+    if emergencia.estado != "ALERTADA":
+        messages.warning(
+            request,
+            "Esta emergencia no está disponible para conectar un operador."
+        )
+        return redirect("panel_emergencia")
+
+    emergencia.estado = "OPERADOR"
+    emergencia.operador = request.user
+
+    emergencia.save(
+        update_fields=[
+            "estado",
+            "operador",
+            "fecha_actualizacion",
+        ]
+    )
+
+    comunicacion, creada = ComunicacionEmergencia.objects.get_or_create(
+        emergencia=emergencia,
+        defaults={
+            "operador": request.user,
+            "estado": "CONECTANDO",
+            "canal": "RADIO",
+            "fecha_inicio": timezone.now(),
+        }
+    )
+
+    if not creada:
+        comunicacion.operador = request.user
+        comunicacion.estado = "CONECTANDO"
+        comunicacion.save(
+            update_fields=[
+                "operador",
+                "estado",
+            ]
+        )
+
+    messages.success(
+        request,
+        f"Operador conectado a la emergencia #{emergencia.id}."
+    )
+
+    return redirect("panel_emergencia")
+
+@requiere_rol("ADMIN", "EMERGENCIA")
+def activar_comunicacion_emergencia(request, emergencia_id):
+
+    emergencia = get_object_or_404(
+        EmergenciaJarvice,
+        id=emergencia_id
+    )
+
+    comunicacion = get_object_or_404(
+        ComunicacionEmergencia,
+        emergencia=emergencia
+    )
+
+    if comunicacion.estado != "CONECTANDO":
+        messages.warning(
+            request,
+            "La comunicación no está disponible para activarse."
+        )
+        return redirect("panel_emergencia")
+
+    comunicacion.estado = "ACTIVA"
+    comunicacion.fecha_inicio = comunicacion.fecha_inicio or timezone.now()
+
+    comunicacion.save(
+        update_fields=[
+            "estado",
+            "fecha_inicio",
+        ]
+    )
+
+    messages.success(
+        request,
+        f"Comunicación activa con la emergencia #{emergencia.id}."
+    )
+
+    return redirect("panel_emergencia")
+
+
+@requiere_rol("ADMIN", "EMERGENCIA")
+def finalizar_comunicacion_emergencia(request, emergencia_id):
+
+    emergencia = get_object_or_404(
+        EmergenciaJarvice,
+        id=emergencia_id
+    )
+
+    comunicacion = get_object_or_404(
+        ComunicacionEmergencia,
+        emergencia=emergencia
+    )
+
+    if comunicacion.estado != "ACTIVA":
+        messages.warning(
+            request,
+            "La comunicación no está activa."
+        )
+        return redirect("panel_emergencia")
+
+    comunicacion.estado = "FINALIZADA"
+    comunicacion.fecha_fin = timezone.now()
+
+    comunicacion.save(
+        update_fields=[
+            "estado",
+            "fecha_fin",
+        ]
+    )
+
+    messages.success(
+        request,
+        f"Comunicación finalizada para la emergencia #{emergencia.id}."
+    )
+
+    return redirect("panel_emergencia")
+
+
+@requiere_rol("ADMIN", "EMERGENCIA")
 def panel_emergencia(request):
-
-    # ==================================================
-    # ALERTAS CRÍTICAS
-    # ==================================================
 
     alertas_criticas = (
         RegistroSalud.objects
-        .filter(
-            estado="CRITICO"
-        )
-        .select_related(
-            "paciente"
-        )
-        .order_by(
-            "-fecha"
-        )
+        .filter(estado="CRITICO")
+        .select_related("paciente")
+        .order_by("-fecha")
     )
-
-    # ==================================================
-    # SITUACIONES DE DOLOR
-    # ==================================================
 
     situaciones_dolor = (
         RegistroSalud.objects
-        .filter(
-            estado="DOLOR"
-        )
-        .select_related(
-            "paciente"
-        )
-        .order_by(
-            "-fecha"
-        )
+        .filter(estado="DOLOR")
+        .select_related("paciente")
+        .order_by("-fecha")
     )
 
-    # ==================================================
-    # ÚLTIMAS ALERTAS
-    # ==================================================
+    emergencias_jarvice = (
+        EmergenciaJarvice.objects
+        .filter(
+            estado__in=[
+                "DETECTADA",
+                "ALERTADA",
+                "OPERADOR",
+                "UNIDAD_EN_CAMINO",
+            ],
+            comunicacion__estado__in=[
+                "INACTIVA",
+                "CONECTANDO",
+                "ACTIVA",
+            ],
+        )
+        .select_related(
+            "paciente",
+            "signo_vital",
+            "operador",
+        )
+        .prefetch_related("comunicacion")
+        .order_by("-fecha_deteccion")
+    )
 
     emergencias = (
         RegistroSalud.objects
@@ -1699,51 +1942,174 @@ def panel_emergencia(request):
                 "DOLOR",
             ]
         )
-        .select_related(
-            "paciente"
-        )
-        .order_by(
-            "-fecha"
-        )[:20]
+        .select_related("paciente")
+        .order_by("-fecha")[:20]
     )
 
-    # ==================================================
-    # CONTADORES
-    # ==================================================
-
     total_alertas = emergencias.count()
-
     total_criticas = alertas_criticas.count()
-
     total_dolor = situaciones_dolor.count()
 
-    # ==================================================
+    # ------------------------------------------------------
+    # PACIENTE CRÍTICO ACTUAL
+    # ------------------------------------------------------
+
+    paciente_critico = (
+        alertas_criticas.first().paciente
+        if alertas_criticas.exists()
+        else None
+    )
+
+    # ------------------------------------------------------
+    # ÚLTIMO SIGNO VITAL Y ESTADO DE MONITORIZACIÓN
+    # ------------------------------------------------------
+
+    ultimo_signo_vital = None
+    google_maps_url = None
+    estado_monitorizacion = "ESTABLE"
+
+    if paciente_critico:
+
+        ultimo_signo_vital = (
+            SignoVital.objects
+            .filter(paciente=paciente_critico)
+            .order_by("-fecha")
+            .first()
+        )
+
+        if ultimo_signo_vital:
+
+            fc = ultimo_signo_vital.frecuencia_cardiaca
+            spo2 = ultimo_signo_vital.saturacion_oxigeno
+            temp = ultimo_signo_vital.temperatura
+
+            # Estado crítico
+            if (
+                (fc is not None and (fc >= 130 or fc <= 45))
+                or
+                (spo2 is not None and spo2 < 90)
+                or
+                (temp is not None and temp >= 39)
+            ):
+                estado_monitorizacion = "CRITICO"
+
+            # Estado de atención
+            elif (
+                (fc is not None and (fc >= 110 or fc <= 50))
+                or
+                (spo2 is not None and spo2 < 94)
+                or
+                (temp is not None and temp >= 38)
+            ):
+                estado_monitorizacion = "ATENCION"
+
+            # --------------------------------------------------
+            # GPS
+            # --------------------------------------------------
+
+            signo_con_gps = (
+                SignoVital.objects
+                .filter(
+                    paciente=paciente_critico,
+                    latitud__isnull=False,
+                    longitud__isnull=False,
+                )
+                .order_by("-fecha")
+                .first()
+            )
+
+            if signo_con_gps:
+                ultimo_signo_vital = signo_con_gps
+
+            if (
+                ultimo_signo_vital.latitud is not None
+                and ultimo_signo_vital.longitud is not None
+            ):
+                google_maps_url = (
+                    "https://www.google.com/maps/search/?api=1&query="
+                    f"{float(ultimo_signo_vital.latitud):.6f},"
+                    f"{float(ultimo_signo_vital.longitud):.6f}"
+                )
+
+    # ------------------------------------------------------
+    # QR DEL PACIENTE CRÍTICO
+    # ------------------------------------------------------
+
+    qr_demo = None
+    qr_url = None
+
+    if paciente_critico:
+
+        qr_demo = (
+            QRToken.objects
+            .filter(
+                paciente=paciente_critico,
+                activo=True,
+                expira__gt=timezone.now()
+            )
+            .order_by("-creado")
+            .first()
+        )
+
+        if not qr_demo:
+            qr_demo = generar_qr_token(
+                paciente_critico,
+                minutos=30
+            )
+
+        qr_url = request.build_absolute_uri(
+            reverse(
+                "acceso_qr_emergencia",
+                kwargs={
+                    "token": qr_demo.token
+                }
+            )
+        )
+
+    # ------------------------------------------------------
     # CONTEXTO
-    # ==================================================
+    # ------------------------------------------------------
 
     contexto = {
-
         "emergencias": emergencias,
+        "emergencias_jarvice": emergencias_jarvice,
 
-        "alertas_criticas":
-            alertas_criticas[:10],
+        "alertas_criticas": alertas_criticas[:10],
+        "situaciones_dolor": situaciones_dolor[:10],
 
-        "situaciones_dolor":
-            situaciones_dolor[:10],
+        "total_alertas": total_alertas,
+        "total_criticas": total_criticas,
+        "total_dolor": total_dolor,
 
-        "total_alertas":
-            total_alertas,
+        "paciente_critico": paciente_critico,
 
-        "total_criticas":
-            total_criticas,
+        "ultimo_signo_vital": ultimo_signo_vital,
 
-        "total_dolor":
-            total_dolor,
+        "frecuencia_cardiaca": (
+            ultimo_signo_vital.frecuencia_cardiaca
+            if ultimo_signo_vital
+            else None
+        ),
+
+        "saturacion_oxigeno": (
+            ultimo_signo_vital.saturacion_oxigeno
+            if ultimo_signo_vital
+            else None
+        ),
+
+        "temperatura": (
+            ultimo_signo_vital.temperatura
+            if ultimo_signo_vital
+            else None
+        ),
+
+        "estado_monitorizacion": estado_monitorizacion,
+
+        "google_maps_url": google_maps_url,
+
+        "qr_demo": qr_demo,
+        "qr_url": qr_url,
     }
-
-    # ==================================================
-    # RENDER
-    # ==================================================
 
     return render(
         request,
@@ -1751,7 +2117,85 @@ def panel_emergencia(request):
         contexto
     )
 
-    # ==================================================
+    # ------------------------------------------------------
+    # QR DEL PACIENTE CRÍTICO
+    # ------------------------------------------------------
+
+    qr_demo = None
+    qr_url = None
+
+    if paciente_critico:
+
+        qr_demo = (
+            QRToken.objects
+            .filter(
+                paciente=paciente_critico,
+                activo=True,
+                expira__gt=timezone.now()
+            )
+            .order_by("-creado")
+            .first()
+        )
+
+        if not qr_demo:
+            qr_demo = generar_qr_token(
+                paciente_critico,
+                minutos=30
+            )
+
+        qr_url = request.build_absolute_uri(
+            reverse(
+                "acceso_qr_emergencia",
+                kwargs={
+                    "token": qr_demo.token
+                }
+            )
+        )
+
+    # ------------------------------------------------------
+    # CONTEXTO
+    # ------------------------------------------------------
+
+    contexto = {
+        "emergencias": emergencias,
+        "emergencias_jarvice": emergencias_jarvice,
+        "alertas_criticas": alertas_criticas[:10],
+        "situaciones_dolor": situaciones_dolor[:10],
+
+        "total_alertas": total_alertas,
+        "total_criticas": total_criticas,
+        "total_dolor": total_dolor,
+
+        "paciente_critico": paciente_critico,
+        "ultimo_signo_vital": ultimo_signo_vital,
+        "frecuencia_cardiaca": (
+            ultimo_signo_vital.frecuencia_cardiaca
+            if ultimo_signo_vital
+            else None
+        ),
+        "saturacion_oxigeno": (
+            ultimo_signo_vital.saturacion_oxigeno
+            if ultimo_signo_vital
+            else None
+        ),
+        "temperatura": (
+            ultimo_signo_vital.temperatura
+            if ultimo_signo_vital
+            else None
+        ),
+        "google_maps_url": google_maps_url,
+
+        "qr_demo": qr_demo,
+        "qr_url": qr_url,
+    }
+
+    return render(
+        request,
+        "mi_app_salud/emergencia.html",
+        contexto
+    )
+
+# ==================================================
 # PANEL INSTITUCIÓN
 # ==================================================
 
@@ -1917,7 +2361,25 @@ def historial_paciente(request, paciente_id):
         Paciente,
         id=paciente_id
     )
+    # ==========================================
+    # PROTECCIÓN DE ACCESO PARA ENFERMERÍA
+    # ==========================================
 
+    perfil = PerfilUsuario.objects.filter(
+        usuario=request.user
+    ).first()
+
+    if perfil and perfil.rol == "ENFERMERIA":
+
+        if paciente.enfermera_asignada is None:
+
+            return redirect("dashboard_redirect")
+
+        if paciente.enfermera_asignada.usuario != request.user:
+
+            return redirect("dashboard_redirect")
+    
+        
     # ==========================================
     # REGISTROS DE SALUD
     # ==========================================
@@ -2090,6 +2552,57 @@ def historial_paciente(request, paciente_id):
         "mi_app_salud/historial_paciente.html",
         contexto
     )
+    
+    # ==================================================
+# CONSULTAR ESTUDIOS DEL PACIENTE
+# ==================================================
+
+@requiere_rol("ADMIN", "MEDICO", "ENFERMERIA")
+def estudios_paciente(request, paciente_id):
+
+    paciente = get_object_or_404(
+        Paciente,
+        id=paciente_id
+    )
+
+    # ------------------------------------------
+    # PROTEGER ACCESO DE ENFERMERÍA
+    # ------------------------------------------
+
+    perfil = PerfilUsuario.objects.filter(
+        usuario=request.user
+    ).first()
+
+    if perfil and perfil.rol == "ENFERMERIA":
+
+        if paciente.enfermera_asignada is None:
+
+            return redirect("dashboard_redirect")
+
+        if paciente.enfermera_asignada.usuario != request.user:
+
+            return redirect("dashboard_redirect")
+
+    # ------------------------------------------
+    # ESTUDIOS DEL PACIENTE
+    # ------------------------------------------
+
+    solicitudes_estudios = (
+        SolicitudEstudio.objects
+        .filter(paciente=paciente)
+        .order_by("-fecha_solicitud")
+    )
+
+    return render(
+        request,
+        "mi_app_salud/estudios_paciente.html",
+        {
+            "paciente": paciente,
+            "solicitudes_estudios": solicitudes_estudios,
+        }
+    )
+
+
 # ==================================================
 # CREAR EVOLUCIÓN MÉDICA
 # ==================================================
@@ -2606,12 +3119,58 @@ def api_signos_vitales(request):
 
     if analisis["riesgo_vital"] == "CRITICO":
 
+        registro_critico = RegistroSalud.objects.create(
+            paciente=paciente,
+            estado_fisico="CRITICO",
+            estado_emocional=signo.estado_emocional or "NEUTRO",
+            estado="CRITICO",
+            tipo_alerta="SIGNOS_VITALES",
+            signo_vital=signo,
+        )
+
+        # ==================================================
+        # CREAR EMERGENCIA JARVICE AUTOMATICA
+        # ==================================================
+
+        estados_operativos = [
+            "DETECTADA",
+            "ALERTADA",
+            "OPERADOR",
+            "UNIDAD_EN_CAMINO",
+        ]
+
+        emergencia_activa = (
+            EmergenciaJarvice.objects
+            .filter(
+                paciente=paciente,
+                estado__in=estados_operativos,
+            )
+            .order_by("-fecha_deteccion")
+            .first()
+        )
+
+        if not emergencia_activa:
+
+            EmergenciaJarvice.objects.create(
+                paciente=paciente,
+                registro_salud=registro_critico,
+                signo_vital=signo,
+                estado="DETECTADA",
+                origen=signo.origen,
+                latitud=signo.latitud,
+                longitud=signo.longitud,
+                observaciones=(
+                    "Emergencia detectada automáticamente "
+                    "por Jarvice debido a parámetros vitales críticos."
+                ),
+            )
+
         registrar_auditoria(
             request=request,
             accion="EMERGENCIA",
             modulo="SIGNOS_VITALES",
             descripcion=(
-                f"Jarvice detecto riesgo critico "
+                f"Jarvice detectó riesgo crítico "
                 f"en el paciente "
                 f"{paciente.nombre} {paciente.apellido}."
             ),
@@ -2856,35 +3415,70 @@ def cambiar_estado(request, paciente_id, estado):
 @requiere_rol("ADMIN", "MEDICO", "ENFERMERIA", "PACIENTE")
 def medicacion(request):
 
-    if request.user.is_superuser:
-        es_paciente = False
-    else:
-        perfil = getattr(request.user, "perfilusuario", None)
-        es_paciente = perfil and perfil.rol == "PACIENTE"
+    perfil = PerfilUsuario.objects.filter(
+        usuario=request.user
+    ).first()
 
-    if es_paciente:
+    # ==================================================
+    # PACIENTE
+    # ==================================================
 
-        paciente = getattr(
-            request.user,
-            "paciente",
-            None
-        )
+    if perfil and perfil.rol == "PACIENTE":
+
+        paciente = Paciente.objects.filter(
+            usuario=request.user
+        ).first()
 
         if paciente:
+
             medicamentos = (
                 Medicacion.objects
                 .filter(paciente=paciente)
-                .select_related("paciente", "confirmado_por")
+                .select_related(
+                    "paciente",
+                    "confirmado_por"
+                )
                 .order_by("horario")
             )
+
         else:
+
             medicamentos = Medicacion.objects.none()
+
+    # ==================================================
+    # ENFERMERÍA
+    # ==================================================
+
+    elif perfil and perfil.rol == "ENFERMERIA":
+
+        pacientes_asignados = Paciente.objects.filter(
+            enfermera_asignada__usuario=request.user
+        )
+
+        medicamentos = (
+            Medicacion.objects
+            .filter(
+                paciente__in=pacientes_asignados
+            )
+            .select_related(
+                "paciente",
+                "confirmado_por"
+            )
+            .order_by("horario")
+        )
+
+    # ==================================================
+    # ADMIN / MÉDICO
+    # ==================================================
 
     else:
 
         medicamentos = (
             Medicacion.objects
-            .select_related("paciente", "confirmado_por")
+            .select_related(
+                "paciente",
+                "confirmado_por"
+            )
             .order_by("horario")
         )
 
@@ -2895,6 +3489,7 @@ def medicacion(request):
             "medicamentos": medicamentos
         }
     )
+
 
 # ==================================================
 # CREAR MEDICACION
@@ -2915,6 +3510,8 @@ def crear_medicacion(request):
         dosis = request.POST.get("dosis")
 
         horario = request.POST.get("horario")
+        
+        indicaciones = request.POST.get("indicaciones")
 
 
 
@@ -2940,17 +3537,23 @@ def crear_medicacion(request):
 
         Medicacion.objects.create(
 
-            paciente=paciente,
+    paciente=paciente,
 
-            nombre=nombre,
+    nombre=nombre,
 
-            dosis=dosis,
+    dosis=dosis,
 
-            horario=horario,
+    horario=horario,
 
-            activo=True
+    indicado_por=request.user,
 
-        )
+    indicaciones=indicaciones,
+
+    fecha_indicacion=timezone.now(),
+
+    activo=True
+
+)
 
 
 
@@ -2975,11 +3578,11 @@ def crear_medicacion(request):
     )
 
 
-# ==========================================
-# TOMAR MEDICACION
-# ==========================================
+# ==================================================
+# ADMINISTRAR MEDICACION
+# ==================================================
 
-@requiere_rol("ADMIN", "MEDICO", "ENFERMERIA", "PACIENTE")
+@requiere_rol("ENFERMERIA", "PACIENTE")
 def tomar_medicacion(request, medicamento_id):
 
     medicamento = get_object_or_404(
@@ -2988,48 +3591,115 @@ def tomar_medicacion(request, medicamento_id):
     )
 
     # ==================================================
+    # OBTENER PERFIL
+    # ==================================================
+
+    perfil = PerfilUsuario.objects.filter(
+        usuario=request.user
+    ).first()
+
+    # ==================================================
     # SEGURIDAD PARA PACIENTES
     # ==================================================
 
-    perfil = getattr(
-        request.user,
-        "perfilusuario",
-        None
-    )
-
     if perfil and perfil.rol == "PACIENTE":
 
-        paciente = getattr(
-            request.user,
-            "paciente",
-            None
-        )
+        paciente = Paciente.objects.filter(
+            usuario=request.user
+        ).first()
 
         if not paciente or medicamento.paciente_id != paciente.id:
+
             messages.error(
                 request,
-                "No tenés permiso para modificar esta medicación."
+                "No tenés permiso para administrar esta medicación."
             )
+
             return redirect("medicacion")
 
     # ==================================================
-    # REGISTRAR TOMA
+    # SEGURIDAD PARA ENFERMERÍA
     # ==================================================
 
-    medicamento.tomado = True
-    medicamento.fecha_ultima_toma = timezone.now()
+    elif perfil and perfil.rol == "ENFERMERIA":
 
-    # Guarda el usuario que confirmó
-    medicamento.confirmado_por = request.user
+        paciente = medicamento.paciente
 
-    medicamento.save()
+        if paciente.enfermera_asignada is None:
 
-    messages.success(
-        request,
-        f"{medicamento.nombre} marcado como tomado."
+            messages.error(
+                request,
+                "Este paciente no tiene una enfermera asignada."
+            )
+
+            return redirect("medicacion")
+
+        if paciente.enfermera_asignada.usuario != request.user:
+
+            messages.error(
+                request,
+                "No tenés permiso para administrar medicación a este paciente."
+            )
+
+            return redirect("medicacion")
+
+    # ==================================================
+    # FORMULARIO DE ADMINISTRACIÓN
+    # ==================================================
+
+    form = AdministracionMedicacionForm(
+        request.POST or None
     )
 
-    return redirect("medicacion")
+    # ==================================================
+    # PROCESAR ADMINISTRACIÓN
+    # ==================================================
+
+    if request.method == "POST":
+
+        if form.is_valid():
+
+            administracion = form.save(
+                commit=False
+            )
+
+            administracion.medicacion = medicamento
+            administracion.administrado_por = request.user
+
+            administracion.save()
+
+            # ==================================================
+            # COMPATIBILIDAD CON EL SISTEMA ACTUAL
+            # ==================================================
+
+            if administracion.estado == "ADMINISTRADO":
+
+                medicamento.tomado = True
+                medicamento.fecha_ultima_toma = timezone.now()
+                medicamento.confirmado_por = request.user
+
+                medicamento.save()
+
+            messages.success(
+                request,
+                f"{medicamento.nombre} registrado correctamente."
+            )
+
+            return redirect("medicacion")
+
+    # ==================================================
+    # MOSTRAR FORMULARIO
+    # ==================================================
+
+    return render(
+        request,
+        "mi_app_salud/administrar_medicacion.html",
+        {
+            "medicamento": medicamento,
+            "form": form,
+        }
+    )
+
 
 # ==================================================
 # EDITAR MEDICACION
@@ -3500,16 +4170,110 @@ def salir(request):
 
     return redirect("login")
 
-# ==================================================
 # EMERGENCIA
 # ==================================================
-
 @requiere_rol("ADMIN", "EMERGENCIA")
 def emergencia(request):
 
+    # ==========================================
+    # PACIENTE DE DEMOSTRACIÓN
+    # ==========================================
+
+    paciente_demo = Paciente.objects.filter(
+        id=3
+    ).first()
+
+    qr_demo = None
+    qr_url = None
+    ultimo_signo_vital = None
+    analisis_clinico = None
+
+    if paciente_demo:
+
+        # ==========================================
+        # BUSCAR QR VIGENTE
+        # ==========================================
+
+        qr_demo = (
+            QRToken.objects
+            .filter(
+                paciente=paciente_demo,
+                activo=True,
+                expira__gt=timezone.now()
+            )
+            .order_by("-creado")
+            .first()
+        )
+
+        # ==========================================
+        # CREAR QR NUEVO SOLO SI NO EXISTE UNO VIGENTE
+        # ==========================================
+
+        if not qr_demo:
+            qr_demo = generar_qr_token(
+                paciente_demo,
+                minutos=30
+            )
+
+        # ==========================================
+        # URL DEL QR
+        # ==========================================
+
+        qr_url = request.build_absolute_uri(
+            reverse(
+                "acceso_qr_emergencia",
+                kwargs={
+                    "token": qr_demo.token
+                }
+            )
+        )
+
+        # ==========================================
+        # ÚLTIMOS SIGNOS VITALES
+        # ==========================================
+
+        ultimo_signo_vital = (
+            SignoVital.objects
+            .filter(
+                paciente=paciente_demo
+            )
+            .order_by("-fecha")
+            .first()
+        )
+
+        if ultimo_signo_vital:
+
+            analisis_clinico = analizar_signos_vitales(
+                ultimo_signo_vital
+            )
+
+    # ==========================================
+    # CONTEXTO
+    # ==========================================
+
+    contexto = {
+
+        "paciente_demo":
+            paciente_demo,
+
+        "qr_demo":
+            qr_demo,
+
+        "qr_url":
+            qr_url,
+
+        "ultimo_signo_vital":
+            ultimo_signo_vital,
+
+        "analisis_clinico":
+            analisis_clinico,
+
+    }
+
     return render(
         request,
-        "mi_app_salud/emergencia.html"
+        "mi_app_salud/emergencia.html",
+        contexto
     )
 # ==================================================
 # PANEL FAMILIAR
@@ -4152,13 +4916,14 @@ def acceso_qr_emergencia(request, token):
     tipo_acceso = "EMERGENCIA"
 
     acceso = AccesoClinico.objects.create(
-        paciente=paciente,
-        usuario=usuario,
-        tipo_acceso=tipo_acceso,
-        autorizado=False,
-        motivo="Acceso mediante QR de emergencia",
-        ip=request.META.get("REMOTE_ADDR")
-    )
+    paciente=paciente,
+    usuario=usuario,
+    qr_token=qr,
+    tipo_acceso=tipo_acceso,
+    autorizado=False,
+    motivo="Acceso mediante QR de emergencia",
+    ip=request.META.get("REMOTE_ADDR")
+)
 
     # ------------------------------------------------------
     # MOSTRAR CONFIRMACIÓN
@@ -4183,10 +4948,6 @@ def acceso_qr_emergencia(request, token):
         }
     )
 
-# ==========================================================
-# CONFIRMAR ACCESO A FICHA DE EMERGENCIA
-# ==========================================================
-
 def confirmar_acceso_qr(request, acceso_id):
 
     acceso = get_object_or_404(
@@ -4194,13 +4955,11 @@ def confirmar_acceso_qr(request, acceso_id):
         id=acceso_id
     )
 
-    # ------------------------------------------------------
-    # SEGURIDAD
-    # ------------------------------------------------------
-    # El acceso debe haber sido creado mediante QR.
+    # ==========================================
+    # VALIDAR TIPO DE ACCESO
+    # ==========================================
 
     if acceso.tipo_acceso != "EMERGENCIA":
-
         return render(
             request,
             "mi_app_salud/qr_acceso_denegado.html",
@@ -4209,42 +4968,72 @@ def confirmar_acceso_qr(request, acceso_id):
             }
         )
 
-    # ------------------------------------------------------
-    # CONFIRMAR
-    # ------------------------------------------------------
+    # ==========================================
+    # VALIDAR PROFESIONAL / INSTITUCIÓN
+    # ==========================================
+
+    if not request.user.is_authenticated:
+
+        return redirect(
+            f"/login/?next=/emergencia/qr/confirmar/{acceso.id}/"
+        )
+
+    perfil = PerfilUsuario.objects.filter(
+        usuario=request.user
+    ).first()
+
+    roles_autorizados = [
+        "ADMIN",
+        "MEDICO",
+        "ENFERMERIA",
+        "EMERGENCIA",
+        "INSTITUCION",
+    ]
+
+    if not perfil or perfil.rol not in roles_autorizados:
+
+        return render(
+            request,
+            "mi_app_salud/qr_acceso_denegado.html",
+            {
+                "mensaje": (
+                    "Este acceso está restringido "
+                    "a profesionales de salud o instituciones autorizadas."
+                )
+            }
+        )
+
+    # ==========================================
+    # AUTORIZAR ACCESO
+    # ==========================================
 
     if request.method == "POST":
 
+        acceso.usuario = request.user
         acceso.autorizado = True
         acceso.fecha_autorizacion = timezone.now()
 
         acceso.save(
             update_fields=[
+                "usuario",
                 "autorizado",
                 "fecha_autorizacion",
             ]
         )
-
-        # --------------------------------------------------
-        # AUDITORÍA
-        # --------------------------------------------------
 
         registrar_auditoria(
             request=request,
             accion="ACCESO_QR_EMERGENCIA",
             modulo="SEGURIDAD_CLINICA",
             descripcion=(
-                f"Acceso mediante QR a ficha de emergencia "
-                f"del paciente {acceso.paciente}"
+                "Acceso profesional mediante QR "
+                "a ficha de emergencia del paciente "
+                f"{acceso.paciente}"
             ),
             datos_extra={
                 "paciente_id": acceso.paciente.id,
-                "usuario_id": (
-                    acceso.usuario.id
-                    if acceso.usuario
-                    else None
-                ),
-                "rol": acceso.tipo_acceso,
+                "usuario_id": request.user.id,
+                "rol": perfil.rol,
                 "acceso_id": acceso.id,
                 "metodo": "QR",
             }
@@ -4255,28 +5044,20 @@ def confirmar_acceso_qr(request, acceso_id):
             acceso_id=acceso.id
         )
 
-    # ------------------------------------------------------
+    # ==========================================
     # MOSTRAR CONFIRMACIÓN
-    # ------------------------------------------------------
+    # ==========================================
 
     return render(
         request,
         "mi_app_salud/qr_confirmar_acceso.html",
         {
             "paciente": acceso.paciente,
+            "qr": acceso.qr_token,
             "acceso": acceso,
-            "perfil": (
-                getattr(
-                    request.user,
-                    "perfilusuario",
-                    None
-                )
-                if request.user.is_authenticated
-                else None
-            ),
+            "perfil": perfil,
         }
     )
-
 
 # ==========================================================
 # FICHA CLÍNICA DE EMERGENCIA
@@ -4302,6 +5083,30 @@ def ficha_emergencia_qr(request, acceso_id):
                 "mensaje": "Acceso no autorizado."
             }
         )
+
+    if not acceso.qr_token:
+
+        return render(
+            request,
+            "mi_app_salud/qr_acceso_denegado.html",
+            {
+                "mensaje": (
+                    "Este acceso no está asociado "
+                    "a un código QR de emergencia válido."
+                )
+            }
+        )
+
+    if acceso.qr_token.paciente_id != acceso.paciente_id:
+
+        return render(
+            request,
+            "mi_app_salud/qr_acceso_denegado.html",
+            {
+                "mensaje": "El código QR no corresponde al paciente."
+            }
+        )
+
 
     if not acceso.autorizado:
 

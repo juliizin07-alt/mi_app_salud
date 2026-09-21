@@ -1,4 +1,4 @@
-{% load static %}
+﻿{% load static %}
 
 <!DOCTYPE html>
 <html lang="es">
@@ -249,7 +249,272 @@
                 padding: 15px;
             }
         }
+            .notificaciones-wrapper {
+                position: relative;
+                display: inline-block;
+            }
 
+            .notificaciones-wrapper summary {
+                list-style: none;
+                cursor: pointer;
+            }
+
+            .notificaciones-wrapper summary::-webkit-details-marker {
+                display: none;
+            }
+
+            .notificaciones-wrapper .notificaciones-menu {
+                position: absolute;
+                top: 48px;
+                right: 0;
+                width: 390px;
+                display: none;
+                background: linear-gradient(
+                    145deg,
+                    rgba(7, 24, 40, 0.98),
+                    rgba(10, 35, 55, 0.98)
+                );
+                border: 1px solid rgba(80, 190, 230, 0.25);
+                border-radius: 18px;
+                box-shadow:
+                    0 18px 45px rgba(0, 0, 0, 0.45),
+                    0 0 25px rgba(0, 180, 255, 0.08);
+                backdrop-filter: blur(18px);
+                z-index: 99999;
+                overflow: hidden;
+            }
+
+            .notificaciones-wrapper[open] .notificaciones-menu {
+                display: block;
+            }
+
+            .notificaciones-header {
+                padding: 17px 20px;
+                background: rgba(0, 170, 220, 0.08);
+                border-bottom: 1px solid rgba(120, 210, 240, 0.12);
+                color: #8be9ff !important;
+                font-size: 14px;
+                letter-spacing: 0.4px;
+            }
+
+                 .notificacion-item {
+                    display: flex;
+                    gap: 14px;
+                    align-items: flex-start;
+                    padding: 18px 20px;
+                    text-decoration: none;
+                    color: #ffffff !important;
+                    background: transparent;
+                    transition: all 0.2s ease;
+                }
+
+                .notificacion-item:hover {
+                    background: rgba(255, 255, 255, 0.05);
+                }
+
+                .notificacion-item.critica {
+                    border-left: 4px solid #ff4d5a;
+                    box-shadow: inset 8px 0 20px rgba(255, 77, 90, 0.05);
+                }
+
+                .notificacion-icono {
+                    flex: 0 0 30px;
+                    width: 30px;
+                    height: 30px;
+                    display: flex;
+                    align-items: center;
+                    justify-content: center;
+                    font-size: 23px;
+                }
+
+                .notificacion-contenido {
+                    display: flex;
+                    flex-direction: column;
+                    align-items: flex-start;
+                    gap: 7px;
+                    min-width: 0;
+                }
+
+                .notificacion-contenido strong {
+                    color: #ffffff !important;
+                    font-size: 14px;
+                    line-height: 1.3;
+                }
+
+                .notificacion-paciente {
+                    display: block;
+                    color: #ff6672 !important;
+                    font-weight: 700;
+                    font-size: 13px;
+                    line-height: 1.3;
+                }
+
+                .notificacion-historia {
+                    display: block;
+                    color: #87a8b5 !important;
+                    font-size: 11px;
+                    line-height: 1.3;
+                }
+
+                .notificacion-mensaje {
+                    display: block;
+                    color: #c1d3da !important;
+                    font-size: 12px;
+                    line-height: 1.45;
+                }
+
+                .notificacion-accion {
+                    display: inline-block;
+                    margin-top: 4px;
+                    padding: 7px 11px;
+                    border-radius: 8px;
+                    background: rgba(139, 233, 255, 0.08);
+                    color: #8be9ff !important;
+                    font-size: 11px;
+                    font-weight: 700;
+                    letter-spacing: .4px;
+                }
+                    .notificacion-card {
+                        display: block;
+                        padding: 17px 18px;
+                        text-decoration: none;
+                        color: #ffffff !important;
+                        background: linear-gradient(
+                            145deg,
+                            rgba(255, 67, 82, 0.08),
+                            rgba(8, 29, 46, 0.40)
+                        );
+                        border-left: 3px solid #ff4d5a;
+                        transition: all 0.2s ease;
+                    }
+
+                    .notificacion-card:hover {
+                        background: linear-gradient(
+                            145deg,
+                            rgba(255, 67, 82, 0.14),
+                            rgba(8, 29, 46, 0.65)
+                        );
+                        transform: translateY(-1px);
+                    }
+
+                    .notificacion-card-header {
+                        display: flex;
+                        justify-content: space-between;
+                        align-items: flex-start;
+                        gap: 12px;
+                    }
+
+                    .notificacion-card-titulo {
+                        display: flex;
+                        align-items: center;
+                        gap: 11px;
+                    }
+
+                    .notificacion-card-icono {
+                        width: 34px;
+                        height: 34px;
+                        display: flex;
+                        align-items: center;
+                        justify-content: center;
+                        border-radius: 10px;
+                        background: rgba(255, 77, 90, 0.13);
+                        font-size: 18px;
+                    }
+
+                    .notificacion-card-titulo strong {
+                        display: block;
+                        color: #ffffff !important;
+                        font-size: 12px;
+                        letter-spacing: .5px;
+                    }
+
+                    .notificacion-card-titulo small {
+                        display: block;
+                        margin-top: 3px;
+                        color: #8ea7b3 !important;
+                        font-size: 10px;
+                    }
+
+                    .notificacion-badge {
+                        padding: 5px 8px;
+                        border-radius: 6px;
+                        background: rgba(255, 77, 90, 0.14);
+                        color: #ff6672 !important;
+                        font-size: 9px;
+                        font-weight: 800;
+                        letter-spacing: .6px;
+                    }
+
+                    .notificacion-paciente-box {
+                        display: flex;
+                        align-items: center;
+                        gap: 11px;
+                        margin-top: 16px;
+                        padding: 11px;
+                        border-radius: 10px;
+                        background: rgba(255, 255, 255, 0.035);
+                    }
+
+                    .paciente-avatar-mini {
+                        width: 34px;
+                        height: 34px;
+                        border-radius: 50%;
+                        display: flex;
+                        align-items: center;
+                        justify-content: center;
+                        background: rgba(139, 233, 255, 0.10);
+                        color: #8be9ff;
+                        font-weight: 800;
+                    }
+
+                    .paciente-datos-mini strong {
+                        display: block;
+                        color: #ffffff !important;
+                        font-size: 13px;
+                    }
+
+                    .paciente-datos-mini span {
+                        display: block;
+                        margin-top: 3px;
+                        color: #7895a2 !important;
+                        font-size: 10px;
+                    }
+
+                    .notificacion-card-separador {
+                        height: 1px;
+                        margin: 14px 0;
+                        background: rgba(255, 255, 255, 0.07);
+                    }
+
+                    .notificacion-card-mensaje {
+                        display: flex;
+                        align-items: center;
+                        gap: 8px;
+                        color: #c5d4da !important;
+                        font-size: 11px;
+                    }
+
+                    .notificacion-card-footer {
+                        display: flex;
+                        justify-content: space-between;
+                        align-items: center;
+                        margin-top: 15px;
+                        padding-top: 10px;
+                        border-top: 1px solid rgba(255, 255, 255, 0.06);
+                    }
+
+                    .notificacion-card-footer span {
+                        color: #607d89 !important;
+                        font-size: 9px;
+                        text-transform: uppercase;
+                        letter-spacing: .5px;
+                    }
+
+                    .notificacion-card-footer strong {
+                        color: #8be9ff !important;
+                        font-size: 10px;
+                        letter-spacing: .4px;
+                    }
         </style>
 <title>Jarvice Health AI</title>
 
@@ -550,9 +815,184 @@
                     ❤️ <span id="pulsoTop">78</span>
                 </div>
 
-                <div class="alerta">
-                    🔔 <span id="contadorAlertas">0</span>
+                    <details class="notificaciones-wrapper">
+
+    <summary class="alerta" id="campanaNotificaciones">
+        🔔
+        <span id="contadorAlertas">
+            {{ total_notificaciones_jarvice }}
+        </span>
+    </summary>
+
+    <div class="notificaciones-menu">
+
+    <div class="notificaciones-header">
+        <strong>Notificaciones Jarvice</strong>
+        <span>Centro de alertas</span>
+    </div>
+
+
+    <!-- ALERTAS CLÍNICAS -->
+
+    {% if total_alertas_criticas > 0 %}
+
+        <a href="{% url 'alertas_medicas' %}" class="notificacion-card critica">
+
+    <div class="notificacion-card-header">
+
+        <div class="notificacion-card-titulo">
+            <span class="notificacion-card-icono">🚨</span>
+            <div>
+                <strong>ALERTA CLÍNICA CRÍTICA</strong>
+                <small>Requiere atención inmediata</small>
+            </div>
+        </div>
+
+        <span class="notificacion-badge">
+            CRÍTICA
+        </span>
+
+    </div>
+
+
+    {% if alerta_principal_jarvice %}
+
+        <div class="notificacion-paciente-box">
+
+            <div class="paciente-avatar-mini">
+                {{ alerta_principal_jarvice.paciente.nombre|first|upper }}
+            </div>
+
+            <div class="paciente-datos-mini">
+
+                <strong>
+                    {{ alerta_principal_jarvice.paciente.nombre }}
+                    {{ alerta_principal_jarvice.paciente.apellido }}
+                </strong>
+
+                <span>
+                    HC: {{ alerta_principal_jarvice.paciente.historia_clinica }}
+                </span>
+
+            </div>
+
+        </div>
+
+    {% endif %}
+
+
+    <div class="notificacion-card-separador"></div>
+
+
+    <div class="notificacion-card-mensaje">
+
+        🔴
+        <span>
+            {{ total_alertas_criticas }}
+            alerta{{ total_alertas_criticas|pluralize }}
+            requiere{{ total_alertas_criticas|pluralize:"n" }}
+            atención inmediata.
+        </span>
+
+    </div>
+
+
+    <div class="notificacion-card-footer">
+
+        <span>
+            Jarvice Clinical AI
+        </span>
+
+        <strong>
+            VER ALERTA →
+        </strong>
+
+    </div>
+
+</a>
+
+    {% else %}
+
+        <div class="notificacion-item">
+
+            <div class="notificacion-icono">
+                🟢
+            </div>
+
+            <div class="notificacion-contenido">
+
+                <strong>Alertas clínicas</strong>
+
+                <span>
+                    No hay emergencias críticas pendientes.
+                </span>
+
+            </div>
+
+        </div>
+
+    {% endif %}
+
+
+    <!-- ESTUDIOS PENDIENTES -->
+
+    {% if request.user.perfilusuario.rol == "ADMIN" or request.user.perfilusuario.rol == "ENFERMERIA" %}
+
+        {% if total_estudios_pendientes > 0 %}
+
+            <a href="{% url 'panel_enfermeria' %}"
+               class="notificacion-item estudios">
+
+                <div class="notificacion-icono">
+                    🧪
                 </div>
+
+                <div class="notificacion-contenido">
+
+                    <strong>Estudios pendientes</strong>
+
+                    <span>
+                        {{ total_estudios_pendientes }}
+                        estudio{{ total_estudios_pendientes|pluralize }}
+                        pendiente{{ total_estudios_pendientes|pluralize:"s" }}.
+                    </span>
+
+                </div>
+
+            </a>
+
+        {% else %}
+
+            <div class="notificacion-item estudios-ok">
+
+                <div class="notificacion-icono">
+                    ✅
+                </div>
+
+                <div class="notificacion-contenido">
+
+                    <strong>Estudios</strong>
+
+                    <span>
+                        No hay estudios pendientes.
+                    </span>
+
+                </div>
+
+            </div>
+
+        {% endif %}
+
+    {% endif %}
+
+
+    <div class="notificaciones-footer">
+        
+    </div>
+
+</div>
+
+</details>
 
                 <div class="reloj" id="reloj"></div>
 
@@ -596,6 +1036,28 @@ function reloj() {
     }
 }
 
+function toggleNotificaciones() {
+    const menu = document.getElementById("notificacionesMenu");
+
+    if (!menu) {
+        return;
+    }
+
+    menu.classList.toggle("mostrar");
+}
+
+document.addEventListener("click", function(event) {
+    const wrapper = document.querySelector(".notificaciones-wrapper");
+    const menu = document.getElementById("notificacionesMenu");
+
+    if (!wrapper || !menu) {
+        return;
+    }
+
+    if (!wrapper.contains(event.target)) {
+        menu.classList.remove("mostrar");
+    }
+});
 
 function actualizarBarra() {
 
@@ -612,7 +1074,7 @@ function actualizarBarra() {
        mientras conectamos los datos reales de Jarvice.
     */
 
-   if (pulso) {
+  if (pulso) {
     {% if ultimo_signo_vital and ultimo_signo_vital.frecuencia_cardiaca %}
         pulso.innerHTML = "{{ ultimo_signo_vital.frecuencia_cardiaca }}";
     {% else %}
@@ -620,11 +1082,15 @@ function actualizarBarra() {
     {% endif %}
 }
 
-    if (alertas) {
-        alertas.innerHTML = Math.floor(Math.random() * 3);
-    }
+if (alertas) {
+    {% if total_notificaciones_jarvice %}
+        alertas.innerHTML = "{{ total_notificaciones_jarvice }}";
+    {% else %}
+        alertas.innerHTML = "0";
+    {% endif %}
 }
 
+}
 
 reloj();
 setInterval(reloj, 1000);
@@ -712,3 +1178,4 @@ document.addEventListener("DOMContentLoaded", function () {
 </script>
 </body>
 </html>
+

@@ -1,5 +1,9 @@
 ﻿from django import forms
-from .models import Paciente, SolicitudUsuario
+from .models import (
+    Paciente,
+    SolicitudUsuario,
+    AdministracionMedicacion,
+)
 
 
 class PacienteForm(forms.ModelForm):
@@ -200,3 +204,44 @@ class SolicitudUsuarioForm(forms.ModelForm):
                 }
             ),
         }
+
+# ==================================================
+# FORMULARIO ADMINISTRACION DE MEDICACION
+# ==================================================
+
+class AdministracionMedicacionForm(forms.ModelForm):
+
+    class Meta:
+
+        model = AdministracionMedicacion
+
+        fields = [
+            "estado",
+            "observacion",
+        ]
+
+        widgets = {
+
+            "estado": forms.Select(
+                attrs={
+                    "class": "campo"
+                }
+            ),
+
+            "observacion": forms.Textarea(
+                attrs={
+                    "class": "campo",
+                    "placeholder": (
+                        "Observación o incidencia durante "
+                        "la administración..."
+                    ),
+                    "rows": 4,
+                }
+            ),
+        }
+
+        labels = {
+            "estado": "Estado de la administración",
+            "observacion": "Observación / incidencia",
+        }
+

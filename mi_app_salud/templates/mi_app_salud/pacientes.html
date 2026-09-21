@@ -1301,9 +1301,30 @@
 
 <script>
 
-document.addEventListener(
-    "DOMContentLoaded",
-    function () {
+document.addEventListener("DOMContentLoaded", function () {
+
+    const campana = document.getElementById("campanaNotificaciones");
+    const menu = document.getElementById("notificacionesMenu");
+
+    if (!campana || !menu) {
+        return;
+    }
+
+    campana.addEventListener("click", function (event) {
+
+        event.stopPropagation();
+
+        menu.classList.toggle("mostrar");
+
+    });
+
+    document.addEventListener("click", function () {
+
+        menu.classList.remove("mostrar");
+
+    });
+
+});
 
 
         const buscador =

@@ -18,6 +18,30 @@ path(
 ),
 
 path(
+    "panel/emergencia/atender/<int:emergencia_id>/",
+    views.atender_emergencia,
+    name="atender_emergencia",
+),
+
+path(
+    "panel/emergencia/conectar/<int:emergencia_id>/",
+    views.conectar_operador,
+    name="conectar_operador",
+),
+
+path(
+    "panel/emergencia/activar/<int:emergencia_id>/",
+    views.activar_comunicacion_emergencia,
+    name="activar_comunicacion_emergencia",
+),
+
+path(
+    "panel/emergencia/finalizar/<int:emergencia_id>/",
+    views.finalizar_comunicacion_emergencia,
+    name="finalizar_comunicacion_emergencia",
+),
+
+path(
     "emergencia/qr/confirmar/<int:acceso_id>/",
     views.confirmar_acceso_qr,
     name="confirmar_acceso_qr"
@@ -137,6 +161,12 @@ path(
         views.historial_paciente,
         name="historial_paciente"
     ),
+    
+    path(
+    "alertas-medicas/",
+    views.alertas_medicas,
+    name="alertas_medicas"
+    ),
 
     path(
     "crear-evolucion/<int:paciente_id>/",
@@ -148,8 +178,8 @@ path(
     "crear-evolucion-enfermeria/<int:paciente_id>/",
     views.crear_evolucion_enfermeria,
     name="crear_evolucion_enfermeria"
-),
-
+    ),
+ 
 
     # ==================================================
     # RECORDATORIOS
@@ -339,6 +369,12 @@ path(
     "crear-estudio/<int:paciente_id>/",
     views.crear_estudio,
     name="crear_estudio"
+),
+    
+    path(
+    "estudios/<int:paciente_id>/",
+    views.estudios_paciente,
+    name="estudios_paciente"
 ),
 
     # ==========================================================
